@@ -1,0 +1,33 @@
+.card-body {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.card-image {
+    display: inline-block;
+    vertical-align: text-bottom;
+}
+
+.card-image .material-icons {
+    padding: 15px;
+    color: white;
+}
+
+.card-title {
+    font-size: 28px;
+    margin-bottom: 0 !important;
+}
+
+.card-title small {
+    font-size: 50%;
+}
+
+.card-content {
+    padding: 15px;
+    font-size: 18px;
+    display: inline-block;
+}
+
+.card-action {
+    text-align: right;
+}

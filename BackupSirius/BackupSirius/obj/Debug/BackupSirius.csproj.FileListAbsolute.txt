@@ -1,0 +1,8 @@
+C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Debug\BackupSirius.exe.config
+C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Debug\BackupSirius.exe
+C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Debug\BackupSirius.pdb
+C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\obj\Debug\BackupSirius.ProjectInstaller.resources
+C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\obj\Debug\BackupSirius.csproj.GenerateResource.cache
+C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\obj\Debug\BackupSirius.csproj.CoreCompileInputs.cache
+C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\obj\Debug\BackupSirius.exe
+C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\obj\Debug\BackupSirius.pdb

@@ -1,0 +1,38 @@
+<div class="section">
+
+  <div class="row">
+
+
+    <div class="col s12">
+      <div class="row">
+        <div class="col s12">
+          <h5>Clientes</h5>
+        </div>
+      </div>
+
+      <form [formGroup]="formFiltro">
+        <div class="row">
+          <div class="input-field col s12">
+            <input id="filtro" type="text" formControlName="filtro">
+            <label for="filtro">Filtro</label>
+          </div>
+        </div>
+      </form>
+      
+
+      <div class="row">
+        <app-card-cliente *ngFor="let cliente of clientes" [cliente]="cliente" [showEditOption]="true"
+          [showDeleteOption]="true" class="col l4 m6 s12" (editCliente)="edit($event)" (deleteCliente)="delete($event)"></app-card-cliente>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="fixed-action-btn">
+    <a class="btn-floating btn-large waves-effect waves-light" [routerLink]="['/clientes/novo']">
+      <i class="large material-icons">add</i>
+    </a>
+  </div>
+
+</div>

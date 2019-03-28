@@ -1,0 +1,22 @@
+<div class="card">
+  <div class="card-body">
+    <div class="card-content">
+      <p class="card-title activator grey-text text-darken-4">{{ restante }} <small>/ {{ item.qtda}} {{
+          item.item.unidade.sigla }}</small></p>
+      <small>{{ item.item.nome }} <span [hidden]="!item.item.detalhes">| {{ item.item.detalhes.slice(0, 30) }}</span></small>
+    </div>
+    <div class="progress" [ngClass]="classProgressBack">
+      <div class="determinate" [ngClass]="classProgress" [style.width]="percentual + '%'"></div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col s12">
+      <div class="card-action">
+        <button class="btn-flat blue-text text-darken-2 waves-effect m-r-s" (click)="darBaixa()">Dar Baixa</button>
+        <button class="btn-flat red-text text-darken-2 waves-effect" (click)="excluir()">Excluir</button>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,11 @@
+.card-content {
+    font-size: 13px;
+}
+
+.card-content .material-icons {
+    font-size: inherit;
+}
+
+.card-action {
+    text-align: right;
+}

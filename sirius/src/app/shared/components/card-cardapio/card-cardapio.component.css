@@ -1,0 +1,36 @@
+.input-field.inline {
+    display: inline-block;
+    max-width: 90px;
+}
+
+.card-action {
+    padding-top: 20px;
+    padding-bottom: 14px;
+}
+
+.card-action .input-field {
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+.card-action .input-field input {
+    margin-bottom: 0;
+}
+
+.description {
+    display: grid;
+    margin-right: 100px;
+}
+
+span.badge {
+    margin-left: 0;
+    bottom: 89px;
+    position: absolute;
+    right: 24px;
+}
+
+.aviso-reserva {
+    position: absolute;
+    bottom: 58px;
+    left: 24px;
+}

@@ -1,0 +1,58 @@
+<div class="section">
+
+  <div class="row">
+
+
+    <div class="col s12">
+      <div class="row">
+        <div class="col s12">
+          <h5>Reservas</h5>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="input-field col m6 s12">
+          <i class="material-icons prefix">calendar_today</i>
+          <input id="data" type="text" class="datepicker">
+          <label for="data">Data</label>
+        </div>
+      </div>
+
+      <div class="row">
+        <app-card-reserva *ngFor="let reserva of reservas" [item]="reserva" class="col l4 m6 s12" (edit)="darBaixa($event)"
+          (delete)="delete($event)"></app-card-reserva>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="fixed-action-btn">
+    <a class="btn-floating btn-large waves-effect waves-light" [routerLink]="['/reservas/novo']">
+      <i class="large material-icons">add</i>
+    </a>
+  </div>
+
+</div>
+
+<!-- Modal Structure -->
+<div id="modal-baixa" class="modal">
+  <div class="modal-content">
+    <h4>Reserva de Salgados</h4>
+    <div class="row">
+      <div class="col m6 s12">
+        <p>Qtda. vendida de {{ reserva?.item?.nome }}<span [hidden]="!reserva?.item?.detalhes"> | {{
+            reserva?.item?.detalhes }}</span>:</p>
+        <div class="row">
+          <div class="input-field col m6 s12">
+            <input id="qtda" [(ngModel)]="qtdaBaixa" type="number">
+            <label for="qtda">Qtda.</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button [disabled]="!qtdaBaixa" class="modal-close waves-effect waves-green btn-flat blue-text text-darken-2" (click)="baixa(qtdaBaixa)">Salvar</button>
+  </div>
+</div>

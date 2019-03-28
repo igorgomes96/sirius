@@ -1,0 +1,46 @@
+<div class="section">
+
+  <div class="row">
+
+
+    <div class="col s12">
+      <div class="row">
+        <div class="col s12">
+          <h5>Pedidos</h5>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="input-field col m6 s12">
+          <i class="material-icons prefix">calendar_today</i>
+          <input id="data" type="text" class="datepicker">
+          <label for="data">Data</label>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <button class="btn primary-color m-r-m" (click)="print()">Imprimir</button>
+          <a class="btn orange darken-3" routerLink="/pedidos/agrupados">Agrupar Itens</a>
+        </div>
+      </div>
+
+      <div id="pedidos">
+        <div class="row flex-container">
+          <div *ngFor="let pedido of pedidos" class="col m6 s12">
+            <app-card-pedido [pedido]="pedido" (editPedido)="editPedido($event)" (deletePedido)="deletePedido($event)"></app-card-pedido>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="fixed-action-btn">
+    <a class="btn-floating btn-large waves-effect waves-light" [routerLink]="['/pedidos/novo']">
+      <i class="large material-icons">add</i>
+    </a>
+  </div>
+
+</div>

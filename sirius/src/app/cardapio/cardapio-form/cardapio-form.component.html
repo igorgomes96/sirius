@@ -1,0 +1,139 @@
+<div class="section">
+  <div class="row">
+    <div class="col offset-m3 m6 s12">
+      <h5>Cadastro de Salgado</h5>
+    </div>
+  </div>
+
+
+  <div class="row">
+    <div class="col offset-m3 m6 s12">
+
+      <div class="card-panel">
+
+        <form [formGroup]="form" novalidate autocomplete="off">
+
+          <div class="row">
+            <div class="col s12">
+              <div class="input-field">
+                <select name="tipo" formControlName="tipo">
+                  <option value="" disabled selected>Escolha uma opção</option>
+                  <option [value]="TipoSalgado.Comercial">Salgados Comerciais</option>
+                  <option [value]="TipoSalgado.Festa">Salgados de Festa</option>
+                  <option [value]="TipoSalgado.Diversos">Diversos</option>
+                </select>
+                <label>Categoria</label>
+                <app-validator-message controlName="Categoria" [control]="form.get('tipo')"></app-validator-message>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="row">
+            <div class="input-field col s12">
+              <input id="nome" type="text" name="nome" formControlName="nome">
+              <label for="nome" [class.active]="item">Nome</label>
+              <app-validator-message controlName="Nome" [control]="form.get('nome')"></app-validator-message>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col s12">
+              <div class="input-field">
+                <div class="row">
+                  <div class="col s10">
+                    <select name="unidade" formControlName="unidade" id="unidade">
+                      <option value="" disabled selected>Escolha uma opção</option>
+                      <option *ngFor="let unidade of unidades" [value]="unidade.sigla">{{ unidade.nome }}</option>
+                    </select>
+                    <label>Unidade</label>
+                    <app-validator-message controlName="Unidade" [control]="form.get('unidade')"></app-validator-message>
+                  </div>
+                  <div class="col s2" style="margin-top: 10px; margin-left: -10px;">
+                    <a class="btn-floating waves-effect waves-light btn-small modal-trigger" href="#modal-unidade">
+                      <i class="large material-icons">add</i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="input-field col m6 s12">
+              <i class="prefix material-icons">attach_money</i>
+              <input id="valor" type="number" name="valor" formControlName="valor">
+              <label for="valor" [class.active]="item">Valor</label>
+              <app-validator-message controlName="Valor" [control]="form.get('valor')"></app-validator-message>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="input-field col s12">
+              <textarea id="detalhes" class="materialize-textarea" name="detalhes" formControlName="detalhes"></textarea>
+              <label for="detalhes" [class.active]="item">Detalhes</label>
+              <app-validator-message controlName="Detalhes" [control]="form.get('detalhes')"></app-validator-message>
+            </div>
+          </div>
+
+          <button type="submit" class="btn waves-effect primary-color" (click)="salvar()" [class.disabled]="form.invalid">Salvar
+            <i class="material-icons right">save</i>
+          </button>
+
+        </form>
+
+      </div>
+
+    </div>
+
+
+  </div>
+
+
+</div>
+
+
+<!-- Modal Trigger -->
+
+<!-- Modal Structure -->
+<div id="modal-unidade" class="modal bottom-sheet">
+  <div class="row">
+    <div class=" col l4 m6 s12 offset-l4 offset-m3">
+      <div class="modal-content">
+        <h4>Unidades</h4>
+        <div class="row">
+          <div class="input-field col s8">
+            <input id="nome" type="text" [(ngModel)]="unidade.nome">
+            <label for="nome">Nome</label>
+          </div>
+          <div class="input-field col s4">
+            <input id="sigla" type="text" [(ngModel)]="unidade.sigla">
+            <label for="sigla">Sigla</label>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <button class="btn-small waves-effect primary-color" (click)="addUnidade()">Adicionar
+              <i class="material-icons right">add</i>
+            </button>
+          </div>
+        </div>
+
+
+
+        <ul class="collection">
+          <li class="collection-item" *ngFor="let unidade of unidades">
+            <span class="title">{{ unidade.nome }} <br><small>({{ unidade.sigla }})</small></span>
+            <button (click)="deleteUnidade(unidade._id)" class="btn-flat secondary-content"><i class="material-icons red-text">delete_forever</i></button>
+          </li>
+        </ul>
+      </div>
+
+      <div class="modal-footer">
+        <button class="modal-close waves-effect waves-green btn-flat">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,111 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~materialize-css/dist/css/materialize.min.css";
+
+body {
+    background: #efefef;
+}
+
+.wrapper {
+    min-height: 100vh;
+}
+
+main {
+    margin-bottom: -50px;
+    padding-bottom: 50px;
+}
+
+footer.page-footer {
+    padding-top: 0;
+}
+
+.m-l-s {
+    margin-left: 5px;
+}
+
+.m-l-m {
+    margin-left: 10px;
+}
+
+.m-l-l {
+    margin-left: 15px;
+}
+
+.m-r-s {
+    margin-right: 5px;
+}
+
+.m-r-m {
+    margin-right: 10px;
+}
+
+.m-r-l {
+    margin-right: 15px;
+}
+
+.m-t-s {
+    margin-top: 5px;
+}
+
+.m-t-m {
+    margin-top: 10px;
+}
+
+.m-t-l {
+    margin-top: 15px;
+}
+
+.primary-color {
+    background: #3f51b5;
+    color: white;
+}
+
+.card {
+    width: 100%;
+}
+
+.flex-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.flex-container .card {
+    display: flex;
+    flex-wrap: wrap;
+    position: relative;
+}
+
+.flex-container .card-content {
+    margin-bottom: 65px;
+}
+
+.flex-container .card-action {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+.flex-container > .col {
+    margin-left: initial !important;
+}
+
+.card-action {
+    text-align: right;
+}
+
+.left {
+    text-align: left;
+}
+
+app-card-cardapio {
+    height: 100%;
+    display: flex;
+}
+
+app-card-pedido {
+    height: 100%;
+    display: flex;
+}
+
+small {
+    font-size: 82%;
+}

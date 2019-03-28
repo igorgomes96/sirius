@@ -1,0 +1,35 @@
+<div class="row" style="margin-top: 8px">
+  <div class="col s12 m8 offset-m2 l6 offset-l3">
+    <!-- <h4 class="center-align indigo-text text-darken-2">Salgados Sirius</h4> -->
+    <div class="section"></div>
+    <div class="card-panel">
+      <div class="card-title primary-color">
+        <h5>Salgados Sirius</h5>
+      </div>
+      <div class="card-content">
+        <h6 class="center-align">Autenticação</h6>
+        <form (submit)="login()" [formGroup]="form" style="margin-top: 15px">
+          <!-- <div class="input-field">
+            <input id="login" type="text" [class.invalid]="hasError(form.get('email'))" formControlName="email" name="email">
+            <label for="login">Usuário</label>
+            <app-validator-message controlName="Email" [control]="form.get('email')"></app-validator-message>
+          </div> -->
+
+          <div class="input-field">
+            <input id="senha" type="password" [class.invalid]="hasError(form.get('senha'))" formControlName="senha" name="senha">
+            <label for="senha">Senha</label>
+            <app-validator-message controlName="Senha" [control]="form.get('senha')"></app-validator-message>
+          </div>
+
+          <div class="section"></div>
+
+          <div class="center-align">
+            <button type="submit" class="btn primary-color" [class.disabled]="form.invalid">Login</button>
+            <div class="section"></div>
+            <a class="btn btn-flat teal-text" id="btn-cadastrar-senha" routerLink="/cadastrar-senha">Cadastrar Senha</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

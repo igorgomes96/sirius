@@ -1,0 +1,16 @@
+.sidenav {
+    transition: left .4s;
+    transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
+}
+
+.sidenav.open {
+    left: 310px;
+}
+
+nav .sidenav-btn {
+    float: left;
+    position: relative;
+    z-index: 1;
+    height: 56px;
+    margin: 0 18px;
+}

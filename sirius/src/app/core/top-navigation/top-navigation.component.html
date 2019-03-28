@@ -1,0 +1,35 @@
+<nav>
+    <div class="nav-wrapper primary-color">
+        <a href="#" class="brand-logo right">Sirius</a>
+        <ul id="menu" class="left hide-on-small-only">
+            <li *ngFor="let item of menu" routerLinkActive="active" [hidden]="!showItemMenu(item)">
+                <a [routerLink]="item.link">{{ item.text }}</a>
+            </li>
+        </ul>
+        <div class="hide-on-med-and-up">
+            <!-- <a data-target="slide-out" class="sidenav-trigger"> -->
+            <a class="sidenav-btn" (click)="openMenu = !openMenu">
+                <i class="material-icons">menu</i>
+            </a>
+        </div>
+    </div>
+</nav>
+<!-- <ul class="sidenav" id="slide-out"> -->
+<ul class="sidenav" [class.open]="openMenu">
+    <li>
+        <div class="user-view">
+            <div class="background">
+                <img src="assets/img/user-background.jpeg">
+            </div>
+            <a href><img class="circle" src="assets/img/user.png"></a>
+            <a href><span class="white-text name">{{ usuario?.nome }}</span></a>
+            <a href><span class="white-text email">{{ usuario?.email }}</span></a>
+        </div>
+    </li>
+    <li *ngFor="let item of menu" (click)="openMenu = false" routerLinkActive="active" [hidden]="!showItemMenu(item)">
+        <a [routerLink]="item.link" class="sidenav-close">
+            <i [hidden]="!item.icon" class="material-icons">{{ item.icon }}</i>
+            {{ item.text }}
+        </a>
+    </li>
+</ul>

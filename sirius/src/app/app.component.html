@@ -1,0 +1,16 @@
+<div class="wrapper">
+    <header>
+        <app-top-navigation  *ngIf="exibeMenu"></app-top-navigation>
+    </header>
+    <!-- <main> -->
+    <main>
+        <div class="container">
+            <router-outlet></router-outlet>
+        </div>
+    </main>
+</div>
+
+<!-- </main> -->
+<footer class="page-footer primary-color" *ngIf="exibeMenu">
+    <app-footer></app-footer>
+</footer>

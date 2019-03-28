@@ -1,0 +1,51 @@
+<div class="section">
+  <div class="row">
+    <div class="col offset-m3 m9 s12">
+      <h5>Cadastro de Usuário</h5>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col offset-m3 m6 s12">
+      <div class="card-panel">
+        <form [formGroup]="form" (submit)="salvar()" autocomplete="off">
+
+          <div class="row">
+            <div class="input-field col s12">
+              <input id="nome" type="text" formControlName="nome">
+              <label for="nome" [class.active]="usuario?.nome">Nome</label>
+              <app-validator-message controlName="Nome" [control]="form.get('nome')"></app-validator-message>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="input-field col s12">
+              <input id="email" type="text" formControlName="email">
+              <label for="email" [class.active]="usuario?.email">Login</label>
+              <app-validator-message controlName="Login" [control]="form.get('email')"></app-validator-message>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="input-field col s12">
+              <select name="perfil" id="perfil" formControlName="perfil">
+                <option value="" disabled>(Perfil)</option>
+                <option [value]="Perfil.Administrador">Administrador</option>
+                <option [value]="Perfil.Padrao">Padrão/Atendente</option>
+              </select>
+              <app-validator-message controlName="Perfil" [control]="form.get('perfil')"></app-validator-message>
+            </div>
+          </div>
+
+          <button type="submit" class="btn waves-effect primary-color m-r-s" [class.disabled]="form.invalid">Salvar
+            <i class="material-icons right">save</i>
+          </button>
+
+          <a class="btn orange darken-3" *ngIf="usuario" (click)="resetSenha()">Resetar Senha</a>
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>

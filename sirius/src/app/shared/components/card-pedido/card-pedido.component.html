@@ -1,0 +1,41 @@
+<div class="card">
+  <div class="card-content">
+    <span class="card-title">{{ pedido.cliente.nome }}</span>
+
+    <span class="horario"><i class="material-icons">access_time</i> {{ pedido.horario | date:'dd/MM/yy HH:mm'}} - {{
+      pedido.usuario?.nome }}</span>
+
+    <div class="itens">
+      <span *ngFor="let item of pedido.itens">
+        <strong *ngIf="item.quantidade">{{ item.quantidade | number:'2.0-1' }} </strong>
+        <strong *ngIf="!item.quantidade">{{ 0 | number:'2.0-1' }} </strong>
+        {{ item.unidade.sigla }} de <strong>{{ item.nome }}</strong>
+        <small *ngIf="item.detalhes"> - {{ item.detalhes }}</small>
+        <br>
+      </span>
+    </div>
+    <small *ngIf="pedido.observacoes">
+      Obs.: {{ pedido.observacoes }}
+    </small>
+
+    <div class="endereco" *ngIf="pedido.enderecoEntrega" style="margin-top: 10px">
+      <span class="orange-text text-darken-3">Entregar no endereço:</span><br>
+      <span><i class="material-icons">location_on</i> {{ pedido.cliente.enderecoStr }}</span><br>
+      <i class="material-icons">location_city</i> {{ pedido.cliente.endereco?.cidade }} - {{
+      pedido.cliente.endereco?.uf }}<br>
+    </div>
+
+    <p style="margin-top: 10px;">
+      Total: <strong>R$ {{ valorTotal | number:'1.2' }}</strong>
+    </p>
+  </div>
+
+  <div class="card-action">
+    <button class="btn-flat blue-text text-darken-2 waves-effect" (click)="edit()">
+      Editar
+    </button>
+    <button class="btn-flat red-text text-darken-2 waves-effect" (click)="delete()">
+      Excluir
+    </button>
+  </div>
+</div>

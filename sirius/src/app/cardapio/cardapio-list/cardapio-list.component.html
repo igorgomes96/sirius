@@ -1,0 +1,55 @@
+<div class="section">
+
+    <div class="row">
+
+
+        <div class="col s12">
+
+            <div class="row">
+                <div class="col s12">
+                    <h5>Cardápio</h5>
+                </div>
+            </div>
+
+            <form [formGroup]="formFiltroCardapio">
+
+                <div class="row">
+                    <div class="col s12 input-field">
+                        <input type="text" id="pesquisarInput" formControlName="filtro">
+                        <label for="pesquisarInput">Filtro</label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="input-field col l4 m6 s12">
+                        <select id="tipo" name="tipo" formControlName="tipo">
+                            <option value="" disabled>(Selecione)</option>
+                            <option [value]="TipoSalgado.Comercial">Salgados Comerciais</option>
+                            <option [value]="TipoSalgado.Festa">Salgados de Festa</option>
+                            <option [value]="TipoSalgado.Diversos">Diversos</option>
+                        </select>
+                        <label for="tipo">Categoria</label>
+                    </div>
+                </div>
+            </form>
+
+
+
+            <div class="row flex-container">
+                <div class="col l4 m6 s12" *ngFor="let item of itens">
+                    <app-card-cardapio [item]="item" [showAddOption]="false" [showEditOption]="true"
+                        [showFavoriteButton]="false" (deleteItem)="delete($event)" (editItem)="edit($event)"></app-card-cardapio>
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+</div>
+
+<div class="fixed-action-btn">
+    <a class="btn-floating btn-large waves-effect waves-light" [routerLink]="['/cardapio/novo']">
+        <i class="large material-icons">add</i>
+    </a>
+</div>

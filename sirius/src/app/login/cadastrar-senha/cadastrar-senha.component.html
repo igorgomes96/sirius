@@ -1,0 +1,41 @@
+<div class="row" style="margin-top: 8px">
+  <div class="col s12 m8 offset-m2 l6 offset-l3">
+    <!-- <h4 class="center-align indigo-text text-darken-2">Salgados Sirius</h4> -->
+    <div class="section"></div>
+    <div class="card-panel">
+      <div class="card-title primary-color">
+        <h5>Salgados Sirius</h5>
+      </div>
+      <div class="card-content">
+        <h6 class="center-align">Cadastrar Senha</h6>
+        <form (submit)="cadastrar()" [formGroup]="form" style="margin-top: 15px">
+          <div class="input-field">
+            <input id="login" type="text" [class.invalid]="hasError(form.get('email'))" autocomplete="off" name="email" formControlName="email">
+            <label for="login">Usuário</label>
+            <app-validator-message controlName="Email" [control]="form.get('email')"></app-validator-message>
+          </div>
+
+          <div class="input-field">
+            <input id="senha" type="password" [class.invalid]="hasError(form.get('senha'))" name="senha" formControlName="senha">
+            <label for="senha">Senha</label>
+            <app-validator-message controlName="Senha" [control]="form.get('senha')"></app-validator-message>
+          </div>
+
+          <div class="input-field">
+            <input id="confirmaSenha" type="password" [class.invalid]="hasError(form.get('confirmaSenha'))" name="confirmaSenha" formControlName="confirmaSenha">
+            <label for="confirmaSenha">Confirmação de Senha</label>
+            <app-validator-message controlName="Confirmação de Senha" [control]="form.get('confirmaSenha')"></app-validator-message>
+          </div>
+
+          <div class="section"></div>
+
+          <div class="center-align">
+            <button type="submit" class="btn primary-color" [class.disabled]="form.invalid">Cadastrar</button>
+            <div class="section"></div>
+            <button class="btn btn-flat teal-text" id="btn-voltar" routerLink="/login">Voltar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,109 @@
+<div class="section">
+  <div class="row">
+    <div class="col s12">
+      <h5>Cadastro de Cliente</h5>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col s12">
+      <div class="card-panel">
+        <form [formGroup]="form" (submit)="salvar()" novalidate autocomplete="off">
+
+          <div class="row">
+            <div class="col m6 s12">
+
+
+
+              <p>Dados Pessoais</p>
+
+              <div class="row">
+                <div class="input-field col s12">
+                  <input id="nome" type="text" formControlName="nome">
+                  <label for="nome" [class.active]="cliente?.nome">Nome</label>
+                  <app-validator-message controlName="Nome" [control]="form.get('nome')"></app-validator-message>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="input-field col m6 s12">
+                  <input id="telefone1" type="text" formControlName="fone1" mask="(00) 00009-0000">
+                  <label for="telefone1" [class.active]="cliente?.fone1">Telefone 1</label>
+                  <app-validator-message controlName="Telefone 1" [control]="form.get('fone1')"></app-validator-message>
+                </div>
+
+
+                <div class="input-field col m6 s12">
+                  <input id="telefone2" type="text" formControlName="fone2" mask="(00) 00009-0000">
+                  <label for="telefone2" [class.active]="cliente?.fone2">Telefone 2</label>
+                  <app-validator-message controlName="Telefone 2" [control]="form.get('fone2')"></app-validator-message>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="input-field col s12">
+                  <textarea id="observacoes" class="materialize-textarea" formControlName="observacoes"></textarea>
+                  <label for="observacoes" [class.active]="cliente?.observacoes">Observações</label>
+                  <app-validator-message controlName="Observações" [control]="form.get('observacoes')"></app-validator-message>
+                </div>
+              </div>
+
+            </div>
+
+
+
+            <div class="col m6 s12" formGroupName="endereco">
+              <p>Endereço</p>
+
+              <div class="row">
+                <div class="input-field col s12">
+                  <input id="rua" type="text" formControlName="rua">
+                  <label for="rua" [class.active]="cliente?.endereco?.rua">Rua</label>
+                  <app-validator-message controlName="Rua" [control]="form.get('endereco.rua')"></app-validator-message>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="input-field col s8">
+                  <input id="bairro" type="text" formControlName="bairro">
+                  <label for="bairro" [class.active]="cliente?.endereco?.bairro">Bairro</label>
+                  <app-validator-message controlName="Bairro" [control]="form.get('endereco.bairro')"></app-validator-message>
+                </div>
+
+                <div class="input-field col s4">
+                  <input id="numero" type="number" formControlName="numero">
+                  <label for="numero" [class.active]="cliente?.endereco?.numero">Número</label>
+                  <app-validator-message controlName="Número" [control]="form.get('endereco.numero')"></app-validator-message>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="input-field col s8">
+                  <input id="cidade" type="text" formControlName="cidade">
+                  <label for="cidade"  class="active">Cidade</label>
+                  <app-validator-message controlName="Cidade" [control]="form.get('endereco.cidade')"></app-validator-message>
+                </div>
+
+                <div class="input-field col s4">
+                  <input id="estado" type="text" formControlName="uf">
+                  <label for="estado" class="active">Estado</label>
+                  <app-validator-message controlName="Estado" [control]="form.get('endereco.uf')"></app-validator-message>
+                </div>
+              </div>
+
+            </div>
+
+
+
+          </div>
+
+          <button type="submit" class="btn waves-effect primary-color" [class.disabled]="form.invalid">Salvar
+            <i class="material-icons right">save</i>
+          </button>
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>

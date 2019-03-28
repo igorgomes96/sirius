@@ -1,0 +1,251 @@
+<div class="section">
+
+  <!-- <div class="row">
+    <div class="col s12">
+      <h5>Informações do Pedido</h5>
+    </div>
+  </div> -->
+
+  <div class="row">
+    <div class="col s12">
+
+      <div class="card-panel">
+
+        <h5>Dados do Pedido</h5>
+        <br>
+
+        <div class="row">
+          <div class="input-field col m6 s12">
+            <i class="material-icons prefix">calendar_today</i>
+            <input id="data" type="text" class="datepicker">
+            <label for="data">Data</label>
+          </div>
+
+          <div class="input-field col m6 s12">
+            <i class="material-icons prefix">access_time</i>
+            <input id="hora" type="text" class="timepicker">
+            <label for="hora" class="active">Hora</label>
+          </div>
+        </div>
+
+        <form [formGroup]="formFiltro" [hidden]="pedido.cliente">
+          <div class="row">
+            <div class="col s12">
+              <div class="input-field">
+                <div class="row">
+                  <div class="col m6 s10">
+                    <input id="filtro" type="text" formControlName="filtro" placeholder="Digite o nome do cliente..."
+                      #clientePesquisa>
+                  </div>
+                  <div class="col s2" style="margin-top: 10px; margin-left: -10px;">
+                    <a class="btn-floating waves-effect waves-light btn-small" (click)="novoCliente()">
+                      <i class="large material-icons">add</i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <div class="row" *ngIf="pedido?.cliente">
+          <div class="col s12">
+            <h5>Informações do Cliente</h5>
+            <span id="cliente-info">
+              <i class="material-icons">person</i><strong> {{ pedido.cliente.nome }}</strong> <br>
+              <i class="material-icons">phone</i> {{ pedido.cliente.fone1 | mask:'(00) 00009-0000' }} <span [hidden]="!pedido.cliente.fone1 || !pedido.cliente.fone2">/</span>
+              {{ pedido.cliente.fone2 | mask:'(00) 00009-0000' }}<br>
+              <i class="material-icons">location_on</i> {{ pedido.cliente.enderecoStr }}<br>
+              <i class="material-icons">location_city</i> {{ pedido.cliente.endereco?.cidade }} - {{
+              pedido.cliente.endereco?.uf }}<br>
+              <i class="material-icons">note</i> {{ pedido.cliente.observacoes }}
+            </span>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <a (click)="alteraCliente()" [class.disabled]="!pedido.cliente" class="btn-small orange darken-2" [hidden]="!pedido?.cliente">Alterar
+              Cliente</a>
+          </div>
+        </div>
+        <!-- 
+        <div class="row">
+          <div class="col">
+
+          </div>
+        </div> -->
+
+      </div>
+
+      <div class="row" *ngIf="clientes?.length > 0">
+        <app-card-cliente *ngFor="let cliente of clientes" [cliente]="cliente" [showSelectOption]="true"
+          (selectCliente)="selecionaCliente($event)" class="col l4 m6 s12"></app-card-cliente>
+      </div>
+
+      <div class="card-panel">
+
+        <h5>Informações Adicionais</h5>
+        <br>
+
+        <div class="row">
+          <div class="col">
+            <label for="entregar">
+              <input type="checkbox" id="entregar" [(ngModel)]="pedido.entregar" (change)="entregarChange($event)" />
+              <span>Entregar?</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="row" *ngIf="pedido.enderecoEntrega">
+          <div class="col s12">
+            <p>Endereço de Entrega</p>
+
+            <div class="row">
+              <div class="input-field col s12">
+                <input id="rua" type="text" [(ngModel)]="pedido.enderecoEntrega.rua">
+                <label for="rua" class="active">Rua</label>
+                <!-- <app-validator-message controlName="Rua" [control]="form.get('endereco.rua')"></app-validator-message> -->
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="input-field col s8">
+                <input id="bairro" type="text" [(ngModel)]="pedido.enderecoEntrega.bairro">
+                <label for="bairro" class="active">Bairro</label>
+                <!-- <app-validator-message controlName="Bairro" [control]="form.get('endereco.bairro')"></app-validator-message> -->
+              </div>
+
+              <div class="input-field col s4">
+                <input id="numero" type="number" [(ngModel)]="pedido.enderecoEntrega.numero">
+                <label for="numero" class="active">Número</label>
+                <!-- <app-validator-message controlName="Número" [control]="form.get('endereco.numero')"></app-validator-message> -->
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="input-field col s8">
+                <input id="cidade" type="text" [(ngModel)]="pedido.enderecoEntrega.cidade">
+                <label for="cidade" class="active">Cidade</label>
+                <!-- <app-validator-message controlName="Cidade" [control]="form.get('endereco.cidade')"></app-validator-message> -->
+              </div>
+
+              <div class="input-field col s4">
+                <input id="estado" type="text" [(ngModel)]="pedido.enderecoEntrega.uf">
+                <label for="estado" class="active">Estado</label>
+                <!-- <app-validator-message controlName="Estado" [control]="form.get('endereco.uf')"></app-validator-message> -->
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="row">
+          <div class="input-field col s12">
+            <textarea id="observacoes" class="materialize-textarea" [(ngModel)]="pedido.observacoes"></textarea>
+            <label for="observacoes" [class.active]="pedido.observacoes">Observações</label>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="card-panel" *ngIf="pedido?.itens?.length">
+        <div class="row">
+          <div class="col s12">
+            <h5>Itens do Pedido</h5>
+            <br>
+
+            <ul class="collection">
+              <li class="collection-item" *ngFor="let is of pedido?.itens">
+                <div class="row" style="margin-bottom: 0">
+                  <div class="col s12">
+                    <span class="title">
+                      <input type="text" [(ngModel)]="is.quantidade" appOnlyNumber="true">
+                      {{ is.unidade.sigla }} de <strong>{{ is.nome }}</strong>
+                      <a class="btn-small btn-flat right" (click)="removeItem(is)">
+                        <i class="material-icons red-text text-darken-2">delete_forever</i>
+                      </a>
+                    </span>
+                  </div>
+                </div>
+                <div class="row" style="margin-bottom: 0">
+                  <div class="col m6 s12">
+                    <small>{{ is.detalhes.slice(0, 30) }}</small>
+                  </div>
+
+                  <div class="col m3 s6">
+                    <small>Un.: R$ {{ is.valor | number:'1.2'}}</small>
+                  </div>
+
+                  <div class="col m3 s6 right-align">
+                    <small>Sub: <strong>R$ {{ (is.valor * is.quantidade) | number:'1.2'}}</strong></small>
+                  </div>
+                </div>
+              </li>
+            </ul>
+
+            <h5><small>Total: </small>R$ {{ valorTotal | number:'1.2' }}</h5>
+
+            <div class="section"></div>
+            <div class="row">
+              <div class="col">
+                <button class="btn-small waves-effect primary-color" [class.disabled]="!pedido.cliente || !pedido.horario"
+                  (click)="salvar()">Salvar
+                  <i class="material-icons right">save</i>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+
+        <div class="divider"></div>
+        <div class="section">
+          <h6>Adicionar mais itens ao pedido:</h6>
+          <div class="section"></div>
+          <form [formGroup]="formFiltroCardapio">
+
+            <div class="row">
+              <div class="input-field col l4 m6 s12">
+                <select id="tipo" name="tipo" formControlName="tipo">
+                  <option value="" disabled>(Selecione)</option>
+                  <option [value]="TipoSalgado.Comercial">Salgados Comerciais</option>
+                  <option [value]="TipoSalgado.Festa">Salgados de Festa</option>
+                  <option [value]="TipoSalgado.Diversos">Diversos</option>
+
+                </select>
+                <label for="tipo">Categoria</label>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col s12 input-field">
+                <input type="text" placeholder="Digite o nome do salgado..." id="pesquisarInput" formControlName="filtro">
+              </div>
+            </div>
+          </form>
+
+          <div class="row">
+            <div class="col">
+              <a class="btn-small orange darken-3" (click)="addItemForaCardapio()">Salgado Personalizado</a>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="section"></div>
+
+      <div class="row flex-container">
+        <div class="col l4 m6 s12" *ngFor="let item of itensNaoSelecionados">
+          <app-card-cardapio [item]="item" [showAddOption]="true" (addItemPedido)="addItem($event)"></app-card-cardapio>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-item-modal [open]="itemPersonalizadoModal" (saveItem)="addItem($event)" href></app-item-modal>
+<app-cliente-modal [open]="novoClienteModal" (saveCliente)="saveCliente($event)" href></app-cliente-modal>

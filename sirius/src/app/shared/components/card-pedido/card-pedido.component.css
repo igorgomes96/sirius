@@ -1,0 +1,21 @@
+.card-action .input-field {
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+i.material-icons {
+    font-size: inherit;
+}
+
+.itens {
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.horario {
+    font-size: 12px;
+}
+
+.endereco {
+    font-size: 13px;
+}

@@ -1,0 +1,93 @@
+<div class="section">
+
+    <div class="row">
+
+
+        <div class="col s12">
+
+            <div class="row">
+                <div class="col s12">
+                    <h5>Novo Pedido</h5>
+                </div>
+            </div>
+
+            <div class="row" *ngIf="itensSelecionados.length">
+                <div class="col s12">
+                    <h6>Itens Selecionados</h6>
+
+                    <ul class="collection">
+                        <li class="collection-item" *ngFor="let is of itensSelecionados">
+                            <div class="row" style="margin-bottom: 0">
+                                <div class="col s12">
+                                    <span class="title">
+                                        <input type="text" [(ngModel)]="is.quantidade" appOnlyNumber="true">
+                                        {{ is.unidade.sigla }} de <strong>{{ is.nome }}</strong>
+                                        <a class="btn-small btn-flat right" (click)="removeItem(is)">
+                                            <i class="material-icons red-text text-darken-2">delete_forever</i>
+                                        </a>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 0">
+                                <div class="col m6 s12">
+                                    <small>{{ is.detalhes.slice(0, 30) }}</small>
+                                </div>
+
+                                <div class="col m3 s6">
+                                    <small>Valor Un.: R$ {{ is.valor | number:'1.2'}}</small>
+                                </div>
+
+                                <div class="col m3 s6 right-align">
+                                    <small>Subtotal: <strong>R$ {{ (is.valor * is.quantidade) | number:'1.2'}}</strong></small>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <button class="btn-small waves-effect primary-color right" (click)="fecharPedido()">Fechar Pedido
+                        <i class="material-icons right">send</i>
+                    </button>
+                </div>
+            </div>
+
+
+            <form [formGroup]="formFiltroCardapio">
+
+                <div class="row">
+
+                    <div class="col s12 input-field">
+                        <input type="text" id="pesquisarInput" formControlName="filtro">
+                        <label for="pesquisarInput">Filtro</label>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="input-field col l4 m6 s12">
+                        <select id="tipo" name="tipo" formControlName="tipo">
+                            <option value="" disabled>(Selecione)</option>
+                            <option [value]="TipoSalgado.Comercial">Salgados Comerciais</option>
+                            <option [value]="TipoSalgado.Festa">Salgados de Festa</option>
+                            <option [value]="TipoSalgado.Diversos">Diversos</option>
+                        </select>
+                        <label for="tipo">Categoria</label>
+                    </div>
+                </div>
+            </form>
+
+            <a class="btn-small orange darken-3" (click)="addItemForaCardapio()">Salgado Personalizado</a>
+
+            <div class="section"></div>
+            <div class="row flex-container">
+                <div class="col l4 m6 s12" *ngFor="let item of itensNaoSelecionados">
+                    <app-card-cardapio [item]="item" [showAddOption]="true" (addItemPedido)="addItem($event)"></app-card-cardapio>
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+</div>
+
+<app-item-modal [open]="itemPersonalizadoModal" (saveItem)="addItem($event)"></app-item-modal>
