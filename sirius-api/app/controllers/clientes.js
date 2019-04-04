@@ -14,6 +14,13 @@ function ClientesController(app) {
         Cliente.find({nome: new RegExp(nome, "i")}).sort('nome').exec(callback);
     }
 
+    this.getByTelefone = function(telefone, callback) {
+        Cliente.find({ $or: [
+            { fone1: new RegExp(telefone) },
+            { fone2: new RegExp(telefone) }
+        ]}).sort('nome').exec(callback);
+    }
+
     this.post = function(cliente, callback) {
         new Cliente(cliente).save(callback);
     }

@@ -1,20 +1,5 @@
 function PedidosController(app) {
 
-    /*
-    [{$match: {
-  entregar: true
-}}, {$unwind: {
-  path: "$itens"
-}}, {$group: {
-  _id: "$itens._id",
-  item: {
-    $push: "$itens"
-  },
-  quantidade: {
-    $sum: "$itens.valor"
-  }
-}}]*/
-
     this._app = app;
     var Pedido = app.models.pedido;
     var Reserva = app.models.reserva;

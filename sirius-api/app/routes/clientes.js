@@ -12,6 +12,16 @@ module.exports = function (app) {
       return;
     }
 
+    if (req.query.hasOwnProperty('telefone')) {
+      ctrl.getByTelefone(req.query['telefone'], function (err, result) {
+        if (err)
+          res.status(500).json(err);
+        else
+          res.json(result);
+      });
+      return;
+    }
+
     ctrl.getAll(function (err, result) {
       if (err)
         res.status(500).json(err);

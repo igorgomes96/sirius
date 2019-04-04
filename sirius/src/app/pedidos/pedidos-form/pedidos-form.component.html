@@ -11,7 +11,7 @@
                 </div>
             </div>
 
-            <div class="row" *ngIf="itensSelecionados.length">
+            <!--div class="row" *ngIf="itensSelecionados.length">
                 <div class="col s12">
                     <h6>Itens Selecionados</h6>
 
@@ -48,21 +48,52 @@
                         <i class="material-icons right">send</i>
                     </button>
                 </div>
-            </div>
+            </div-->
 
+
+            <div class="row">
+                <div class="input-field col m6 s12">
+                    <i class="material-icons prefix">calendar_today</i>
+                    <input id="data" type="text" class="datepicker">
+                    <label for="data">Data</label>
+                </div>
+
+                <div class="input-field col m6 s12">
+                    <i class="material-icons prefix">access_time</i>
+                    <input id="hora" type="text" class="timepicker">
+                    <label for="hora" class="active">Hora</label>
+                </div>
+
+            </div>
 
             <form [formGroup]="formFiltroCardapio">
 
-                <div class="row">
+                <!--div class="row">
 
                     <div class="col s12 input-field">
                         <input type="text" id="pesquisarInput" formControlName="filtro">
                         <label for="pesquisarInput">Filtro</label>
                     </div>
 
-                </div>
+                </div-->
+
 
                 <div class="row">
+
+                    <div class="col m6 s12 input-field">
+                        <i class="material-icons prefix">phone</i>
+                        <input type="text" id="telefoneFiltro" formControlName="filtroTelefone">
+                        <label for="telefoneFiltro">Telefone</label>
+                    </div>
+
+                </div>
+
+                <div class="row" *ngIf="clientes?.length > 0">
+                    <app-card-cliente *ngFor="let cliente of clientes" [cliente]="cliente" [showSelectOption]="true"
+                        (selectCliente)="selecionaCliente($event)" class="col l4 m6 s12"></app-card-cliente>
+                </div>
+
+                <!--div class="row">
                     <div class="input-field col l4 m6 s12">
                         <select id="tipo" name="tipo" formControlName="tipo">
                             <option value="" disabled>(Selecione)</option>
@@ -72,15 +103,17 @@
                         </select>
                         <label for="tipo">Categoria</label>
                     </div>
-                </div>
+                </div-->
             </form>
 
-            <a class="btn-small orange darken-3" (click)="addItemForaCardapio()">Salgado Personalizado</a>
+            <a class="btn-small orange darken-3" (click)="addItemForaCardapio()">Outros</a>
 
             <div class="section"></div>
+
             <div class="row flex-container">
                 <div class="col l4 m6 s12" *ngFor="let item of itensNaoSelecionados">
-                    <app-card-cardapio [item]="item" [showAddOption]="true" (addItemPedido)="addItem($event)"></app-card-cardapio>
+                    <app-card-cardapio [item]="item" [showAddOption]="true" (addItemPedido)="addItem($event)">
+                    </app-card-cardapio>
                 </div>
             </div>
 

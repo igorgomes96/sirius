@@ -3,12 +3,16 @@ import { CardapioApiService } from './../../shared/api/cardapio-api.service';
 import { Component, OnInit, AfterViewInit, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { ItemCardapio, TipoSalgado } from 'src/app/shared/models/item-cardapio';
-import { distinctUntilChanged, debounceTime, map, tap } from 'rxjs/operators';
+import { distinctUntilChanged, debounceTime, map, tap, filter } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { Pedido } from 'src/app/shared/models/pedido';
 import { PedidosApiService } from 'src/app/shared/api/pedidos-api.service';
 import { CardapioService } from 'src/app/shared/services/cardapio.service';
 import { UsuarioService } from 'src/app/shared/services/usuario.service';
+import { Cliente } from 'src/app/shared/models/cliente';
+import { ClientesApiService } from 'src/app/shared/api/clientes-api.service';
+import { datepicker } from 'src/environments/datepicker-options';
+import { timepicker } from 'src/environments/timepicker-options';
 
 declare var $: any;
 
@@ -20,30 +24,66 @@ declare var $: any;
 export class PedidosFormComponent implements OnInit, AfterViewInit {
 
   formFiltroCardapio: FormGroup;
+  pedido = new Pedido();
   itens: ItemCardapio[] = [];
+  clientes: Cliente[];
   itensSelecionados: ItemCardapio[] = [];
   TipoSalgado: typeof TipoSalgado = TipoSalgado;
   itemPersonalizadoModal = new EventEmitter<boolean>();
 
   constructor(private cardapioApi: CardapioApiService, private formBuilder: FormBuilder,
     private router: Router, private api: PedidosApiService,
-    private cardapioService: CardapioService, private usuarioService: UsuarioService) { }
+    private cardapioService: CardapioService, private usuarioService: UsuarioService,
+    private clientesApi: ClientesApiService) { }
 
   ngOnInit() {
+    this.pedido.horario = new Date();
+    const onSelectDate = (value: any) => {
+      const data = new Date(value);
+      this.pedido.horario = new Date(this.pedido.horario);
+      data.setHours(this.pedido.horario.getHours());
+      data.setMinutes(this.pedido.horario.getMinutes());
+      this.pedido.horario = data;
+    };
+
     this.formFiltroCardapio = this.formBuilder.group({
-      filtro: [''],
-      tipo: [this.cardapioService.tipoSalgado]
+      filtroTelefone: ['']
+      // filtro: [''],
+      // tipo: [this.cardapioService.tipoSalgado]
     });
 
-    this.formFiltroCardapio.get('filtro').valueChanges
-      .pipe(distinctUntilChanged(), debounceTime(300))
-      .subscribe(v => this.load(v, this.formFiltroCardapio.get('tipo').value));
+    this.formFiltroCardapio.get('filtroTelefone').valueChanges
+      .pipe(
+        distinctUntilChanged(),
+        debounceTime(300),
+        tap(_ => this.clientes = []),
+        filter((v: string) => v.length >= 8)
+      ).subscribe(v => {
+        this.loadClientes(v);
+      });
 
-    this.formFiltroCardapio.get('tipo').valueChanges
-      .pipe(distinctUntilChanged(), debounceTime(300), tap(v => this.cardapioService.tipoSalgado = v))
-      .subscribe(v => this.load(this.formFiltroCardapio.get('filtro').value, v));
+      $('#data').datepicker(Object.assign(datepicker, {
+        onSelect: onSelectDate
+      }));
 
-    this.load(null, this.formFiltroCardapio.get('tipo').value);
+      $('#hora').timepicker(Object.assign(timepicker, {
+        onSelect: (hour: any, minutes: any) => {
+          const data = new Date(this.pedido.horario);
+          data.setHours(hour);
+          data.setMinutes(minutes);
+          this.pedido.horario = data;
+        }
+      }));
+
+    // this.formFiltroCardapio.get('filtro').valueChanges
+    //   .pipe(distinctUntilChanged(), debounceTime(300))
+    //   .subscribe(v => this.load(v, this.formFiltroCardapio.get('tipo').value));
+
+    // this.formFiltroCardapio.get('tipo').valueChanges
+    //   .pipe(distinctUntilChanged(), debounceTime(300), tap(v => this.cardapioService.tipoSalgado = v))
+    //   .subscribe(v => this.load(this.formFiltroCardapio.get('filtro').value, v));
+
+    // this.load(null, this.formFiltroCardapio.get('tipo').value);
   }
 
   ngAfterViewInit() {
@@ -96,6 +136,18 @@ export class PedidosFormComponent implements OnInit, AfterViewInit {
       return itens.filter(i => i.tipo === tipo);
     })).subscribe((itens: ItemCardapio[]) => {
       this.itens = itens;
+    });
+  }
+
+  loadClientes(telefone: string = null) {
+    let obs: Observable<Cliente[]>;
+    if (telefone) {
+      obs = this.clientesApi.getByTelefone(telefone);
+    } else {
+      obs = this.clientesApi.getAll();
+    }
+    obs.subscribe((clientes: Cliente[]) => {
+      this.clientes = clientes;
     });
   }
 

@@ -38,6 +38,12 @@ export class ClientesApiService {
       map(this.mapClientes));
   }
 
+  getByTelefone(telefone: string): Observable<Cliente[]> {
+    return this.httpClient.get<Cliente[]>(this.url, { params: { telefone: telefone } }).pipe(
+      take(1),
+      map(this.mapClientes));
+  }
+
   get(id: string): Observable<Cliente> {
     return this.httpClient.get<Cliente>(this.url + `/${id}`).pipe(
       take(1),
