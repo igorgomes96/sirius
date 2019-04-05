@@ -57,6 +57,9 @@ export class PedidosFormComponent implements OnInit, AfterViewInit {
         distinctUntilChanged(),
         debounceTime(300),
         tap(_ => this.clientes = []),
+        map((v: string) => v.match(/\d+/g)),
+        filter((numbers: string[]) => numbers && numbers.length > 0),
+        map((numbers: string[]) => numbers.reduce((prev: string, curr: string) => prev + curr, '')),
         filter((v: string) => v.length >= 8)
       ).subscribe(v => {
         this.loadClientes(v);
