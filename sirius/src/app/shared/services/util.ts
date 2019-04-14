@@ -1,19 +1,19 @@
-import { Cliente } from '../models/cliente';
+import { Cliente, Endereco } from '../models/cliente';
 
 export class Util {
-    public static endereco(cliente: Cliente): string {
-        if (!cliente) {
+    public static endereco(endereco: Endereco): string {
+        if (!endereco) {
             return '';
         }
 
-        if (cliente.endereco.rua && cliente.endereco.numero && cliente.endereco.bairro) {
-            return `${cliente.endereco.rua}, nº ${cliente.endereco.numero}, bairro ${cliente.endereco.bairro}`;
-        } else if (!cliente.endereco.numero && !cliente.endereco.bairro) {
-            return `${cliente.endereco.rua}`;
-        } else if (!cliente.endereco.rua && !cliente.endereco.numero) {
-            return `Bairro ${cliente.endereco.bairro}`;
-        } else if (!cliente.endereco.bairro) {
-            return `${cliente.endereco.rua}, nº ${cliente.endereco.numero}`;
+        if (endereco.rua && endereco.numero && endereco.bairro) {
+            return `${endereco.rua}, nº ${endereco.numero}, bairro ${endereco.bairro}`;
+        } else if (!endereco.numero && !endereco.bairro) {
+            return `${endereco.rua}`;
+        } else if (!endereco.rua && !endereco.numero) {
+            return `Bairro ${endereco.bairro}`;
+        } else if (!endereco.bairro) {
+            return `${endereco.rua}, nº ${endereco.numero}`;
         } else {
             return '';
         }

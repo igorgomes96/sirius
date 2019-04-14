@@ -24,7 +24,8 @@ export class PedidosApiService {
     }
     return Object.assign(pedido,
       {
-        cliente: Object.assign(pedido.cliente, { enderecoStr: Util.endereco(pedido.cliente) })
+        cliente: Object.assign(pedido.cliente, { enderecoStr: Util.endereco(pedido.cliente.endereco) }),
+        enderecoStr: Util.endereco(pedido.cliente.endereco)
       });
   }
 
@@ -35,7 +36,8 @@ export class PedidosApiService {
       }
       return Object.assign(pedido,
         {
-          cliente: Object.assign(pedido.cliente, { enderecoStr: Util.endereco(pedido.cliente) })
+          cliente: Object.assign(pedido.cliente, { enderecoStr: Util.endereco(pedido.cliente.endereco) }),
+          enderecoStr: Util.endereco(pedido.cliente.endereco)
         });
       }
     );

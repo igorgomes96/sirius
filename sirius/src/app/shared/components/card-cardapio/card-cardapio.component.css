@@ -1,11 +1,19 @@
 .input-field.inline {
     display: inline-block;
-    max-width: 90px;
+    max-width: 100px;
+}
+
+h6 {
+    margin: 0 0 .3rem 0;
+}
+
+.card-content {
+    padding: 15px 15px 24px 15px;
+    margin-bottom: 75px;
 }
 
 .card-action {
-    padding-top: 20px;
-    padding-bottom: 14px;
+    padding: 15px;
 }
 
 .card-action .input-field {
@@ -33,4 +41,19 @@ span.badge {
     position: absolute;
     bottom: 58px;
     left: 24px;
+}
+
+.card-action span.badge {
+    position: inherit;
+    min-height: 1.8rem;
+    line-height: 26px;
+    font-weight: 400;
+    font-size: 13px;
+}
+
+button.qtda-item {
+    float: right;
+    padding: 0;
+    border: 0;
+    margin: 0 4px;
 }

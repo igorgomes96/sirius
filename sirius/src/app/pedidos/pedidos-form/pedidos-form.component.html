@@ -66,54 +66,192 @@
 
             </div>
 
-            <form [formGroup]="formFiltroCardapio">
 
-                <!--div class="row">
-
-                    <div class="col s12 input-field">
-                        <input type="text" id="pesquisarInput" formControlName="filtro">
-                        <label for="pesquisarInput">Filtro</label>
-                    </div>
-
-                </div-->
-
-
+            <div *ngIf="!showFormCliente">
                 <div class="row">
 
                     <div class="col m6 s12 input-field">
                         <i class="material-icons prefix">phone</i>
-                        <input type="text" id="telefoneFiltro" formControlName="filtroTelefone">
+                        <input type="text" id="telefoneFiltro" [(ngModel)]="telefoneFiltro"
+                            (input)="onFiltroTelefoneChange(telefoneFiltro)">
                         <label for="telefoneFiltro">Telefone</label>
                     </div>
 
                 </div>
-
-                <div class="row" *ngIf="clientes?.length > 0">
-                    <app-card-cliente *ngFor="let cliente of clientes" [cliente]="cliente" [showSelectOption]="true"
-                        (selectCliente)="selecionaCliente($event)" class="col l4 m6 s12"></app-card-cliente>
-                </div>
-
-                <!--div class="row">
-                    <div class="input-field col l4 m6 s12">
-                        <select id="tipo" name="tipo" formControlName="tipo">
-                            <option value="" disabled>(Selecione)</option>
-                            <option [value]="TipoSalgado.Comercial">Salgados Comerciais</option>
-                            <option [value]="TipoSalgado.Festa">Salgados de Festa</option>
-                            <option [value]="TipoSalgado.Diversos">Diversos</option>
-                        </select>
-                        <label for="tipo">Categoria</label>
+                <div class="row">
+                    <div class="col s12">
+                        <a class="btn primary-color" (click)="novoCliente()">Novo Cliente</a>
                     </div>
-                </div-->
-            </form>
+                </div>
+            </div>
 
-            <a class="btn-small orange darken-3" (click)="addItemForaCardapio()">Outros</a>
+
+            <div class="row" *ngIf="clientes?.length > 0">
+                <app-card-cliente *ngFor="let cliente of clientes" [cliente]="cliente" [showSelectOption]="true"
+                    (selectCliente)="selecionaCliente($event)" class="col l4 m6 s12"></app-card-cliente>
+            </div>
+
+            <div class="row" *ngIf="showFormCliente">
+                <div class="row">
+                    <div class="col s12">
+                        <div class="card-panel">
+                            <h6>Cliente</h6>
+                            <div class="row">
+                                <div class="col s12">
+                                    
+                                    <br>
+                                    <div class="row" *ngIf="pedido?.cliente?._id">
+                                        <div class="col">
+                                            <label for="atualizarCliente">
+                                                <input type="checkbox" id="atualizarCliente" [(ngModel)]="atualizarCliente" />
+                                                <span>Atualizar dados do cliente?</span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <p>Dados Pessoais</p>
+
+                                    <div class="row">
+                                        <div class="input-field col s12">
+                                            <input id="nome" type="text" [(ngModel)]="pedido.cliente.nome"
+                                                #ngModel="ngModel">
+                                            <label for="nome" [class.active]="pedido?.cliente?.nome">Nome</label>
+                                            <app-validator-message controlName="Nome" [control]="ngModel">
+                                            </app-validator-message>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="input-field col m6 s12">
+                                            <input id="telefone1" type="text" [(ngModel)]="pedido.cliente.fone1"
+                                                mask="(00) 00009-0000" #ngModel="ngModel">
+                                            <label for="telefone1" [class.active]="pedido?.cliente?.fone1">Telefone
+                                                1</label>
+                                            <app-validator-message controlName="Telefone 1" [control]="ngModel">
+                                            </app-validator-message>
+                                        </div>
+
+
+                                        <div class="input-field col m6 s12">
+                                            <input id="telefone2" type="text" [(ngModel)]="pedido.cliente.fone2"
+                                                mask="(00) 00009-0000" #ngModel="ngModel">
+                                            <label for="telefone2" [class.active]="pedido?.cliente?.fone2">Telefone
+                                                2</label>
+                                            <app-validator-message controlName="Telefone 2" [control]="ngModel">
+                                            </app-validator-message>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="input-field col s12">
+                                            <textarea id="observacoes" class="materialize-textarea"
+                                                [(ngModel)]="pedido.cliente.observacoes" #ngModel="ngModel"></textarea>
+                                            <label for="observacoes"
+                                                [class.active]="pedido?.cliente?.observacoes">Observações sobre o
+                                                cliente</label>
+                                            <app-validator-message controlName="Observações" [control]="ngModel">
+                                            </app-validator-message>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col s12">
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <label for="entregar">
+                                                <input type="checkbox" id="entregar" [(ngModel)]="pedido.entregar" />
+                                                <span>Entregar?</span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="row" *ngIf="pedido.entregar">
+                                        <div class="col s12">
+                                            <p>Endereço</p>
+
+                                            <div class="row">
+                                                <div class="input-field col s12">
+                                                    <input id="rua" type="text" [(ngModel)]="pedido.enderecoEntrega.rua"
+                                                        #ngModel="ngModel">
+                                                    <label for="rua"
+                                                        [class.active]="pedido?.enderecoEntrega?.rua">Rua</label>
+                                                    <app-validator-message controlName="Rua" [control]="ngModel">
+                                                    </app-validator-message>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="input-field col s8">
+                                                    <input id="bairro" type="text"
+                                                        [(ngModel)]="pedido.enderecoEntrega.bairro" #ngModel="ngModel">
+                                                    <label for="bairro"
+                                                        [class.active]="pedido?.enderecoEntrega?.bairro">Bairro</label>
+                                                    <app-validator-message controlName="Bairro" [control]="ngModel">
+                                                    </app-validator-message>
+                                                </div>
+
+                                                <div class="input-field col s4">
+                                                    <input id="numero" type="number"
+                                                        [(ngModel)]="pedido.enderecoEntrega.numero" #ngModel="ngModel">
+                                                    <label for="numero"
+                                                        [class.active]="pedido?.enderecoEntrega?.numero">Número</label>
+                                                    <app-validator-message controlName="Número" [control]="ngModel">
+                                                    </app-validator-message>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col s12">
+                                    <a class="btn primary-color" (click)="trocarCliente()">Escolher outro Cliente</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
             <div class="section"></div>
 
-            <div class="row flex-container">
-                <div class="col l4 m6 s12" *ngFor="let item of itensNaoSelecionados">
-                    <app-card-cardapio [item]="item" [showAddOption]="true" (addItemPedido)="addItem($event)">
-                    </app-card-cardapio>
+            <div *ngIf="showFormCliente">
+                <!-- <div> -->
+                <div class="row">
+                    <div class="col s12">
+                        <a class="btn primary-color" (click)="fecharPedido()" *ngIf="habilitaFecharPedido">Fechar Pedido</a>
+                        <a class="btn orange darken-3 right" (click)="addItemForaCardapio()">Outros</a>
+                    </div>
+                </div>
+
+                <div class="row flex-container">
+                    <div class="col m6 s12">
+                        <h6>Salgados de Festa</h6>
+                        <div class="row">
+                            <div class="col s12" *ngFor="let item of salgadosFesta">
+                                <app-card-cardapio [item]="item" [showAddOption]="true"
+                                    (addItemPedido)="addItem($event)">
+                                </app-card-cardapio>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col m6 s12">
+                        <h6>Salgados Comerciais</h6>
+                        <div class="row">
+                            <div class="col s12" *ngFor="let item of salgadosComerciais">
+                                <app-card-cardapio [item]="item" [showAddOption]="true"
+                                    (addItemPedido)="addItem($event)">
+                                </app-card-cardapio>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 

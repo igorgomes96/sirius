@@ -8,6 +8,7 @@ import { PedidoResolverService } from './pedido-resolver.service';
 import { PedidosDetalheComponent } from './pedidos-detalhe/pedidos-detalhe.component';
 import { CancelaPedidoDeactivateGuard } from './cancela-pedido-guard';
 import { PedidosAgrupadosComponent } from './pedidos-agrupados/pedidos-agrupados.component';
+import { ConfirmacaoPedidoComponent } from './confirmacao-pedido/confirmacao-pedido.component';
 
 const routes: Routes = [
     { path: '', component: PedidosListComponent },
@@ -15,12 +16,18 @@ const routes: Routes = [
     { path: 'agrupados', component: PedidosAgrupadosComponent },
     {
         path: ':id',
-        component: PedidosDetalheComponent,
+        component: PedidosFormComponent,
         resolve: {
             pedido: PedidoResolverService
-        },
-        canDeactivate: [CancelaPedidoDeactivateGuard]
+        }
     },
+    {
+        path: ':id/confirmacao',
+        component: ConfirmacaoPedidoComponent,
+        resolve: {
+            pedido: PedidoResolverService
+        }
+    }
 ];
 
 @NgModule({

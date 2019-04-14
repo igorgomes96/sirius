@@ -3,7 +3,7 @@ import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/ro
 import { PedidosApiService } from '../shared/api/pedidos-api.service';
 import { Observable, of } from 'rxjs';
 import { Pedido } from '../shared/models/pedido';
-import { catchError } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +19,7 @@ export class PedidoResolverService {
     if (route.paramMap.has('id')) {
       const id: string = route.paramMap.get('id');
       return this.api.get(id).pipe(
-        catchError((err) => {
+        catchError(_ => {
           this.router.navigate(['/not-found']);
           return of(null);
         })

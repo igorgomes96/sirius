@@ -25,8 +25,8 @@ export class UsuariosListComponent implements OnInit {
     });
 
     this.formFiltro.get('filtro').valueChanges
-    .pipe(distinctUntilChanged(), debounceTime(500))
-    .subscribe(v => this.load(v));
+      .pipe(distinctUntilChanged(), debounceTime(500))
+      .subscribe(v => this.load(v));
 
     this.load();
   }
@@ -46,11 +46,14 @@ export class UsuariosListComponent implements OnInit {
   }
 
   delete(usuario: Usuario) {
-    this.api.delete(usuario._id)
-    .subscribe(_ => {
-      this.toasts.toast('Usuario excluído com sucesso!');
-      this.load();
-    });
+    const confirmacao = confirm('Tem certeza que deseja excluir esse usuário?');
+    if (confirmacao) {
+      this.api.delete(usuario._id)
+        .subscribe(_ => {
+          this.toasts.toast('Usuario excluído com sucesso!');
+          this.load();
+        });
+    }
   }
 
 }

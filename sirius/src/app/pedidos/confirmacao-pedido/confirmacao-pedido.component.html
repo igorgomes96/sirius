@@ -1,0 +1,111 @@
+<div class="section">
+
+  <div class="row">
+    <div class="col s12">
+
+      <div class="card-panel">
+
+        <h5>Confirmação do Pedido</h5>
+
+        <div class="row" *ngIf="pedido?.cliente">
+          <div class="col m6 s12">
+            <h6>Informações do Cliente</h6>
+            <span class="cliente-info">
+              <i class="material-icons">person</i> {{ pedido.cliente.nome }} <br>
+              <i class="material-icons">phone</i> {{ pedido.cliente.fone1 | mask:'(00) 00009-0000' }} <span
+                [hidden]="!pedido.cliente.fone1 || !pedido.cliente.fone2">/</span>
+              {{ pedido.cliente.fone2 | mask:'(00) 00009-0000' }}<br>
+              <i class="material-icons">note</i> {{ pedido.cliente.observacoes }}
+            </span>
+          </div>
+
+          <div class="col m6 s12">
+            <span class="cliente-info">
+              <h6>Endereço de Entrega</h6>
+              <div *ngIf="pedido.entregar; else naoEntregar">
+                <i class="material-icons">location_on</i> {{ pedido.enderecoStr }}<br>
+                <i class="material-icons">location_city</i> {{ pedido.cliente.endereco?.cidade }} - {{
+                    pedido.cliente.endereco?.uf }}<br>
+              </div>
+
+              <ng-template #naoEntregar>
+                <i class="material-icons">not_interested</i> Cliente não solicitou entrega<br>
+              </ng-template>
+            </span>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col s12">
+            <h6>Itens do Pedido</h6>
+
+            <ul class="collection">
+              <li class="collection-item" *ngFor="let is of pedido?.itens">
+                <div class="row" style="margin-bottom: 0">
+                  <div class="col m6">
+                    <span class="title">
+                      <input type="text" [(ngModel)]="is.quantidade" appOnlyNumber="true"
+                        [attr.disabled]="!is.selecionado ? '' : null">
+                      {{ is.unidade.sigla }} de <strong>{{ is.nome }} </strong>
+                      <small *ngIf="is.detalhes"> ({{ is.detalhes.slice(0, 30) }})</small>
+                    </span>
+                  </div>
+
+                  <div class="col m3 s6">
+                    <small>Un.: R$ {{ is.valor | number:'1.2'}}</small>
+                  </div>
+                  <div class="col m3 s12 right-align">
+                    <small>Sub: <strong>R$ {{ (is.valor * is.quantidade) | number:'1.2'}}</strong></small>
+                  </div>
+
+                </div>
+                <div class="row" style="margin-bottom: 0">
+                  <button class="btn-small btn-flat right red-text text-darken-2" (click)="removeItem(is)">
+                    Remover
+                  </button>
+                  <button class="btn-small btn-flat right blue-text text-darken-2" *ngIf="!is.selecionado"
+                    (click)="is.selecionado = true">
+                    Editar
+                  </button>
+                  <button class="btn-small btn-flat right blue-text text-darken-2" *ngIf="is.selecionado"
+                    (click)="alteraItem(is)">
+                    Confirmar
+                  </button>
+                </div>
+              </li>
+            </ul>
+
+            <h5><small>Total: </small>R$ {{ valorTotal | number:'1.2' }}</h5>
+
+            <div class="section"></div>
+            <div class="row">
+              <div class="col">
+                <button class="btn waves-effect m-r-m" (click)="salvar()">Confirmar Pedido
+                  <i class="material-icons right">save</i>
+                </button>
+
+                <button class="btn waves-effect m-r-m" (click)="salvar(true)">Confirmar e Imprimir
+                  <i class="material-icons right">local_printshop</i>
+                </button>
+
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col">
+
+                <button class="btn waves-effect red darken-2 m-r-m" (click)="cancelarPedido()">Cancelar Pedido
+                  <i class="material-icons right">cancel</i>
+                </button>
+
+                <a class="btn waves-effect grey darken-1" routerLink="../">Alterar Pedido
+                  <i class="material-icons right">edit</i>
+                </a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

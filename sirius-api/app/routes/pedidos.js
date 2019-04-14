@@ -80,7 +80,7 @@ module.exports = function (app) {
   });
 
   app.delete('/api/pedidos/:id', function (req, res) {
-    ctrl.delete(req.params.id, function (err, result) {
+    ctrl.delete(req.params.id, req.session.usuario, function (err, result) {
       if (err) {
         res.status(500).json(err);
       } else {

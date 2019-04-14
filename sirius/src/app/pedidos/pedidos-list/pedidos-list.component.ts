@@ -35,7 +35,6 @@ export class PedidosListComponent implements OnInit, OnDestroy {
     this.load();
   }
 
-
   load() {
     this.api.getByData(this.data)
       .subscribe((pedidos: Pedido[]) => {
@@ -48,11 +47,14 @@ export class PedidosListComponent implements OnInit, OnDestroy {
   }
 
   deletePedido(pedido: Pedido) {
-    this.api.delete(pedido._id)
-      .subscribe(_ => {
-        this.toasts.toast('Pedido excluído com sucesso!');
-        this.load();
-      });
+    const confirmacao = confirm('Tem certeza que deseja excluir esse pedido?');
+    if (confirmacao) {
+      this.api.delete(pedido._id)
+        .subscribe(_ => {
+          this.toasts.toast('Pedido excluído com sucesso!');
+          this.load();
+        });
+    }
   }
 
   ngOnDestroy() {

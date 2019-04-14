@@ -9,9 +9,10 @@ import { ItemModalComponent } from './item-modal/item-modal.component';
 import { ClienteModalComponent } from './cliente-modal/cliente-modal.component';
 import { NgxPrintModule } from 'ngx-print';
 import { PedidosAgrupadosComponent } from './pedidos-agrupados/pedidos-agrupados.component';
+import { ConfirmacaoPedidoComponent } from './confirmacao-pedido/confirmacao-pedido.component';
 
 @NgModule({
-  declarations: [PedidosListComponent, PedidosFormComponent, PedidosDetalheComponent, ItemModalComponent, ClienteModalComponent, PedidosAgrupadosComponent],
+  declarations: [PedidosListComponent, PedidosFormComponent, PedidosDetalheComponent, ItemModalComponent, ClienteModalComponent, PedidosAgrupadosComponent, ConfirmacaoPedidoComponent],
   imports: [
     SharedModule,
     NgxPrintModule,

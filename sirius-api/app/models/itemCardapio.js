@@ -12,7 +12,8 @@ module.exports = function (app) {
         },
         popular: Boolean,
         tipo: String,
-        detalhes: String
+        detalhes: String,
+        order: Number
     });
 
     return db.model('cardapio', itemCardapioSchema);

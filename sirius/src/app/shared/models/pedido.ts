@@ -10,5 +10,6 @@ export class Pedido {
     entregar: Boolean;
     observacoes: string;
     enderecoEntrega: Endereco;
+    enderecoStr: string;
     usuario: Usuario;
 }

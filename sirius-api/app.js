@@ -90,19 +90,19 @@ consign({ cwd: 'app' })
 	.into(app);
 
 // Cria o usuário administrador
-/*var Usuario = app.models.usuario;
-new Usuario({
-	nome: 'Administrador',
-	email: 'admin@admin.com',
-	perfil: 'Administrador',
-	senha: app.HmacSHA1('Admin01!')
-}).save(function(err, result) {
-	if (err) {
-		console.error('Erro ao criar usuário administrador!', err);
-	} else {
-		console.log('Usuário criado com sucesso!', result);
-	}
-});*/
+// var Usuario = app.models.usuario;
+// new Usuario({
+// 	nome: 'Administrador',
+// 	email: 'admin@admin.com',
+// 	perfil: 'Administrador',
+// 	senha: app.HmacSHA1('Admin01!')
+// }).save(function(err, result) {
+// 	if (err) {
+// 		console.error('Erro ao criar usuário administrador!', err);
+// 	} else {
+// 		console.log('Usuário criado com sucesso!', result);
+// 	}
+// });
 
 // Configura o redirecionamento para páginas estáticas
 var allowedExt = [

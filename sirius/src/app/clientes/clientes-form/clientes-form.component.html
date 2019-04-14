@@ -11,7 +11,7 @@
         <form [formGroup]="form" (submit)="salvar()" novalidate autocomplete="off">
 
           <div class="row">
-            <div class="col m6 s12">
+            <div class="col s12">
 
 
 
@@ -52,7 +52,7 @@
 
 
 
-            <div class="col m6 s12" formGroupName="endereco">
+            <div class="col s12" formGroupName="endereco">
               <p>Endereço</p>
 
               <div class="row">
@@ -77,7 +77,7 @@
                 </div>
               </div>
 
-              <div class="row">
+              <!-- <div class="row">
                 <div class="input-field col s8">
                   <input id="cidade" type="text" formControlName="cidade">
                   <label for="cidade"  class="active">Cidade</label>
@@ -89,7 +89,7 @@
                   <label for="estado" class="active">Estado</label>
                   <app-validator-message controlName="Estado" [control]="form.get('endereco.uf')"></app-validator-message>
                 </div>
-              </div>
+              </div> -->
 
             </div>
 

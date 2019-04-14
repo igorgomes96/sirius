@@ -8,7 +8,7 @@ export class Cliente {
     enderecoStr: string;
 }
 
-export interface Endereco {
+export class Endereco {
     rua: string;
     bairro: string;
     cidade: string;

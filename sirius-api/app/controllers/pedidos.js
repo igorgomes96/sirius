@@ -123,19 +123,27 @@ function PedidosController(app) {
                     console.error(`Erro ao atualizar reservas ${JSON.stringify(err)}.`);
                     callback(err, null);
                 }
-                atualizaReservas(pedido, function (err) {
-                    if (err) {
-                        console.error(`Erro ao atualizar reservas ${JSON.stringify(err)}.`);
-                        callback(err, null);
-                    }
-                    callback(null, result);
-                });
+                // atualizaReservas(pedido, function (err) {
+                //     if (err) {
+                //         console.error(`Erro ao atualizar reservas ${JSON.stringify(err)}.`);
+                //         callback(err, null);
+                //     }
+                //     callback(null, result);
+                // });
+                callback(null, result);
             }, true);
         });
     }
 
-    this.delete = function (id, callback) {
-        Pedido.findByIdAndDelete(id, function (err, result) {
+    this.delete = function (id, {email, nome}, callback) {
+        Pedido.findByIdAndUpdate(id, { $set: { exclusao: {
+            horario: new Date(),
+            usuario: {
+                email: email,
+                nome: nome
+            }
+        }}}, { new: true }, callback);
+        /*Pedido.findByIdAndDelete(id, function (err, result) {
             if (err) {
                 callback(err, null);
                 console.error(`Erro ao deletar pedido: ${JSON.stringify(err)}.`);
@@ -149,7 +157,7 @@ function PedidosController(app) {
                 }
                 callback(err, result);
             }, true);
-        });
+        });*/
     }
 
     this.deleteItem = function (idPedido, idItem, callback) {

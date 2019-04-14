@@ -18,9 +18,12 @@ export class CardCardapioComponent implements OnInit {
   @Output() favoriteItem = new EventEmitter<ItemCardapio>();
   @Output() editItem = new EventEmitter<ItemCardapio>();
 
+  qtdas: number[];
+
   constructor() { }
 
   ngOnInit() {
+    this.qtdas = [10, 25, 30, 50, 75, 100];
   }
 
   popular(): string {
@@ -38,6 +41,15 @@ export class CardCardapioComponent implements OnInit {
 
   addItem() {
     this.addItemPedido.emit(this.item);
+  }
+
+  addQtda(qtda: number) {
+    if (!this.item.quantidade) {
+      this.item.quantidade = qtda;
+      return;
+    }
+
+    this.item.quantidade += qtda;
   }
 
   edit() {

@@ -45,6 +45,13 @@ module.exports = function (app) {
             cidade: String,
             uf: String,
             numero: Number
+        },
+        exclusao: {
+            horario: Date,
+            usuario: {
+                nome: String,
+                email: String,
+            }
         }
     });
 
