@@ -8,12 +8,13 @@ h6 {
 }
 
 .card-content {
-    padding: 15px 15px 24px 15px;
-    margin-bottom: 75px;
+    /* padding: 15px 15px 24px 15px; */
+    padding: 24px;
+    /* margin-bottom: 90px; */
 }
 
 .card-action {
-    padding: 15px;
+    padding: 15px 15px 24px 24px;
 }
 
 .card-action .input-field {
@@ -21,14 +22,10 @@ h6 {
     margin-top: 0;
 }
 
-.card-action .input-field input {
-    margin-bottom: 0;
-}
-
-.description {
+/* .description {
     display: grid;
     margin-right: 100px;
-}
+} */
 
 span.badge {
     margin-left: 0;
@@ -43,9 +40,9 @@ span.badge {
     left: 24px;
 }
 
-.card-action span.badge {
+.card-action .qtda-item span.badge {
     position: inherit;
-    min-height: 1.8rem;
+    min-height: 2rem;
     line-height: 26px;
     font-weight: 400;
     font-size: 13px;

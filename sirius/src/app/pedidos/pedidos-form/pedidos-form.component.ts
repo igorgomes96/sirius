@@ -1,20 +1,18 @@
 import { Router, ActivatedRoute } from '@angular/router';
 import { CardapioApiService } from './../../shared/api/cardapio-api.service';
 import { Component, OnInit, AfterViewInit, EventEmitter } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
 import { ItemCardapio, TipoSalgado } from 'src/app/shared/models/item-cardapio';
-import { distinctUntilChanged, debounceTime, map, tap, filter, switchMap } from 'rxjs/operators';
+import { map, tap, filter, switchMap, catchError } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { Pedido } from 'src/app/shared/models/pedido';
 import { PedidosApiService } from 'src/app/shared/api/pedidos-api.service';
-import { CardapioService } from 'src/app/shared/services/cardapio.service';
-import { UsuarioService } from 'src/app/shared/services/usuario.service';
 import { Cliente, Endereco } from 'src/app/shared/models/cliente';
 import { ClientesApiService } from 'src/app/shared/api/clientes-api.service';
 import { datepicker } from 'src/environments/datepicker-options';
 import { timepicker } from 'src/environments/timepicker-options';
 import { ToastsService } from 'src/app/shared/services/toasts.service';
 import { UtilService } from 'src/app/shared/services/util.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 declare var $: any;
 
@@ -138,11 +136,9 @@ export class PedidosFormComponent implements OnInit, AfterViewInit {
 
   numbersPhone(telefone: string): string {
     const numeros = telefone.match(/\d+/g);
-
     if (!numeros || !numeros.length) {
       return;
     }
-
     return numeros.reduce((prev: string, curr: string) => prev + curr, '');
   }
 
@@ -180,7 +176,15 @@ export class PedidosFormComponent implements OnInit, AfterViewInit {
         .pipe(switchMap(_ => pedidoCall));
     } else if (this.atualizarCliente) {
       httpCall = this.clientesApi.put(this.pedido.cliente._id, this.pedido.cliente)
-        .pipe(switchMap(_ => pedidoCall));
+        .pipe(
+          catchError((err: HttpErrorResponse) => {
+            if (err.status === 404) {
+              return this.clientesApi.post(this.pedido.cliente);
+            }
+            return of(null);
+          }),
+          switchMap(_ => pedidoCall)
+        );
     }
 
     httpCall.pipe().subscribe(p => {
@@ -191,25 +195,6 @@ export class PedidosFormComponent implements OnInit, AfterViewInit {
       }
     });
 
-    /*const personalizados = this.itensSelecionados.filter(i => !i._id);
-    const cardapio = this.itensSelecionados.filter(i => i._id);
-    const pedido: Pedido = {
-      _id: null,
-      cliente: null,
-      horario: new Date(),
-      observacoes: null,
-      entregar: false,
-      itens: cardapio,
-      usuario: this.usuarioService.user,
-      enderecoEntrega: null
-    };
-    this.api.post(pedido)
-      .subscribe(p => {
-        this.api.addItens(p._id, personalizados)
-          .subscribe(_ => {
-            this.router.navigate(['/pedidos', p._id]);
-          });
-      });*/
   }
 
   get habilitaFecharPedido() {
@@ -234,10 +219,6 @@ export class PedidosFormComponent implements OnInit, AfterViewInit {
       obs = this.cardapioApi.getAll(new Date());
     }
     return obs;
-    // obs.subscribe((itens: ItemCardapio[]) => {
-    //   this.salgadosFesta = itens.filter(i => i.tipo === TipoSalgado[TipoSalgado.Festa]);
-    //   this.salgadosComerciais = itens.filter(i => i.tipo === TipoSalgado[TipoSalgado.Comercial]);
-    // });
   }
 
   novoCliente() {

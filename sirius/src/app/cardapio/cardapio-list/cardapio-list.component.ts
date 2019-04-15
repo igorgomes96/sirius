@@ -19,7 +19,9 @@ declare var $: any;
 export class CardapioListComponent implements OnInit, AfterViewInit {
 
   formFiltroCardapio: FormGroup;
-  itens: ItemCardapio[];
+  // itens: ItemCardapio[];
+  salgadosFesta: ItemCardapio[];
+  salgadosComerciais: ItemCardapio[];
   TipoSalgado: typeof TipoSalgado = TipoSalgado;
 
   constructor(private formBuilder: FormBuilder, private api: CardapioApiService,
@@ -29,36 +31,39 @@ export class CardapioListComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.formFiltroCardapio = this.formBuilder.group({
       filtro: [''],
-      tipo: [this.cardapioService.tipoSalgado]
+      // tipo: [this.cardapioService.tipoSalgado]
     });
 
     this.formFiltroCardapio.get('filtro').valueChanges
       .pipe(distinctUntilChanged(), debounceTime(300))
-      .subscribe(v => this.load(v, this.formFiltroCardapio.get('tipo').value));
+      .subscribe(v => this.load(v));
 
-    this.formFiltroCardapio.get('tipo').valueChanges
-      .pipe(distinctUntilChanged(), debounceTime(300), tap(v => this.cardapioService.tipoSalgado = v))
-      .subscribe(v => this.load(this.formFiltroCardapio.get('filtro').value, v));
+    // this.formFiltroCardapio.get('tipo').valueChanges
+    //   .pipe(distinctUntilChanged(), debounceTime(300), tap(v => this.cardapioService.tipoSalgado = v))
+    //   .subscribe(v => this.load(this.formFiltroCardapio.get('filtro').value, v));
 
 
-    this.load(null, this.formFiltroCardapio.get('tipo').value);
+    // this.load(null, this.formFiltroCardapio.get('tipo').value);
+    this.load();
   }
 
   ngAfterViewInit(): void {
     $('#tipo').formSelect();
   }
 
-  load(nome: string = null, tipo: string = null) {
+  load(nome: string = null) {
     let obs: Observable<ItemCardapio[]>;
     if (nome) {
       obs = this.api.getByNome(nome, new Date());
     } else {
       obs = this.api.getAll(new Date());
     }
-    obs.pipe(map((itens: ItemCardapio[]) => {
-      return itens.filter(i => i.tipo === tipo);
-    })).subscribe((itens: ItemCardapio[]) => {
-      this.itens = itens;
+    // obs.pipe(map((itens: ItemCardapio[]) => {
+    //   return itens.filter(i => i.tipo === tipo);
+    // }))
+    obs.subscribe((itens: ItemCardapio[]) => {
+      this.salgadosComerciais = itens.filter(i => i.tipo === TipoSalgado[TipoSalgado.Comercial]);
+      this.salgadosFesta = itens.filter(i => i.tipo === TipoSalgado[TipoSalgado.Festa]);
     });
   }
 
@@ -66,7 +71,7 @@ export class CardapioListComponent implements OnInit, AfterViewInit {
     this.api.delete(item._id)
       .subscribe(_ => {
         this.toasts.toast('Item excluído do cardápio!');
-        this.load(this.formFiltroCardapio.get('filtro').value, this.formFiltroCardapio.get('tipo').value);
+        this.load(this.formFiltroCardapio.get('filtro').value);
       });
   }
 

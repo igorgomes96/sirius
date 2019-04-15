@@ -37,7 +37,7 @@ export class CardapioFormComponent implements OnInit, AfterViewInit {
     this.form = this.formBuilder.group({
       tipo: ['', Validators.required],
       nome: ['', Validators.required],
-      unidade: ['', Validators.required],
+      // unidade: ['', Validators.required],
       valor: ['', Validators.required],
       detalhes: ['']
     });
@@ -56,7 +56,7 @@ export class CardapioFormComponent implements OnInit, AfterViewInit {
       .subscribe((item: ItemCardapio) => {
         this.item = item;
         this.form.patchValue(this.item);
-        this.form.get('unidade').setValue(this.item.unidade.sigla);
+        // this.form.get('unidade').setValue(this.item.unidade.sigla);
         setTimeout(() => {
           this.loadUnidades();
         }, 500);
@@ -73,27 +73,28 @@ export class CardapioFormComponent implements OnInit, AfterViewInit {
   }
 
   loadUnidades() {
-    const instance = this.selectUnidadeInstance;
-    if (instance) {
-      instance.destroy();
-    }
+    // const instance = this.selectUnidadeInstance;
+    // if (instance) {
+    //   instance.destroy();
+    // }
     this.unidadesApi.getAll()
       .subscribe((unidades: Unidade[]) => {
         this.unidades = unidades;
-        setTimeout(() => {
-          $('#unidade').formSelect();
-        }, 300);
+        // setTimeout(() => {
+        //   $('#unidade').formSelect();
+        // }, 300);
       });
   }
 
-  get selectUnidadeInstance() {
-    return M.FormSelect.getInstance($('#unidade')[0]);
-  }
+  // get selectUnidadeInstance() {
+  //   return M.FormSelect.getInstance($('#unidade')[0]);
+  // }
 
   salvar() {
     const formValue = this.form.getRawValue();
-    formValue['unidade'] = this.unidades.filter(u => u.sigla === formValue.unidade)[0];
+    // formValue['unidade'] = this.unidades.filter(u => u.sigla === formValue.unidade)[0];
     const item = formValue;
+    item.unidade = this.unidades[0];
     if (this.item) {
       this.api.put(this.item._id, item)
         .subscribe(_ => {
@@ -109,23 +110,23 @@ export class CardapioFormComponent implements OnInit, AfterViewInit {
     }
   }
 
-  addUnidade() {
-    const unidade = <Unidade>this.unidade;
-    delete unidade._id;
-    this.unidadesApi.post(unidade)
-      .subscribe(_ => {
-        this.toasts.toast('Unidade adicionada com sucesso!');
-        this.loadUnidades();
-      });
-  }
+  // addUnidade() {
+  //   const unidade = <Unidade>this.unidade;
+  //   delete unidade._id;
+  //   this.unidadesApi.post(unidade)
+  //     .subscribe(_ => {
+  //       this.toasts.toast('Unidade adicionada com sucesso!');
+  //       this.loadUnidades();
+  //     });
+  // }
 
-  deleteUnidade(id: string) {
-    this.unidadesApi.delete(id)
-      .subscribe(_ => {
-        this.toasts.toast('Unidade excluída com sucesso!');
-        this.loadUnidades();
-      });
-  }
+  // deleteUnidade(id: string) {
+  //   this.unidadesApi.delete(id)
+  //     .subscribe(_ => {
+  //       this.toasts.toast('Unidade excluída com sucesso!');
+  //       this.loadUnidades();
+  //     });
+  // }
 
 
 }

@@ -16,29 +16,39 @@
                 <div class="row">
                     <div class="col s12 input-field">
                         <input type="text" id="pesquisarInput" formControlName="filtro">
-                        <label for="pesquisarInput">Filtro</label>
+                        <label for="pesquisarInput">Pesquisar...</label>
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="input-field col l4 m6 s12">
-                        <select id="tipo" name="tipo" formControlName="tipo">
-                            <option value="" disabled>(Selecione)</option>
-                            <option [value]="TipoSalgado.Comercial">Salgados Comerciais</option>
-                            <option [value]="TipoSalgado.Festa">Salgados de Festa</option>
-                            <option [value]="TipoSalgado.Diversos">Diversos</option>
-                        </select>
-                        <label for="tipo">Categoria</label>
-                    </div>
-                </div>
             </form>
 
 
-
-            <div class="row flex-container">
-                <div class="col l4 m6 s12" *ngFor="let item of itens">
-                    <app-card-cardapio [item]="item" [showAddOption]="false" [showEditOption]="true"
-                        [showFavoriteButton]="false" (deleteItem)="delete($event)" (editItem)="edit($event)"></app-card-cardapio>
+            <div class="row">
+                <div class="col m6 s12">
+                    <h6>Salgados de Festa</h6>
+                    <div class="row" *ngIf="salgadosFesta && salgadosFesta.length; else nenhumSalgadoFesta">
+                        <div class="col s12" *ngFor="let item of salgadosFesta">
+                            <app-card-cardapio [item]="item" [showAddOption]="false" [showEditOption]="true"
+                                [showFavoriteButton]="false" (deleteItem)="delete($event)" (editItem)="edit($event)">
+                            </app-card-cardapio>
+                        </div>
+                    </div>
+                    <ng-template #nenhumSalgadoFesta>
+                        <p>Nenhum salgado de festa encontrado.</p>
+                    </ng-template>
+                </div>
+                <div class="col m6 s12">
+                    <h6>Salgados Comerciais</h6>
+                    <div class="row"  *ngIf="salgadosComerciais && salgadosComerciais.length; else nenhumSalgadoComercial">
+                        <div class="col s12" *ngFor="let item of salgadosComerciais;">
+                            <app-card-cardapio [item]="item" [showAddOption]="false" [showEditOption]="true"
+                                [showFavoriteButton]="false" (deleteItem)="delete($event)" (editItem)="edit($event)">
+                            </app-card-cardapio>
+                        </div>
+                    </div>
+                    <ng-template #nenhumSalgadoComercial>
+                        <p>Nenhum salgado comercial encontrado.</p>
+                    </ng-template>
                 </div>
             </div>
 

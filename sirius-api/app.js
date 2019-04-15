@@ -32,19 +32,19 @@ app.use(cors({
 
 /* configura o middleware express-session */
 var config = require('./app/config/config.js');
-var store = new MongoDBStore({
-	uri: config.productionMode ? config.connectionStringProd : config.connectionStringDev,
-	collection: 'sessions'
-});
+// var store = new MongoDBStore({
+// 	uri: config.productionMode ? config.connectionStringProd : config.connectionStringDev,
+// 	collection: 'sessions'
+// });
 
 app.use(expressSession({
 	secret: 'sdfoi21398s32=*sdfo**',
-	resave: false,
-	saveUninitialized: false,
-	store: store,
-	cookie: {
-		maxAge: 24 * 60 * 60 * 1000
-	}
+	// resave: false,
+	saveUninitialized: true,
+	// store: store,
+	// cookie: {
+	// 	maxAge: 24 * 60 * 60 * 1000
+	// }
 }));
 
 /* configurar o middleware express-validator */
@@ -90,19 +90,19 @@ consign({ cwd: 'app' })
 	.into(app);
 
 // Cria o usuário administrador
-// var Usuario = app.models.usuario;
-// new Usuario({
-// 	nome: 'Administrador',
-// 	email: 'admin@admin.com',
-// 	perfil: 'Administrador',
-// 	senha: app.HmacSHA1('Admin01!')
-// }).save(function(err, result) {
-// 	if (err) {
-// 		console.error('Erro ao criar usuário administrador!', err);
-// 	} else {
-// 		console.log('Usuário criado com sucesso!', result);
-// 	}
-// });
+var Usuario = app.models.usuario;
+new Usuario({
+	nome: 'Administrador',
+	email: 'admin@admin.com',
+	perfil: 'Administrador',
+	senha: app.HmacSHA1('Admin01!')
+}).save(function(err, result) {
+	if (err) {
+		console.error('Erro ao criar usuário administrador!', err);
+	} else {
+		console.log('Usuário criado com sucesso!', result);
+	}
+});
 
 // Configura o redirecionamento para páginas estáticas
 var allowedExt = [

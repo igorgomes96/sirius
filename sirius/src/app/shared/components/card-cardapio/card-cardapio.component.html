@@ -5,12 +5,12 @@
         <i class="material-icons right" style="color: yellowgreen; cursor: pointer;">{{ popular() }}</i>
       </a>
       <!-- <a class="card-title activator grey-text text-darken-4">{{ item.nome }}</a> -->
-      <h6>{{ item.nome }}</h6>
+      <h6>{{ item.nome }} 
+        <small class="description" *ngIf="item.detalhes">({{ item.detalhes }})</small>
+      </h6>
       R$ {{ item.valor | number:'1.2-2' }} {{ item.unidade.sigla }}
       <br>
-      <small class="description" *ngIf="item.detalhes">
-        <span>{{ item.detalhes }}</span>
-      </small>
+
       <span class="new badge m-t-s" [ngClass]="classReserva()"
         *ngIf="item.reserva !== null && item.reserva !== undefined"
         data-badge-caption="em reserva">{{ item.reserva }}</span>
@@ -23,22 +23,24 @@
         <!-- <div class="input-field inline m-r-m"> -->
         <div class="input-field m-r-m">
           <div class="row" style="margin-bottom: 0">
-            <div class="col s4">
+            <div class="col s3">
               <input type="number" [id]="'qtda' + i" [(ngModel)]="item.quantidade" (keyup.enter)="addItem()"
                 placeholder="Qtda.">
             </div>
 
-            <div class="col s8">
+            <div class="col s9">
               <div class="row" style="margin-bottom: 6px">
                 <div class="col s12">
-                  <button *ngFor="let qtda of qtdas.slice(0, qtdas.length / 2).reverse()" (click)="addQtda(qtda)" class="qtda-item">
+                  <button *ngFor="let qtda of qtdas.slice(0, qtdas.length / 2).reverse()" (click)="addQtda(qtda)"
+                    class="qtda-item">
                     <span class="new badge" data-badge-caption="">{{ qtda }}</span>
                   </button>
                 </div>
               </div>
               <div class="row" style="margin-bottom: 0">
                 <div class="col s12">
-                  <button *ngFor="let qtda of qtdas.slice(qtdas.length / 2).reverse()" (click)="addQtda(qtda)" class="qtda-item">
+                  <button *ngFor="let qtda of qtdas.slice(qtdas.length / 2).reverse()" (click)="addQtda(qtda)"
+                    class="qtda-item">
                     <span class="new badge" data-badge-caption="">{{ qtda }}</span>
                   </button>
                 </div>

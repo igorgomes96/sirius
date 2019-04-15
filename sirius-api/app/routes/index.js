@@ -75,7 +75,10 @@ module.exports = function (app) {
 	});
 
 	app.get('/api/usuario', function (req, res) {
-		res.json(req.session.usuario);
+		if (req.session)
+			res.json(req.session.usuario);
+		else
+			res.json(null);
 	});
 
 	app.post('/api/resetsenha', function (req, res) {

@@ -98,12 +98,13 @@
                             <h6>Cliente</h6>
                             <div class="row">
                                 <div class="col s12">
-                                    
+
                                     <br>
                                     <div class="row" *ngIf="pedido?.cliente?._id">
                                         <div class="col">
                                             <label for="atualizarCliente">
-                                                <input type="checkbox" id="atualizarCliente" [(ngModel)]="atualizarCliente" />
+                                                <input type="checkbox" id="atualizarCliente"
+                                                    [(ngModel)]="atualizarCliente" />
                                                 <span>Atualizar dados do cliente?</span>
                                             </label>
                                         </div>
@@ -225,14 +226,20 @@
                 <!-- <div> -->
                 <div class="row">
                     <div class="col s12">
-                        <a class="btn primary-color" (click)="fecharPedido()" *ngIf="habilitaFecharPedido">Fechar Pedido</a>
+                        <a class="btn primary-color" (click)="fecharPedido()" *ngIf="habilitaFecharPedido">Fechar
+                            Pedido</a>
                         <a class="btn orange darken-3 right" (click)="addItemForaCardapio()">Outros</a>
                     </div>
                 </div>
 
-                <div class="row flex-container">
+
+
+                <div class="row">
+
                     <div class="col m6 s12">
+
                         <h6>Salgados de Festa</h6>
+
                         <div class="row">
                             <div class="col s12" *ngFor="let item of salgadosFesta">
                                 <app-card-cardapio [item]="item" [showAddOption]="true"
@@ -240,10 +247,14 @@
                                 </app-card-cardapio>
                             </div>
                         </div>
+
                     </div>
 
+
                     <div class="col m6 s12">
-                        <h6>Salgados Comerciais</h6>
+
+                        <h6>Salgados de Festa</h6>
+
                         <div class="row">
                             <div class="col s12" *ngFor="let item of salgadosComerciais">
                                 <app-card-cardapio [item]="item" [showAddOption]="true"
@@ -252,6 +263,7 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
 
