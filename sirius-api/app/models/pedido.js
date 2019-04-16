@@ -52,7 +52,8 @@ module.exports = function (app) {
                 nome: String,
                 email: String,
             }
-        }
+        },
+        pago: Boolean
     });
 
     return db.model('pedidos', pedidoSchema);

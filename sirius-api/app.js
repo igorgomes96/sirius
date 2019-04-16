@@ -104,6 +104,67 @@ new Usuario({
 	}
 });
 
+var Unidade = app.models.unidade;
+var ItemCardapio = app.models.itemCardapio;
+new Unidade({
+	sigla: 'un.',
+	nome: 'Unidade'
+}).save(function(err, result) {
+	if (err) {
+		console.error('Erro ao criar unidade!', err);
+	} else {
+		console.log('Unidade criada com sucesso!', result);
+		new ItemCardapio({
+			nome: 'Festa 1',
+			valor: 1,
+			unidade: result,
+			popular: false,
+			tipo: 'Festa',
+			order: 1
+		}).save(function(err, result) {
+			if (err) {
+				console.error('Erro ao criar item do cardápio!', err);
+			} else {
+				console.log('Item do Cardápio criado com sucesso!', result);
+			}
+		});
+
+		new ItemCardapio({
+			nome: 'Comercial 1',
+			valor: 2,
+			unidade: result,
+			popular: false,
+			tipo: 'Comercial',
+			order: 1
+		}).save(function(err, result) {
+			if (err) {
+				console.error('Erro ao criar item do cardápio!', err);
+			} else {
+				console.log('Item do Cardápio criado com sucesso!', result);
+			}
+		});
+	}
+});
+
+var Cliente = app.models.cliente;
+new Cliente({
+	nome: 'Cliente 1',
+	fone1: '88888888888',
+	endereco: {
+		rua: 'Rua Teste',
+		bairro: 'Bairro Teste',
+		cidade: 'Araguari',
+		uf: 'MG',
+		numero: 100
+	}
+}).save(function(err, result) {
+	if (err) {
+		console.error('Erro ao criar cliente!', err);
+	} else {
+		console.log('Cliente criado com sucesso!', result);
+	}
+});
+
 // Configura o redirecionamento para páginas estáticas
 var allowedExt = [
 	'.js',

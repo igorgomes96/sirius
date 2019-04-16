@@ -19,7 +19,7 @@
     </small>
 
     <div class="endereco" *ngIf="pedido.enderecoEntrega" style="margin-top: 10px">
-      <span class="orange-text text-darken-3">Entregar no endereço:</span><br>
+      <span [ngClass]="!pedido.exclusao ? 'orange-text text-darken-3' : ''">Entregar no endereço:</span><br>
       <span><i class="material-icons">location_on</i> {{ pedido.cliente.enderecoStr }}</span><br>
       <i class="material-icons">location_city</i> {{ pedido.cliente.endereco?.cidade }} - {{
       pedido.cliente.endereco?.uf }}<br>
@@ -28,6 +28,15 @@
     <p style="margin-top: 10px;">
       Total: <strong>R$ {{ valorTotal | number:'1.2' }}</strong>
     </p>
+
+    <div class="row m-t-m">
+      <div class="col">
+        <label>
+          <input type="checkbox" [disabled]="pedido.exclusao" [(ngModel)]="pedido.pago" (change)="pedidoPago()" />
+          <span>Pago?</span>
+        </label>
+      </div>
+    </div>
 
     <br>
 

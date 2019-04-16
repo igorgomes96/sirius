@@ -1,7 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, EventEmitter } from '@angular/core';
 
 import { PedidosApiService } from './../../shared/api/pedidos-api.service';
-import { datepicker } from 'src/environments/datepicker-options';
 import { Pedido } from 'src/app/shared/models/pedido';
 import { Router } from '@angular/router';
 import { PedidosService } from 'src/app/shared/services/pedidos.service';
@@ -19,19 +18,23 @@ export class PedidosListComponent implements OnInit, OnDestroy {
 
   pedidos: Pedido[] = [];
   data: Date;
+  pedidoExcluir: Pedido;
+  openModalSenha: EventEmitter<boolean>;
 
   constructor(private api: PedidosApiService, private router: Router,
     private pedidosService: PedidosService, private toasts: ToastsService) { }
 
   ngOnInit() {
-    this.data = this.pedidosService.data;
-    $('#data').datepicker(Object.assign(datepicker, {
-      defaultDate: this.data,
-      onSelect: (novaData: any) => {
-        this.data = novaData;
-        this.load();
-      }
-    }));
+    this.openModalSenha = new EventEmitter<boolean>();
+    this.data = new Date();
+    // this.data = this.pedidosService.data;
+    // $('#data').datepicker(Object.assign(datepicker, {
+    //   defaultDate: this.data,
+    //   onSelect: (novaData: any) => {
+    //     this.data = novaData;
+    //     this.load();
+    //   }
+    // }));
     this.load();
   }
 
@@ -47,18 +50,20 @@ export class PedidosListComponent implements OnInit, OnDestroy {
   }
 
   deletePedido(pedido: Pedido) {
-    const confirmacao = confirm('Tem certeza que deseja excluir esse pedido?');
-    if (confirmacao) {
-      this.api.delete(pedido._id)
-        .subscribe(_ => {
-          this.toasts.toast('Pedido excluído com sucesso!');
-          this.load();
-        });
-    }
+    this.pedidoExcluir = pedido;
+    this.openModalSenha.emit(true);
+  }
+
+  confirmarExclusao(senha: string) {
+    this.api.delete(this.pedidoExcluir._id, senha)
+      .subscribe(_ => {
+        this.toasts.toast('Pedido excluído com sucesso!');
+        this.load();
+      });
   }
 
   ngOnDestroy() {
-    this.pedidosService.data = this.data;
+    // this.pedidosService.data = this.data;
   }
 
   print() {
@@ -77,6 +82,11 @@ export class PedidosListComponent implements OnInit, OnDestroy {
           this.api.postImpressao().subscribe();
         }
       });
+  }
+
+  atualizaPedido(pedido: Pedido) {
+    this.api.put(pedido._id, pedido)
+      .subscribe(_ => this.toasts.toast('Pedido atualizado com sucesso.'));
   }
 
   private imprimir() {

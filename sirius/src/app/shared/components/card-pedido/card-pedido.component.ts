@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { ItemCardapio } from '../../models/item-cardapio';
 import { Pedido } from '../../models/pedido';
 
 @Component({
@@ -12,6 +11,7 @@ export class CardPedidoComponent implements OnInit {
   @Input() pedido: Pedido;
   @Output() editPedido = new EventEmitter<Pedido>();
   @Output() deletePedido = new EventEmitter<Pedido>();
+  @Output() pagamento = new EventEmitter<Pedido>();
 
   constructor() { }
 
@@ -24,6 +24,10 @@ export class CardPedidoComponent implements OnInit {
 
   delete() {
     this.deletePedido.emit(this.pedido);
+  }
+
+  pedidoPago() {
+    this.pagamento.emit(this.pedido);
   }
 
   get valorTotal() {

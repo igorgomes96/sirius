@@ -10,27 +10,30 @@
         </div>
       </div>
 
-      <form [formGroup]="formFiltro">
       <div class="row">
-        <div class="input-field col s12">
-          <input id="filtro" type="text" formControlName="filtro">
-          <label for="filtro">Pesquisar...</label>
+        <div class="col s12">
+          <a class="btn waves-effect waves-light m-t-m" [routerLink]="['/usuarios/novo']">
+            <i class="material-icons left">add</i> Novo Usuário
+          </a>
         </div>
       </div>
-    </form>
+
+      <form [formGroup]="formFiltro">
+        <div class="row">
+          <div class="input-field col s12">
+            <input id="filtro" type="text" formControlName="filtro">
+            <label for="filtro">Pesquisar...</label>
+          </div>
+        </div>
+      </form>
 
       <div class="row">
-        <app-card-usuario *ngFor="let usuario of usuarios" [usuario]="usuario" class="col l4 m6 s12" (editUsuario)="edit($event)" (deleteUsuario)="delete($event)"></app-card-usuario>
+        <app-card-usuario *ngFor="let usuario of usuarios" [usuario]="usuario" class="col l4 m6 s12"
+          (editUsuario)="edit($event)" (deleteUsuario)="delete($event)"></app-card-usuario>
       </div>
 
     </div>
 
-  </div>
-
-  <div class="fixed-action-btn">
-    <a class="btn-floating btn-large waves-effect waves-light" [routerLink]="['/usuarios/novo']">
-      <i class="large material-icons">add</i>
-    </a>
   </div>
 
 </div>

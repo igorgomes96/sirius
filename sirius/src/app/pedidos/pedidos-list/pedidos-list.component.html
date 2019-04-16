@@ -11,24 +11,44 @@
       </div>
 
       <div class="row">
-        <div class="input-field col m6 s12">
-          <i class="material-icons prefix">calendar_today</i>
-          <input id="data" type="text" class="datepicker">
-          <label for="data">Data</label>
+        <div class="col s12">
+          <a class="btn waves-effect waves-light m-r-m m-t-m" routerLink="/pedidos/novo">
+            <i class="material-icons left">add</i> Novo Pedido
+          </a>
+          <a class="btn waves-effect primary-color m-r-m m-t-m">
+            <i class="material-icons left">calendar_today</i> Agenda
+          </a>
+          <a class="btn waves-effect orange darken-3 m-t-m" routerLink="/pedidos/agrupados">
+            <i class="material-icons left">list</i> Total de Salgados do Dia
+          </a>
         </div>
       </div>
 
       <div class="row">
         <div class="col">
+          <h6>Pedidos do Dia</h6>
+        </div>
+      </div>
+
+      <!-- <div class="row">
+        <div class="input-field col m6 s12">
+          <i class="material-icons prefix">calendar_today</i>
+          <input id="data" type="text" class="datepicker">
+          <label for="data">Data</label>
+        </div>
+      </div> -->
+
+      <!-- <div class="row">
+        <div class="col">
           <button class="btn primary-color m-r-m" (click)="print()">Imprimir</button>
           <a class="btn orange darken-3" routerLink="/pedidos/agrupados">Agrupar Itens</a>
         </div>
-      </div>
+      </div> -->
 
       <div id="pedidos">
         <div class="row flex-container">
           <div *ngFor="let pedido of pedidos" class="col m6 s12">
-            <app-card-pedido [pedido]="pedido" (editPedido)="editPedido($event)" (deletePedido)="deletePedido($event)"></app-card-pedido>
+            <app-card-pedido [pedido]="pedido" (editPedido)="editPedido($event)" (pagamento)="atualizaPedido($event)" (deletePedido)="deletePedido($event)"></app-card-pedido>
           </div>
         </div>
       </div>
@@ -37,10 +57,6 @@
 
   </div>
 
-  <div class="fixed-action-btn">
-    <a class="btn-floating btn-large waves-effect waves-light" [routerLink]="['/pedidos/novo']">
-      <i class="large material-icons">add</i>
-    </a>
-  </div>
-
 </div>
+
+<app-senha-modal [open]="openModalSenha" (confirmar)="confirmarExclusao($event)"></app-senha-modal>

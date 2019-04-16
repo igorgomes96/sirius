@@ -19,7 +19,7 @@ module.exports = function (app) {
     });
   });
 
-  app.get('/api/pedidos/impressoes', function(req, res) {
+  app.get('/api/pedidos/impressoes', function (req, res) {
     ctrl.getImpressoes(function (err, result) {
       if (err) {
         res.status(500).json(err);
@@ -29,7 +29,7 @@ module.exports = function (app) {
     });
   });
 
-  app.get('/api/pedidos/agrupados', function(req, res) {
+  app.get('/api/pedidos/agrupados', function (req, res) {
     ctrl.getAggregatedByData(new Date(req.query['data']), function (err, result) {
       if (err) {
         res.status(500).json(err);
@@ -79,9 +79,30 @@ module.exports = function (app) {
     });
   });
 
+  // Somente administrador
   app.delete('/api/pedidos/:id', function (req, res) {
-    ctrl.delete(req.params.id, req.session.usuario, function (err, result) {
+    ctrl.deleteAdmin(req.params.id, function (err, result) {
       if (err) {
+        res.status(500).json(err);
+      } else {
+        if (!result)
+          res.status(404).send('Pedido não encontrado!');
+        else
+          res.status(200).send(result);
+      }
+    });
+  });
+
+
+  app.post('/api/pedidos/:id/delete', function (req, res) {
+    const usuario = req.session.usuario;
+    usuario.senha = req.body.senha;
+    ctrl.delete(req.params.id, usuario, function (err, result) {
+      if (err) {
+        if (err === 'Senha incorreta!') {
+          res.status(400).json(err);
+          return;
+        }
         res.status(500).json(err);
       } else {
         if (!result)
@@ -105,8 +126,8 @@ module.exports = function (app) {
     });
   });
 
-  app.post('/api/pedidos/impressoes', function(req, res) {
-    ctrl.postImpressao(req.session.usuario ,function (err, result) {
+  app.post('/api/pedidos/impressoes', function (req, res) {
+    ctrl.postImpressao(req.session.usuario, function (err, result) {
       if (err) {
         res.status(500).json(err);
       } else {

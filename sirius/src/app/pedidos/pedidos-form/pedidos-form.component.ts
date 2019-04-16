@@ -129,10 +129,10 @@ export class PedidosFormComponent implements OnInit, AfterViewInit {
     this.loadClientes(telefone);
   }
 
-  deletePedido(): Observable<boolean> {
-    return this.api.delete(this.pedido._id)
-      .pipe(switchMap(_ => of(true)), tap(_ => this.toasts.toast('Pedido cancelado!')));
-  }
+  // deletePedido(): Observable<boolean> {
+  //   return this.api.delete(this.pedido._id)
+  //     .pipe(switchMap(_ => of(true)), tap(_ => this.toasts.toast('Pedido cancelado!')));
+  // }
 
   numbersPhone(telefone: string): string {
     const numeros = telefone.match(/\d+/g);

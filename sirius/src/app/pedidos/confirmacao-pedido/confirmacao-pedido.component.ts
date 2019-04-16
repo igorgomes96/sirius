@@ -63,7 +63,7 @@ export class ConfirmacaoPedidoComponent implements OnInit {
   cancelarPedido() {
     const cancelar = confirm('Tem certeza que deseja cancelar esse pedido?');
     if (cancelar) {
-      this.api.delete(this.pedido._id)
+      this.api.deleteAdmin(this.pedido._id)
         .subscribe(_ => {
           this.router.navigate(['/pedidos']);
         });

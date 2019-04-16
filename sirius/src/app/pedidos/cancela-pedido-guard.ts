@@ -20,7 +20,7 @@ export class CancelaPedidoDeactivateGuard implements CanDeactivate<PedidosDetalh
     ): Observable<boolean> | boolean {
         if (!component.clienteAdded) {
             const confirmation = window.confirm('Cancelar o pedido atual?');
-            return confirmation ? component.deletePedido() : false;
+            // return confirmation ? component.deletePedido() : false;
         }
         return true;
     }

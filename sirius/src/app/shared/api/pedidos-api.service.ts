@@ -71,7 +71,11 @@ export class PedidosApiService {
     return this.httpClient.put<void>(this.url + `/${id}`, pedido).pipe(take(1));
   }
 
-  delete(id: string): Observable<Pedido> {
+  delete(id: string, senha: string): Observable<Pedido> {
+    return this.httpClient.post<Pedido>(this.url + `/${id}/delete`, { senha: senha }).pipe(take(1), map(this.mapPedido));
+  }
+
+  deleteAdmin(id: string): Observable<Pedido> {
     return this.httpClient.delete<Pedido>(this.url + `/${id}`).pipe(take(1), map(this.mapPedido));
   }
 

@@ -12,10 +12,11 @@ import { CardReservaComponent } from './components/card-reserva/card-reserva.com
 import { CardUsuarioComponent } from './components/card-usuario/card-usuario.component';
 import { ValidatorMessageComponent } from './components/validator-message/validator-message.component';
 import { OnlyNumberDirective } from './directives/only-number.directive';
+import { SenhaModalComponent } from './components/senha-modal/senha-modal.component';
 
 @NgModule({
   declarations: [CardCardapioComponent, CardPedidoComponent, CardClienteComponent, CardReservaComponent,
-    CardUsuarioComponent, ValidatorMessageComponent, OnlyNumberDirective],
+    CardUsuarioComponent, ValidatorMessageComponent, OnlyNumberDirective, SenhaModalComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -37,6 +38,7 @@ import { OnlyNumberDirective } from './directives/only-number.directive';
     ValidatorMessageComponent,
     NgxMaskModule,
     CardReservaComponent,
+    SenhaModalComponent,
     OnlyNumberDirective
   ]
 })

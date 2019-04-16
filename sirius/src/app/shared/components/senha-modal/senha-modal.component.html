@@ -1,0 +1,30 @@
+<!-- Modal Structure -->
+<div id="modal-senha" class="modal">
+  <div class="modal-content">
+
+    <div class="row">
+      <div class="col s12" style="margin-bottom: 0;">
+        <h4>Confirmação</h4>
+
+        <form novalidate autocomplete="off" (submit)="confirmarAcao()">
+
+          <p>Essa ação não poderá ser desfeita. Deseja confirmar?</p>
+
+          <div class="row" style="margin-bottom: 0;">
+            <div class="input-field col s12">
+              <input id="senha" type="password" name="senha" [(ngModel)]="senha" #model="ngModel" required>
+              <label for="senha">Digite sua senha</label>
+              <app-validator-message controlName="Senha" [control]="model"></app-validator-message>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="submit" class="waves-effect waves-green btn-flat red-text text-darken-2">Confirmar</button>
+    <button class="modal-close btn-flat">Cancelar</button>
+  </div>
+
+</div>

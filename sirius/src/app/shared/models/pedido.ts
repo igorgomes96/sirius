@@ -12,4 +12,5 @@ export class Pedido {
     enderecoEntrega: Endereco;
     enderecoStr: string;
     usuario: Usuario;
+    pago: boolean;
 }

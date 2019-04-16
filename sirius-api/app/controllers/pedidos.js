@@ -4,6 +4,7 @@ function PedidosController(app) {
     var Pedido = app.models.pedido;
     var Reserva = app.models.reserva;
     var Impressao = app.models.impressao;
+    var Usuario = app.models.usuario;
     var ObjectId = app.config.dbConnection.Types.ObjectId;
 
     var atualizaReservas = function (pedido, callback, del = false) {
@@ -135,21 +136,47 @@ function PedidosController(app) {
         });
     }
 
-    this.delete = function (id, {email, nome}, callback) {
-        Pedido.findByIdAndUpdate(id, { $set: { exclusao: {
-            horario: new Date(),
-            usuario: {
-                email: email,
-                nome: nome
+    this.delete = function (id, { email, nome, senha }, callback) {
+        Usuario.find({ email: email }, function (err, result) {
+            if (err) {
+                callback(err, null);
+                console.error(err);
+                return;
             }
-        }}}, { new: true }, callback);
-        /*Pedido.findByIdAndDelete(id, function (err, result) {
+            senha = app.HmacSHA1(senha);
+            if (result[0].senha !== senha) {
+                callback('Senha incorreta!');
+                return;
+            }
+
+            Pedido.findByIdAndUpdate(id, {
+                $set: {
+                    exclusao: {
+                        horario: new Date(),
+                        usuario: {
+                            email: email,
+                            nome: nome
+                        }
+                    }
+                }
+            }, { new: true }, callback);
+        });
+
+    }
+
+    this.deleteAdmin = function (id, callback) {
+        Pedido.findByIdAndDelete(id, function (err, result) {
             if (err) {
                 callback(err, null);
                 console.error(`Erro ao deletar pedido: ${JSON.stringify(err)}.`);
                 return;
             }
 
+            if (result.exclusao) {
+                callback(null, result);
+                return;
+            }
+            
             atualizaReservas(result, function (err) {
                 if (err) {
                     console.error(`Erro ao atualizar reservas: ${JSON.stringify(err)}.`);
@@ -157,7 +184,7 @@ function PedidosController(app) {
                 }
                 callback(err, result);
             }, true);
-        });*/
+        });
     }
 
     this.deleteItem = function (idPedido, idItem, callback) {

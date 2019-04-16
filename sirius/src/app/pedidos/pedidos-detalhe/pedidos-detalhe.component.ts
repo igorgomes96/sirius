@@ -177,10 +177,10 @@ export class PedidosDetalheComponent implements OnInit, AfterViewInit {
       });
   }
 
-  deletePedido(): Observable<boolean> {
-    return this.api.delete(this.pedido._id)
-      .pipe(switchMap(_ => of(true)), tap(_ => this.toasts.toast('Pedido cancelado!')));
-  }
+  // deletePedido(): Observable<boolean> {
+  //   return this.api.delete(this.pedido._id)
+  //     .pipe(switchMap(_ => of(true)), tap(_ => this.toasts.toast('Pedido cancelado!')));
+  // }
 
   loadClientes(nome: string) {
     if (!nome) {
