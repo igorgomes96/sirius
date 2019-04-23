@@ -39,7 +39,11 @@ export class UsuariosApiService {
     return this.httpClient.put<void>(this.url + `/${id}`, usuario).pipe(take(1));
   }
 
-  delete(id: string): Observable<Usuario>  {
-    return this.httpClient.delete<Usuario>(this.url + `/${id}`).pipe(take(1));
+  delete(id: string, senha: string): Observable<Usuario>  {
+    return this.httpClient.post<Usuario>(this.url + `/${id}/delete`, { senha: senha }).pipe(take(1));
   }
+
+  // delete(id: string): Observable<Usuario>  {
+  //   return this.httpClient.delete<Usuario>(this.url + `/${id}`).pipe(take(1));
+  // }
 }

@@ -57,8 +57,23 @@ module.exports = function (app) {
         });
     });
 
-    app.delete('/api/usuarios/:id', function (req, res) {
-        ctrl.delete(req.params.id, function (err, result) {
+    // app.delete('/api/usuarios/:id', function (req, res) {
+    //     ctrl.delete(req.params.id, function (err, result) {
+    //         if (err) {
+    //             res.status(500).json(err);
+    //         } else {
+    //             if (!result)
+    //                 res.status(404).send('Usuário não encontrado!');
+    //             else
+    //                 res.status(200).send(result);
+    //         }
+    //     });
+    // });
+
+    app.post('/api/usuarios/:id/delete', function (req, res) {
+        const usuario = req.session.usuario;
+        usuario.senha = req.body.senha;
+        ctrl.delete(req.params.id, usuario, function (err, result) {
             if (err) {
                 res.status(500).json(err);
             } else {
@@ -69,4 +84,6 @@ module.exports = function (app) {
             }
         });
     });
+
+
 }

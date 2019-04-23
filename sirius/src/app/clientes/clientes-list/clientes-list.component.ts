@@ -1,6 +1,6 @@
 import { distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { Cliente } from 'src/app/shared/models/cliente';
@@ -17,12 +17,15 @@ export class ClientesListComponent implements OnInit {
 
   formFiltro: FormGroup;
   clientes: Cliente[];
+  openModalConfirmacao: EventEmitter<boolean>;
+  clienteExclusao: Cliente;
   constructor(private api: ClientesApiService, private router: Router,
     private toasts: ToastsService, private formBuilder: FormBuilder) { }
 
   ngOnInit() {
     this.load();
 
+    this.openModalConfirmacao = new EventEmitter<boolean>();
     this.formFiltro = this.formBuilder.group({
       filtro: ['']
     });
@@ -46,12 +49,19 @@ export class ClientesListComponent implements OnInit {
     this.router.navigate(['/clientes', cliente._id]);
   }
 
-  delete(cliente: Cliente) {
-    this.api.delete(cliente._id)
+  confirmarExclusao(confirmacao: boolean) {
+    if (confirmacao) {
+      this.api.delete(this.clienteExclusao._id)
       .subscribe(_ => {
         this.toasts.toast('Cliente excluído com sucesso!');
         this.load();
       });
+    }
+  }
+
+  delete(cliente: Cliente) {
+    this.clienteExclusao = cliente;
+    this.openModalConfirmacao.emit(true);
   }
 
 }

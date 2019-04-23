@@ -26,7 +26,7 @@ function UsuariosController(app) {
         if (usuario.senha) {
             usuario.senha = app.HmacSHA1(usuario.senha);
         }
-        this.getBySenha(usuario.senha, function(err, result) {
+        this.getBySenha(usuario.senha, function (err, result) {
             if (err) {
                 callback(err, null);
                 return;
@@ -43,7 +43,7 @@ function UsuariosController(app) {
         if (usuario.senha) {
             usuario.senha = app.HmacSHA1(usuario.senha);
         }
-        this.getBySenha(usuario.senha, function(err, result) {
+        this.getBySenha(usuario.senha, function (err, result) {
             if (err) {
                 callback(err, null);
                 return;
@@ -56,12 +56,25 @@ function UsuariosController(app) {
         });
     }
 
-    this.delete = function (id, callback) {
-        Usuario.findByIdAndDelete(id, callback);
+    this.delete = function (id, { email, senha }, callback) {
+        Usuario.find({ email: email }, function (err, result) {
+            if (err) {
+                callback(err, null);
+                console.error(err);
+                return;
+            }
+            senha = app.HmacSHA1(senha);
+            if (result[0].senha !== senha) {
+                callback('Senha incorreta!');
+                return;
+            }
+
+            Usuario.findByIdAndDelete(id, callback);
+        });
     }
 
     this.resetSenha = function (id, callback) {
-        Usuario.findByIdAndUpdate(id, { $unset: { senha: 1 }}, callback);
+        Usuario.findByIdAndUpdate(id, { $unset: { senha: 1 } }, callback);
     }
 }
 

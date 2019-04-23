@@ -3,7 +3,7 @@ import { ToastsService } from './../../shared/services/toasts.service';
 import { CardapioApiService } from './../../shared/api/cardapio-api.service';
 import { TipoSalgado } from './../../shared/models/item-cardapio';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, EventEmitter } from '@angular/core';
 import { ItemCardapio, Unidade } from 'src/app/shared/models/item-cardapio';
 import { distinctUntilChanged, debounceTime, filter, map, tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -22,6 +22,8 @@ export class CardapioListComponent implements OnInit, AfterViewInit {
   // itens: ItemCardapio[];
   salgadosFesta: ItemCardapio[];
   salgadosComerciais: ItemCardapio[];
+  salgadoExclusao: ItemCardapio;
+  openModalConfirmacao: EventEmitter<boolean>;
   TipoSalgado: typeof TipoSalgado = TipoSalgado;
 
   constructor(private formBuilder: FormBuilder, private api: CardapioApiService,
@@ -29,6 +31,9 @@ export class CardapioListComponent implements OnInit, AfterViewInit {
     private cardapioService: CardapioService) { }
 
   ngOnInit() {
+
+    this.openModalConfirmacao = new EventEmitter<boolean>();
+
     this.formFiltroCardapio = this.formBuilder.group({
       filtro: [''],
       // tipo: [this.cardapioService.tipoSalgado]
@@ -67,13 +72,20 @@ export class CardapioListComponent implements OnInit, AfterViewInit {
     });
   }
 
-  delete(item: ItemCardapio) {
-    this.api.delete(item._id)
-      .subscribe(_ => {
-        this.toasts.toast('Item excluído do cardápio!');
-        this.load(this.formFiltroCardapio.get('filtro').value);
-      });
+  confirmarExclusao(confirmacao: boolean) {
+    if (confirmacao) {
+      this.api.delete(this.salgadoExclusao._id)
+        .subscribe(_ => {
+          this.toasts.toast('Item excluído do cardápio!');
+          this.load(this.formFiltroCardapio.get('filtro').value);
+        });
+    }
   }
+
+  delete(item: ItemCardapio) {
+    this.salgadoExclusao = item;
+    this.openModalConfirmacao.emit(true);
+  } 
 
   edit(item: ItemCardapio) {
     this.router.navigate(['/cardapio', item._id]);

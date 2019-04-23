@@ -1,6 +1,6 @@
 import { distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter } from '@angular/core';
 import { Usuario } from 'src/app/shared/models/usuario';
 import { UsuariosApiService } from 'src/app/shared/api/usuarios-api.service';
 import { Router } from '@angular/router';
@@ -16,10 +16,14 @@ export class UsuariosListComponent implements OnInit {
 
   formFiltro: FormGroup;
   usuarios: Usuario[];
+  usuarioExclusao: Usuario;
+  openModalSenha: EventEmitter<boolean>;
+
   constructor(private api: UsuariosApiService, private router: Router,
     private toasts: ToastsService, private formBuilder: FormBuilder) { }
 
   ngOnInit() {
+    this.openModalSenha = new EventEmitter<boolean>();
     this.formFiltro = this.formBuilder.group({
       filtro: ['']
     });
@@ -45,15 +49,19 @@ export class UsuariosListComponent implements OnInit {
     this.router.navigate(['/usuarios', usuario._id]);
   }
 
-  delete(usuario: Usuario) {
-    const confirmacao = confirm('Tem certeza que deseja excluir esse usuário?');
-    if (confirmacao) {
-      this.api.delete(usuario._id)
+  confirmarExclusao(senha: string) {
+    if (senha) {
+      this.api.delete(this.usuarioExclusao._id, senha)
         .subscribe(_ => {
           this.toasts.toast('Usuario excluído com sucesso!');
           this.load();
         });
     }
+  }
+
+  delete(usuario: Usuario) {
+    this.usuarioExclusao = usuario;
+    this.openModalSenha.emit(true);
   }
 
 }
