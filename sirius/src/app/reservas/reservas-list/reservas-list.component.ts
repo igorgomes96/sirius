@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, EventEmitter } from '@angular/core';
 import { Reserva } from 'src/app/shared/models/reserva';
 import { ReservasApiService } from 'src/app/shared/api/reservas-api.service';
 import { Router } from '@angular/router';
@@ -19,13 +19,18 @@ export class ReservasListComponent implements OnInit, OnDestroy {
   reservas: Reserva[];
   reserva: Reserva;
   qtdaBaixa: number;
+  reservaExclusao: Reserva;
   data: Date;
+  openModalConfirmacao: EventEmitter<boolean>;
+
   constructor(private api: ReservasApiService, private router: Router,
     private toasts: ToastsService, private reservasService: ReservasService) { }
 
   ngOnInit() {
     this.data = this.zeraHora(this.reservasService.data);
     this.load();
+
+    this.openModalConfirmacao = new EventEmitter<boolean>();
 
     const options = datepicker;
     options.defaultDate = this.data;
@@ -53,7 +58,7 @@ export class ReservasListComponent implements OnInit, OnDestroy {
 
   load() {
     this.api.getByData(this.data)
-    .subscribe((reservas: Reserva[]) => this.reservas = reservas);
+      .subscribe((reservas: Reserva[]) => this.reservas = reservas);
   }
 
   edit(reserva: Reserva) {
@@ -68,18 +73,25 @@ export class ReservasListComponent implements OnInit, OnDestroy {
   baixa(qtda: number) {
     this.reserva.qtdaVendida = +this.reserva.qtdaVendida + (+qtda);
     this.api.put(this.reserva._id, this.reserva)
-    .subscribe(_ => {
-      this.load();
-      this.qtdaBaixa = null;
-    });
+      .subscribe(_ => {
+        this.load();
+        this.qtdaBaixa = null;
+      });
+  }
+
+  confirmarExclusao(confirmacao: boolean) {
+    if (confirmacao) {
+      this.api.delete(this.reservaExclusao._id)
+        .subscribe(_ => {
+          this.toasts.toast('Reserva excluída com sucesso!');
+          this.load();
+        });
+    }
   }
 
   delete(reserva: Reserva) {
-    this.api.delete(reserva._id)
-    .subscribe(_ => {
-      this.toasts.toast('Reserva excluída com sucesso!');
-      this.load();
-    });
+    this.reservaExclusao = reserva;
+    this.openModalConfirmacao.emit(true);
   }
 
   ngOnDestroy() {

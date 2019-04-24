@@ -1,0 +1,30 @@
+<div class="section">
+
+    <div class="row">
+
+
+        <div class="col s12">
+            <div class="row">
+                <div class="col s12">
+                    <h5>Agenda</h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <a class="btn orange darken-3" routerLink="/pedidos">Voltar</a>
+            </div>
+        </div>
+
+        <div id="pedidos">
+            <div class="row">
+                <div *ngFor="let pedido of pedidos" class="col s12">
+                    <app-card-agenda [pedido]="pedido" (editPedido)="editPedido($event)"
+                        (pagamento)="atualizaPedido($event)" (deletePedido)="deletePedido($event)"></app-card-agenda>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

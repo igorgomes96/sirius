@@ -9,11 +9,13 @@ import { PedidosDetalheComponent } from './pedidos-detalhe/pedidos-detalhe.compo
 import { CancelaPedidoDeactivateGuard } from './cancela-pedido-guard';
 import { PedidosAgrupadosComponent } from './pedidos-agrupados/pedidos-agrupados.component';
 import { ConfirmacaoPedidoComponent } from './confirmacao-pedido/confirmacao-pedido.component';
+import { AgendaComponent } from './agenda/agenda.component';
 
 const routes: Routes = [
     { path: '', component: PedidosListComponent },
     { path: 'novo', component: PedidosFormComponent },
     { path: 'agrupados', component: PedidosAgrupadosComponent },
+    { path: 'agenda', component: AgendaComponent },
     {
         path: ':id',
         component: PedidosFormComponent,
