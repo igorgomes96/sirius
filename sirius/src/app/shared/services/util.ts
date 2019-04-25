@@ -1,7 +1,7 @@
 import { Cliente, Endereco } from '../models/cliente';
 
 export class Util {
-    public static endereco(endereco: Endereco): string {
+    public static enderecoCompleto(endereco: Endereco): string {
         if (!endereco) {
             return '';
         }
@@ -14,6 +14,20 @@ export class Util {
             return `Bairro ${endereco.bairro}`;
         } else if (!endereco.bairro) {
             return `${endereco.rua}, nº ${endereco.numero}`;
+        } else {
+            return '';
+        }
+    }
+
+    public static enderecoSimples(endereco: Endereco): string {
+        if (!endereco) {
+            return '';
+        }
+
+        if (endereco.rua && endereco.numero) {
+            return `${endereco.rua}, nº ${endereco.numero}`;
+        } else if (!endereco.numero && endereco.rua) {
+            return `${endereco.rua}`;
         } else {
             return '';
         }

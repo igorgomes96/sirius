@@ -187,6 +187,10 @@ function PedidosController(app) {
         });
     }
 
+    this.restauraPedido = function (id, callback) {
+        Pedido.findOneAndUpdate({ _id: id }, { $set: { exclusao: null } }, { new: true }, callback);
+    }
+
     this.deleteItem = function (idPedido, idItem, callback) {
         Pedido.findOneAndUpdate({ _id: idPedido }, { $pull: { itens: { _id: idItem } } }, function (err, result) {
             const item = result.itens.filter(i => i._id == idItem)[0];

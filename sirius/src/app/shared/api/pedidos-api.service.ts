@@ -24,8 +24,12 @@ export class PedidosApiService {
     }
     return Object.assign(pedido,
       {
-        cliente: Object.assign(pedido.cliente, { enderecoStr: Util.endereco(pedido.cliente.endereco) }),
-        enderecoStr: Util.endereco(pedido.cliente.endereco)
+        cliente: Object.assign(pedido.cliente, {
+          enderecoStr: Util.enderecoCompleto(pedido.cliente.endereco),
+          enderecoStrSimples: Util.enderecoSimples(pedido.cliente.endereco)
+        }),
+        enderecoStr: Util.enderecoCompleto(pedido.cliente.endereco),
+        enderecoStrSimples: Util.enderecoSimples(pedido.cliente.endereco)
       });
   }
 
@@ -36,8 +40,12 @@ export class PedidosApiService {
       }
       return Object.assign(pedido,
         {
-          cliente: Object.assign(pedido.cliente, { enderecoStr: Util.endereco(pedido.cliente.endereco) }),
-          enderecoStr: Util.endereco(pedido.cliente.endereco)
+          cliente: Object.assign(pedido.cliente, {
+            enderecoStr: Util.enderecoCompleto(pedido.cliente.endereco),
+            enderecoStrSimples: Util.enderecoSimples(pedido.cliente.endereco)
+          }),
+          enderecoStr: Util.enderecoCompleto(pedido.cliente.endereco),
+          enderecoStrSimples: Util.enderecoSimples(pedido.cliente.endereco)
         });
       }
     );
@@ -69,6 +77,10 @@ export class PedidosApiService {
 
   put(id: string, pedido: Pedido): Observable<void> {
     return this.httpClient.put<void>(this.url + `/${id}`, pedido).pipe(take(1));
+  }
+
+  restauraPedido(id: string): Observable<Pedido> {
+    return this.httpClient.post<Pedido>(this.url + `/${id}/restaura`, null).pipe(take(1), map(this.mapPedido));
   }
 
   delete(id: string, senha: string): Observable<Pedido> {

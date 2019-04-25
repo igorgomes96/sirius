@@ -19,11 +19,17 @@ export class ClientesApiService {
   }
 
   private mapCliente(cliente: Cliente): Cliente {
-    return Object.assign(cliente, {enderecoStr: Util.endereco(cliente.endereco)});
+    return Object.assign(cliente, {
+      enderecoStr: Util.enderecoCompleto(cliente.endereco),
+      enderecoStrSimples: Util.enderecoSimples(cliente.endereco)
+    });
   }
 
   private mapClientes(clientes: Cliente[]): Cliente[] {
-    return clientes.map(cli => Object.assign(cli, {enderecoStr: Util.endereco(cli.endereco)}));
+    return clientes.map(cli => Object.assign(cli, {
+      enderecoStr: Util.enderecoCompleto(cli.endereco),
+      enderecoStrSimples: Util.enderecoSimples(cli.endereco)
+    }));
   }
 
   getAll(): Observable<Cliente[]> {

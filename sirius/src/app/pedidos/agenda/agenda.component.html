@@ -17,11 +17,19 @@
             </div>
         </div>
 
+        <div class="row">
+            <div class="input-field col m6 s12">
+                <i class="material-icons prefix">calendar_today</i>
+                <input id="data" type="text" class="datepicker">
+                <label for="data">Data</label>
+            </div>
+        </div>
+
         <div id="pedidos">
             <div class="row">
                 <div *ngFor="let pedido of pedidos" class="col s12">
                     <app-card-agenda [pedido]="pedido" (editPedido)="editPedido($event)"
-                        (pagamento)="atualizaPedido($event)" (deletePedido)="deletePedido($event)"></app-card-agenda>
+                        (pagamento)="atualizaPedido($event)" (restaurar)="restaurarPedido($event)" (deletePedido)="deletePedido($event)"></app-card-agenda>
                 </div>
             </div>
         </div>

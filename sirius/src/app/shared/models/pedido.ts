@@ -11,6 +11,7 @@ export class Pedido {
     observacoes: string;
     enderecoEntrega: Endereco;
     enderecoStr: string;
+    enderecoStrSimples: string;
     usuario: Usuario;
     pago: boolean;
 }

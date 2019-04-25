@@ -6,6 +6,7 @@ export class Cliente {
     observacoes: string;
     endereco: Endereco;
     enderecoStr: string;
+    enderecoStrSimples: string;
 }
 
 export class Endereco {

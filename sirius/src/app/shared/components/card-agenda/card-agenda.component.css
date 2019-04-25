@@ -17,7 +17,7 @@ i.material-icons {
 }
 
 .endereco {
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .card.excluido {
@@ -42,6 +42,24 @@ i.material-icons {
     text-decoration: none;
     text-align: left;
     font-size: 13px;
-    position: absolute;
+    color: black;
+    /* position: absolute; */
+}
+
+table {
+    font-size: 13px;
+}
+
+td, th {
+    padding: 8px 5px;
+}
+
+tr:last-child td {
+    font-weight: bold;
+}
+
+.card-title {
+    font-size: 16px;
+    font-weight: 500;
 }
 

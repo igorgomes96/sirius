@@ -1,19 +1,22 @@
 <div class="card" [class.excluido]="pedido.exclusao">
   <div class="card-content">
-    <div class="row">
+    <div class="row" style="margin-bottom: 0">
       <div class="col l3 m4 s12">
 
         <strong><i class="material-icons">access_time</i> {{ pedido.horario | date:'HH:mm'}}</strong><br>
-        <small>{{ pedido.usuario?.nome }}</small>
+        <small><i class="material-icons">local_offer</i> {{ pedido.usuario?.nome }}</small>
 
         <div class="endereco" *ngIf="pedido.enderecoEntrega" style="margin-top: 10px">
           <span [ngClass]="!pedido.exclusao ? 'orange-text text-darken-3' : ''">Entregar no endereço:</span><br>
-          <span><i class="material-icons">location_on</i> {{ pedido.cliente.enderecoStr }}</span><br>
-          <i class="material-icons">location_city</i> {{ pedido.cliente.endereco?.cidade }} - {{
-              pedido.cliente.endereco?.uf }}<br>
+          <span><i class="material-icons">location_on</i> {{ pedido.enderecoStrSimples }}</span><br>
+          <span *ngIf="pedido.enderecoEntrega?.bairro">
+            <i class="material-icons">domain</i> Bairro {{ pedido.enderecoEntrega?.bairro }}<br>
+          </span>
+          <i class="material-icons">location_city</i> {{ pedido.enderecoEntrega?.cidade }} - {{
+              pedido.enderecoEntrega?.uf }}<br>
         </div>
 
-        <div class="row m-t-m" style="margin-bottom: 0">
+        <div class="row m-t-l">
           <div class="col">
             <label>
               <input type="checkbox" [disabled]="pedido.exclusao" [(ngModel)]="pedido.pago" (change)="pedidoPago()" />
@@ -22,32 +25,52 @@
           </div>
         </div>
 
+        <div class="exclusao-info">
+          <span>Excluído por {{ pedido.exclusao?.usuario.nome }}</span><br>
+          <i class="material-icons">access_time</i> {{ pedido.exclusao?.horario | date:'dd/MM/yyyy HH:mm' }} <br>
+          <button class="btn waves-effect m-t-m" (click)="restaurarPedido()">
+            Restaurar Pedido
+          </button>
+        </div>
+
       </div>
 
 
       <div class="col l9 m8 s12">
-        <span class="card-title">{{ pedido.cliente.nome }}</span>
+        <strong><i class="material-icons">person</i> {{ pedido.cliente.nome }}</strong><br>
+        <small>
+          <i class="material-icons">phone</i> {{ pedido.cliente.fone1 | mask:'(00) 00009-0000' }}
+          <span [hidden]="!pedido.cliente.fone1 || !pedido.cliente.fone2">/</span>
+          {{ pedido.cliente.fone2 | mask:'(00) 00009-0000' }}
+        </small>
 
-        <div class="itens">
-          <span *ngFor="let item of pedido.itens">
-            <strong *ngIf="item.quantidade">{{ item.quantidade | number:'2.0-1' }} </strong>
-            <strong *ngIf="!item.quantidade">{{ 0 | number:'2.0-1' }} </strong>
-            {{ item.unidade.sigla }} de <strong>{{ item.nome }}</strong>
-            <small *ngIf="item.detalhes"> - {{ item.detalhes }}</small>
-            <br>
-          </span>
-        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Item/Salgado</th>
+              <th>Qtda.</th>
+              <th class="right">Valor</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let item of pedido.itens">
+              <td>{{ item.nome }}</td>
+              <td>{{ item.quantidade }}</td>
+              <td class="right">R$ {{ item.valor * item.quantidade | number:'1.2' }}</td>
+            </tr>
+            <tr>
+              <td>Total</td>
+              <td></td>
+              <td class="right">R$ {{ valorTotal | number:'1.2' }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+
         <small *ngIf="pedido.observacoes">
           Obs.: {{ pedido.observacoes }}
         </small>
-
-
-
-        <p style="margin-top: 10px;">
-          Total: <strong>R$ {{ valorTotal | number:'1.2' }}</strong>
-        </p>
-
-
 
       </div>
     </div>
@@ -56,7 +79,7 @@
 
   </div>
 
-  <div class="card-action">
+  <!-- <div class="card-action">
     <div class="exclusao-info">
       <span>Excluído por {{ pedido.exclusao?.usuario.nome }}</span><br>
       <i class="material-icons">access_time</i> {{ pedido.exclusao?.horario | date:'dd/MM/yyyy HH:mm' }}
@@ -69,6 +92,6 @@
         Excluir
       </button>
     </div>
-  </div>
+  </div> -->
 
 </div>

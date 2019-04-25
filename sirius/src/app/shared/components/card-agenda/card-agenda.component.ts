@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Pedido } from '../../models/pedido';
 
 @Component({
@@ -9,9 +9,20 @@ import { Pedido } from '../../models/pedido';
 export class CardAgendaComponent implements OnInit {
 
   @Input() pedido: Pedido;
+  @Output() pagamento: EventEmitter<Pedido> = new EventEmitter<Pedido>();
+  @Output() restaurar: EventEmitter<Pedido> = new EventEmitter<Pedido>();
+
   constructor() { }
 
   ngOnInit() {
+  }
+
+  pedidoPago() {
+    this.pagamento.emit(this.pedido);
+  }
+
+  restaurarPedido() {
+    this.restaurar.emit(this.pedido);
   }
 
   get valorTotal() {
