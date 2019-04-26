@@ -14,20 +14,17 @@ declare var M: any;
 export class ItemModalComponent implements OnInit, AfterViewInit {
 
   @Input() open: EventEmitter<boolean>;
-
   @Output() saveItem = new EventEmitter<ItemCardapio>();
 
   form: FormGroup;
   TipoSalgado: typeof TipoSalgado = TipoSalgado;
-  unidades: Unidade[];
-  constructor(private formBuilder: FormBuilder, private unidadesApi: UnidadesApiService) { }
+  // unidades: Unidade[];
+  constructor(private formBuilder: FormBuilder) { } // , private unidadesApi: UnidadesApiService) { }
 
   ngOnInit() {
 
     this.form = this.formBuilder.group({
-      tipo: [TipoSalgado.Comercial, Validators.required],
       nome: ['', Validators.required],
-      unidade: ['', Validators.required],
       valor: ['', Validators.required],
       quantidade: ['', Validators.required],
       detalhes: ['']
@@ -41,7 +38,7 @@ export class ItemModalComponent implements OnInit, AfterViewInit {
       }
     });
 
-    this.loadUnidades();
+    // this.loadUnidades();
   }
 
   ngAfterViewInit() {
@@ -52,31 +49,31 @@ export class ItemModalComponent implements OnInit, AfterViewInit {
     return M.FormSelect.getInstance($('#unidade')[0]);
   }
 
-  loadUnidades() {
-    const instance = this.selectUnidadeInstance;
-    if (instance) {
-      instance.destroy();
-    }
-    this.unidadesApi.getAll()
-      .subscribe((unidades: Unidade[]) => {
-        this.unidades = unidades;
-        setTimeout(() => {
-          $('#unidade').formSelect();
-        }, 300);
-      });
-  }
+  // loadUnidades() {
+  //   const instance = this.selectUnidadeInstance;
+  //   if (instance) {
+  //     instance.destroy();
+  //   }
+  //   this.unidadesApi.getAll()
+  //     .subscribe((unidades: Unidade[]) => {
+  //       this.unidades = unidades;
+  //       setTimeout(() => {
+  //         $('#unidade').formSelect();
+  //       }, 300);
+  //     });
+  // }
 
   get instanceModal() {
     return M.Modal.getInstance($('#modal-item')[0]);
   }
 
   salvar() {
-    let unidade = null;
-    if (this.form.get('unidade').value) {
-      unidade = this.unidades.filter(u => u.sigla === this.form.get('unidade').value)[0];
-    }
     const item = <ItemCardapio>this.form.getRawValue();
-    item.unidade = unidade;
+    item.unidade = {
+      _id: undefined,
+      nome: 'Unidade',
+      sigla: 'un.'
+    };
     this.saveItem.emit(item);
   }
 

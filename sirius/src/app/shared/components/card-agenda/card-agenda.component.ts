@@ -11,10 +11,20 @@ export class CardAgendaComponent implements OnInit {
   @Input() pedido: Pedido;
   @Output() pagamento: EventEmitter<Pedido> = new EventEmitter<Pedido>();
   @Output() restaurar: EventEmitter<Pedido> = new EventEmitter<Pedido>();
+  @Output() editPedido = new EventEmitter<Pedido>();
+  @Output() deletePedido = new EventEmitter<Pedido>();
 
   constructor() { }
 
   ngOnInit() {
+  }
+
+  edit() {
+    this.editPedido.emit(this.pedido);
+  }
+
+  delete() {
+    this.deletePedido.emit(this.pedido);
   }
 
   pedidoPago() {
