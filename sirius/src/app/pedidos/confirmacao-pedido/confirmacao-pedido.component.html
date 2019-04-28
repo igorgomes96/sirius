@@ -7,6 +7,10 @@
 
         <h5>Confirmação do Pedido</h5>
 
+        <p>
+          Data/Hora: {{ pedido.horario | date:'dd/MM/yyyy HH:mm'}}
+        </p>
+
         <div class="row" *ngIf="pedido?.cliente">
           <div class="col m6 s12">
             <h6>Informações do Cliente</h6>
@@ -80,11 +84,11 @@
             <div class="section"></div>
             <div class="row">
               <div class="col">
-                <button class="btn waves-effect m-r-m" (click)="salvar()">Confirmar Pedido
+                <button class="btn waves-effect m-r-m m-t-m" (click)="salvar()">Confirmar Pedido
                   <i class="material-icons right">save</i>
                 </button>
 
-                <button class="btn waves-effect m-r-m" (click)="salvar(true)">Confirmar e Imprimir
+                <button class="btn waves-effect m-r-m m-t-m" (click)="salvar(true)">Confirmar e Imprimir
                   <i class="material-icons right">local_printshop</i>
                 </button>
 
@@ -94,11 +98,11 @@
             <div class="row">
               <div class="col">
 
-                <button class="btn waves-effect red darken-2 m-r-m" (click)="cancelarPedido()">Cancelar Pedido
+                <button class="btn waves-effect red darken-2 m-r-m m-t-m" (click)="cancelarPedido()">Cancelar Pedido
                   <i class="material-icons right">cancel</i>
                 </button>
 
-                <a class="btn waves-effect grey darken-1" routerLink="../">Alterar Pedido
+                <a class="btn waves-effect grey darken-1 m-t-m" routerLink="../">Alterar Pedido
                   <i class="material-icons right">edit</i>
                 </a>
               </div>

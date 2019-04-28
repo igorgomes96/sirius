@@ -6,20 +6,21 @@ import { Injectable, EventEmitter } from '@angular/core';
 })
 export class UsuarioService {
 
-  private usuario: any;
   onUserChanges: EventEmitter<Usuario> = new EventEmitter<Usuario>();
 
   constructor() { }
 
   set user(user: Usuario) {
-    // localStorage.setItem('user', JSON.stringify(user));
-    this.usuario = user;
+    localStorage.setItem('user', JSON.stringify(user));
     this.onUserChanges.emit(user);
   }
 
   get user(): Usuario {
-    return <Usuario>this.usuario;
-    // return JSON.parse(localStorage.getItem('user'));
+    return JSON.parse(localStorage.getItem('user'));
+  }
+
+  isAdmin() {
+    return this.user && this.user.perfil === 'Administrador';
   }
 
   isAuthenticated() {

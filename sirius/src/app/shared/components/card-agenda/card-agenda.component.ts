@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Pedido } from '../../models/pedido';
+import { UsuarioService } from '../../services/usuario.service';
 
 @Component({
   selector: 'app-card-agenda',
@@ -8,15 +9,19 @@ import { Pedido } from '../../models/pedido';
 })
 export class CardAgendaComponent implements OnInit {
 
+  isAdmin = false;
+
   @Input() pedido: Pedido;
+  @Input() mostrarRestaurar = false;
   @Output() pagamento: EventEmitter<Pedido> = new EventEmitter<Pedido>();
   @Output() restaurar: EventEmitter<Pedido> = new EventEmitter<Pedido>();
   @Output() editPedido = new EventEmitter<Pedido>();
   @Output() deletePedido = new EventEmitter<Pedido>();
 
-  constructor() { }
+  constructor(private usuarioService: UsuarioService) { }
 
   ngOnInit() {
+    this.isAdmin = this.usuarioService.isAdmin();
   }
 
   edit() {
@@ -39,5 +44,6 @@ export class CardAgendaComponent implements OnInit {
     return this.pedido.itens.map(i => i.valor * (!i.quantidade ? 0 : i.quantidade))
       .reduce((p, c) => p + c);
   }
+
 
 }

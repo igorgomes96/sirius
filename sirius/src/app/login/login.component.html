@@ -16,7 +16,7 @@
           </div> -->
 
           <div class="input-field">
-            <input id="senha" type="password" [class.invalid]="hasError(form.get('senha'))" formControlName="senha" name="senha">
+            <input id="senha" type="number" [class.invalid]="hasError(form.get('senha'))" formControlName="senha" name="senha">
             <label for="senha">Senha</label>
             <app-validator-message controlName="Senha" [control]="form.get('senha')"></app-validator-message>
           </div>

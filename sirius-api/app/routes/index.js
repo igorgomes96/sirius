@@ -7,7 +7,7 @@ module.exports = function (app) {
 
 	app.post('/api/login', function (req, res) {
 		var credenciais = req.body;
-		ctrl.getBySenha(app.HmacSHA1(credenciais.senha), function (err, result) {
+		ctrl.getBySenha(app.HmacSHA1(credenciais.senha.toString()), function (err, result) {
 			if (err) {
 				res.status(500).json(err);
 			} else if (!result || result.length == 0)  {

@@ -23,12 +23,12 @@
         <!-- <div class="input-field inline m-r-m"> -->
         <div class="input-field m-r-m">
           <div class="row" style="margin-bottom: 0">
-            <div class="col s3">
-              <input type="number" [id]="'qtda' + i" [(ngModel)]="item.quantidade" (keyup.enter)="addItem()"
+            <div class="col m3">
+              <input type="number" [(ngModel)]="item.quantidade" (keyup.enter)="addItem()"
                 placeholder="Qtda.">
             </div>
 
-            <div class="col s9">
+            <div class="col m9">
               <div class="row" style="margin-bottom: 6px">
                 <div class="col s12">
                   <button *ngFor="let qtda of qtdas.slice(0, qtdas.length / 2).reverse()" (click)="addQtda(qtda)"

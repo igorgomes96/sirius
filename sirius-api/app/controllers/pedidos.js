@@ -41,6 +41,17 @@ function PedidosController(app) {
         });
     }
 
+    var geraIdItens = function(pedido) {
+        if (pedido.itens) {
+            pedido.itens.forEach(function (item) {
+                if (!item.hasOwnProperty('_id') || !item._id) {
+                    item._id = new ObjectId();
+                }
+            });
+        }
+        return pedido;
+    }
+
     this.getAll = function (callback) {
         Pedido.find({}).sort('horario').exec(callback);
     }
@@ -103,6 +114,7 @@ function PedidosController(app) {
     }
 
     this.post = function (pedido, callback) {
+        pedido = geraIdItens(pedido);
         new Pedido(pedido).save(function (err, novoPedido) {
             if (err) {
                 callback(err, null);
@@ -118,6 +130,7 @@ function PedidosController(app) {
     }
 
     this.put = function (id, pedido, callback) {
+        pedido = geraIdItens(pedido);
         Pedido.findByIdAndUpdate(id, pedido, { new: true }, function (err, result) {
             atualizaReservas(pedido, function (err) {
                 if (err) {
@@ -176,7 +189,7 @@ function PedidosController(app) {
                 callback(null, result);
                 return;
             }
-            
+
             atualizaReservas(result, function (err) {
                 if (err) {
                     console.error(`Erro ao atualizar reservas: ${JSON.stringify(err)}.`);
@@ -193,14 +206,22 @@ function PedidosController(app) {
 
     this.deleteItem = function (idPedido, idItem, callback) {
         Pedido.findOneAndUpdate({ _id: idPedido }, { $pull: { itens: { _id: idItem } } }, function (err, result) {
-            const item = result.itens.filter(i => i._id == idItem)[0];
+            const itens = result.itens.filter(i => i._id == idItem);
+            const item = null;
+            if (item && item.length > 0) {
+                item = itens[0];
+            } else {
+                callback(null, result);
+                return;
+            }
+            
             atualizaReservaItem({ item: item, data: app.moment(result.data).startOf('day').toDate(), del: true }, function (err) {
                 if (err) {
                     console.error(`Erro ao atualizar reservas: ${JSON.stringify(err)}`);
-                    callback(err, {});
+                    callback(err, result);
                     return;
                 }
-                callback(null, {});
+                callback(null, result);
             });
         });
     }

@@ -14,4 +14,10 @@ export class Pedido {
     enderecoStrSimples: string;
     usuario: Usuario;
     pago: boolean;
+    exclusao: Exclusao;
+}
+
+export class Exclusao {
+    horario: Date;
+    usuario: Usuario;
 }

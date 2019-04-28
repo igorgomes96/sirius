@@ -52,10 +52,16 @@
 
 
             <div class="row">
-                <div class="input-field col m6 s12">
+                <!-- <div class="input-field col m6 s12">
                     <i class="material-icons prefix">calendar_today</i>
                     <input id="data" type="text" class="datepicker">
                     <label for="data">Data</label>
+                </div> -->
+
+                <div class="input-field col m6 s12">
+                    <i class="material-icons prefix">calendar_today</i>
+                    <input [(ngModel)]="data" id="data" type="text">
+                    <label for="data" class="active">Data (dd/mm/aaaa)</label>
                 </div>
 
                 <div class="input-field col m6 s12">
@@ -232,6 +238,21 @@
                     </div>
                 </div>
 
+                <div class="row" *ngIf="diversos.length">
+
+                    <div class="col s12">
+
+                        <h6>Outros</h6>
+
+                        <div class="row">
+                            <div class="col m6 s12" *ngFor="let item of diversos">
+                                <app-card-cardapio [item]="item" [showAddOption]="true">
+                                </app-card-cardapio>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
 
 
                 <div class="row">
@@ -242,8 +263,7 @@
 
                         <div class="row">
                             <div class="col s12" *ngFor="let item of salgadosFesta">
-                                <app-card-cardapio [item]="item" [showAddOption]="true"
-                                    (addItemPedido)="addItem($event)">
+                                <app-card-cardapio [item]="item" [showAddOption]="true">
                                 </app-card-cardapio>
                             </div>
                         </div>
@@ -257,8 +277,7 @@
 
                         <div class="row">
                             <div class="col s12" *ngFor="let item of salgadosComerciais">
-                                <app-card-cardapio [item]="item" [showAddOption]="true"
-                                    (addItemPedido)="addItem($event)">
+                                <app-card-cardapio [item]="item" [showAddOption]="true">
                                 </app-card-cardapio>
                             </div>
                         </div>

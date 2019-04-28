@@ -14,7 +14,7 @@ declare var $: any;
 export class PedidosAgrupadosComponent implements OnInit, AfterViewInit {
 
   data: Date;
-  itens: ItemCardapio[];
+  itens: ItemCardapio[] = [];
   TipoSalgado: typeof TipoSalgado = TipoSalgado;
 
   constructor(private pedidosService: PedidosService,
@@ -33,6 +33,18 @@ export class PedidosAgrupadosComponent implements OnInit, AfterViewInit {
         this.load();
       }
     }));
+  }
+
+  get salgadosFesta() {
+    return this.itens.filter(i => i.tipo && i.tipo === TipoSalgado[TipoSalgado.Festa]);
+  }
+
+  get salgadosComerciais() {
+    return this.itens.filter(i => i.tipo && i.tipo === TipoSalgado[TipoSalgado.Comercial]);
+  }
+
+  get itensDiversos() {
+    return this.itens.filter(i => i.tipo && i.tipo === TipoSalgado[TipoSalgado.Diversos]);
   }
 
   load() {

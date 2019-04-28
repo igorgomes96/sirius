@@ -26,7 +26,7 @@ export class ItemModalComponent implements OnInit, AfterViewInit {
     this.form = this.formBuilder.group({
       nome: ['', Validators.required],
       valor: ['', Validators.required],
-      quantidade: ['', Validators.required],
+      quantidade: [''],
       detalhes: ['']
     });
 
@@ -69,11 +69,13 @@ export class ItemModalComponent implements OnInit, AfterViewInit {
 
   salvar() {
     const item = <ItemCardapio>this.form.getRawValue();
+    item.tipo = TipoSalgado[TipoSalgado.Diversos];
     item.unidade = {
       _id: undefined,
       nome: 'Unidade',
       sigla: 'un.'
     };
+    this.form.reset();
     this.saveItem.emit(item);
   }
 

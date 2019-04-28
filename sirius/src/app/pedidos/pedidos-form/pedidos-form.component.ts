@@ -1,6 +1,6 @@
 import { Router, ActivatedRoute } from '@angular/router';
 import { CardapioApiService } from './../../shared/api/cardapio-api.service';
-import { Component, OnInit, AfterViewInit, EventEmitter } from '@angular/core';
+import { Component, OnInit, EventEmitter } from '@angular/core';
 import { ItemCardapio, TipoSalgado } from 'src/app/shared/models/item-cardapio';
 import { map, tap, filter, switchMap, catchError } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
@@ -8,7 +8,6 @@ import { Pedido } from 'src/app/shared/models/pedido';
 import { PedidosApiService } from 'src/app/shared/api/pedidos-api.service';
 import { Cliente, Endereco } from 'src/app/shared/models/cliente';
 import { ClientesApiService } from 'src/app/shared/api/clientes-api.service';
-import { datepicker } from 'src/environments/datepicker-options';
 import { timepicker } from 'src/environments/timepicker-options';
 import { ToastsService } from 'src/app/shared/services/toasts.service';
 import { UtilService } from 'src/app/shared/services/util.service';
@@ -21,7 +20,7 @@ declare var $: any;
   templateUrl: './pedidos-form.component.html',
   styleUrls: ['./pedidos-form.component.css']
 })
-export class PedidosFormComponent implements OnInit, AfterViewInit {
+export class PedidosFormComponent implements OnInit {
 
   telefoneFiltro = '';
   pedido = new Pedido();
@@ -29,10 +28,11 @@ export class PedidosFormComponent implements OnInit, AfterViewInit {
   showFormCliente = false;
   salgadosFesta: ItemCardapio[] = [];
   salgadosComerciais: ItemCardapio[] = [];
-  itensSelecionados: ItemCardapio[] = [];
   TipoSalgado: typeof TipoSalgado = TipoSalgado;
   itemPersonalizadoModal = new EventEmitter<boolean>();
   atualizarCliente = true;
+  data: string;
+  diversos: ItemCardapio[] = [];
 
   constructor(private cardapioApi: CardapioApiService,
     private router: Router, private api: PedidosApiService,
@@ -45,14 +45,14 @@ export class PedidosFormComponent implements OnInit, AfterViewInit {
     this.pedido.enderecoEntrega.cidade = 'Araguari';
     this.pedido.enderecoEntrega.uf = 'MG';
     this.pedido.horario = new Date();
-
-    const onSelectDate = (value: any) => {
-      const data = new Date(value);
-      this.pedido.horario = new Date(this.pedido.horario);
-      data.setHours(this.pedido.horario.getHours());
-      data.setMinutes(this.pedido.horario.getMinutes());
-      this.pedido.horario = data;
-    };
+    this.data = new Date().toLocaleDateString();
+    // const onSelectDate = (value: any) => {
+    //   const data = new Date(value);
+    //   this.pedido.horario = new Date(this.pedido.horario);
+    //   data.setHours(this.pedido.horario.getHours());
+    //   data.setMinutes(this.pedido.horario.getMinutes());
+    //   this.pedido.horario = data;
+    // };
 
     const onSelectHour = (hour: any, minutes: any) => {
       const data = new Date(this.pedido.horario);
@@ -61,9 +61,9 @@ export class PedidosFormComponent implements OnInit, AfterViewInit {
       this.pedido.horario = data;
     };
 
-    $('#data').datepicker(Object.assign(datepicker, {
-      onSelect: onSelectDate
-    }));
+    // $('#data').datepicker(Object.assign(datepicker, {
+    //   onSelect: onSelectDate
+    // }));
 
     $('#hora').timepicker(Object.assign(timepicker, {
       onSelect: onSelectHour
@@ -80,7 +80,16 @@ export class PedidosFormComponent implements OnInit, AfterViewInit {
         filter(d => d.hasOwnProperty('pedido')),
         map(d => d['pedido'])
       ).subscribe((pedido: Pedido) => {
+        if (!pedido.entregar) {
+          if (pedido.cliente.endereco) {
+            pedido.enderecoEntrega = pedido.cliente.endereco;
+          } else {
+            pedido.enderecoEntrega = this.pedido.enderecoEntrega;
+          }
+        }
+        this.diversos = pedido.itens.filter(i => i.tipo === TipoSalgado[TipoSalgado.Diversos]);
         this.updateQuantidades(pedido.itens);
+        this.data = new Date(pedido.horario).toLocaleDateString();
         const hora = this.utilService.getTime(this.utilService.getDateTime(pedido.horario.toString()));
         $('#hora').val(hora);
         this.showFormCliente = true;
@@ -142,14 +151,22 @@ export class PedidosFormComponent implements OnInit, AfterViewInit {
     return numeros.reduce((prev: string, curr: string) => prev + curr, '');
   }
 
-  ngAfterViewInit() {
-    $('#tipo').formSelect();
-  }
-
   fecharPedido() {
 
+    const dataFormatted = this.utilService.stringToDate(this.data, 'dd/MM/yyyy', '/');
+    if (dataFormatted === 'Erro na conversão!') {
+      this.toasts.toast('A data deve estar no formato "dd/mm/aaaa"!');
+      return;
+    }
+
+    this.pedido.horario = new Date(this.pedido.horario);
+    dataFormatted.setHours(this.pedido.horario.getHours());
+    dataFormatted.setMinutes(this.pedido.horario.getMinutes());
+    this.pedido.horario = dataFormatted;
+
     this.pedido.itens = this.salgadosComerciais.filter(s => s.quantidade)
-      .concat(this.salgadosFesta.filter(s => s.quantidade));
+      .concat(this.salgadosFesta.filter(s => s.quantidade))
+      .concat(this.diversos.filter(s => s.quantidade));
 
     if (!this.pedido.entregar) {
       this.pedido.enderecoEntrega = null;
@@ -206,10 +223,6 @@ export class PedidosFormComponent implements OnInit, AfterViewInit {
     this.itemPersonalizadoModal.emit(true);
   }
 
-  removeItem(item: ItemCardapio) {
-    this.itensSelecionados.splice(this.itensSelecionados.indexOf(item), 1);
-    item.quantidade = null;
-  }
 
   loadItensPromisse(nome: string = null): Observable<ItemCardapio[]> {
     let obs: Observable<ItemCardapio[]>;
@@ -253,7 +266,7 @@ export class PedidosFormComponent implements OnInit, AfterViewInit {
   }
 
   addItem(item: ItemCardapio) {
-    this.itensSelecionados.push(item);
+    this.diversos.push(item);
   }
 
 }

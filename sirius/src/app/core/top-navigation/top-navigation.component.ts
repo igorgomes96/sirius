@@ -10,7 +10,7 @@ declare const $: any;
   templateUrl: './top-navigation.component.html',
   styleUrls: ['./top-navigation.component.css']
 })
-export class TopNavigationComponent implements OnInit, AfterViewInit {
+export class TopNavigationComponent implements OnInit {
 
   menu = [
     {
@@ -52,17 +52,13 @@ export class TopNavigationComponent implements OnInit, AfterViewInit {
   ];
   usuario: Usuario;
   openMenu = false;
-  constructor(private router: Router, private api: LoginApiService) { }
+  constructor(private api: LoginApiService) { }
 
   ngOnInit() {
     this.api.usuario()
       .subscribe(u => {
         this.usuario = u;
       });
-  }
-
-  ngAfterViewInit(): void {
-    // $('.sidenav').sidenav();
   }
 
   showItemMenu(item: any) {

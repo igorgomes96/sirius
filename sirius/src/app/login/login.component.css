@@ -19,3 +19,7 @@
 #btn-cadastrar-senha:hover {
     background: initial;
 }
+
+input[type=number] {
+    -webkit-text-security: disc;
+}

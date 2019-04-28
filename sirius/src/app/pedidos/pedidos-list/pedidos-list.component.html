@@ -46,9 +46,9 @@
       </div> -->
 
       <div id="pedidos">
-        <div class="row flex-container">
-          <div *ngFor="let pedido of pedidos" class="col m6 s12">
-            <app-card-pedido [pedido]="pedido" (editPedido)="editPedido($event)" (pagamento)="atualizaPedido($event)" (deletePedido)="deletePedido($event)"></app-card-pedido>
+        <div class="row">
+          <div *ngFor="let pedido of pedidos" class="col s12">
+            <app-card-agenda [pedido]="pedido" [mostrarRestaurar]="false" (editPedido)="editPedido($event)" (pagamento)="atualizaPedido($event)" (deletePedido)="deletePedido($event)"></app-card-agenda>
           </div>
         </div>
       </div>

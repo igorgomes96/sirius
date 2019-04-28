@@ -54,6 +54,19 @@ footer.page-footer {
     margin-top: 15px;
 }
 
+.m-b-s {
+    margin-bottom: 5px;
+}
+
+.m-b-m {
+    margin-bottom: 10px;
+}
+
+.m-b-l {
+    margin-bottom: 15px;
+}
+
+
 .primary-color {
     background: #3f51b5;
     color: white;
