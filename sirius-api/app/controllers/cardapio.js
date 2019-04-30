@@ -3,11 +3,11 @@ function CardapioController(app) {
     var ItemCardapio = app.models.itemCardapio;
     
     this.getAll = function(callback) {
-        ItemCardapio.find({}).sort('nome').exec(callback);
+        ItemCardapio.find({}).sort('ordem').exec(callback);
     }
 
     this.getByNome = function(nome, callback) {
-        ItemCardapio.find({nome: new RegExp(nome, "i")}).sort('nome').exec(callback);
+        ItemCardapio.find({nome: new RegExp(nome, "i")}).sort('ordem').exec(callback);
     }
 
     this.get = function(id, callback) {
@@ -15,7 +15,14 @@ function CardapioController(app) {
     }
 
     this.post = function(item, callback) {
-        new ItemCardapio(item).save(callback);
+        ItemCardapio.count({}, function(err, count) {
+            if (err) {
+                callback(err, null);
+                return;
+            }
+            item.ordem = count + 1;
+            new ItemCardapio(item).save(callback);
+        });
     }
 
     this.put = function(id, item, callback) {

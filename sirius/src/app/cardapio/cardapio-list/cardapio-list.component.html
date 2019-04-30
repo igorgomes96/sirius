@@ -36,7 +36,7 @@
                 <div class="col m6 s12">
                     <h6>Salgados de Festa</h6>
                     <div class="row" *ngIf="salgadosFesta && salgadosFesta.length; else nenhumSalgadoFesta">
-                        <div class="col l6 s12" *ngFor="let item of salgadosFesta">
+                        <div class="col s12" *ngFor="let item of salgadosFesta">
                             <app-card-cardapio [item]="item" [showAddOption]="false" [showEditOption]="true"
                                 [showFavoriteButton]="false" (deleteItem)="delete($event)" (editItem)="edit($event)">
                             </app-card-cardapio>
@@ -50,7 +50,7 @@
                     <h6>Salgados Comerciais</h6>
                     <div class="row"
                         *ngIf="salgadosComerciais && salgadosComerciais.length; else nenhumSalgadoComercial">
-                        <div class="col l6 s12" *ngFor="let item of salgadosComerciais;">
+                        <div class="col s12" *ngFor="let item of salgadosComerciais;">
                             <app-card-cardapio [item]="item" [showAddOption]="false" [showEditOption]="true"
                                 [showFavoriteButton]="false" (deleteItem)="delete($event)" (editItem)="edit($event)">
                             </app-card-cardapio>

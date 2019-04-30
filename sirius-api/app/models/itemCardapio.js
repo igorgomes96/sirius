@@ -13,7 +13,7 @@ module.exports = function (app) {
         popular: Boolean,
         tipo: String,
         detalhes: String,
-        order: Number
+        ordem: Number
     });
 
     return db.model('cardapio', itemCardapioSchema);
