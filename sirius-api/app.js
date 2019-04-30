@@ -71,10 +71,10 @@ var adminRoutes = [{
 adminRoutes.forEach(function (route) {
 	app.use(route.url, function (req, res, next) {
 		if (route.methods.indexOf(req.method.toLowerCase()) >= 0) {
-			if (req.session.usuario && req.session.usuario.autorizado && req.session.usuario.perfil == "Administrador")
+			if (req.session.usuario && req.session.usuario.autorizado && req.session.usuario.perfil == 'Administrador')
 				next();
 			else
-				res.status(403).send("Usuário sem permissão!");
+				res.status(403).send('Usuário sem permissão!');
 		} else {
 			next();
 		}
