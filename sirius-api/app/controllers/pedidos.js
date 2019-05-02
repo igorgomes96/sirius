@@ -2,10 +2,17 @@ function PedidosController(app) {
 
     this._app = app;
     var Pedido = app.models.pedido;
+    var Pedido = app.models.log;
     var Reserva = app.models.reserva;
     var Impressao = app.models.impressao;
     var Usuario = app.models.usuario;
     var ObjectId = app.config.dbConnection.Types.ObjectId;
+    var tiposLogs = {
+        criacao: 'Criação do Pedido',
+        alteracao: 'Alteração do Pedido',
+        exclusao: 'Exclusão do Pedido',
+        restauracao: 'Restauração do Pedido'
+    };
 
     var atualizaReservas = function (pedido, callback, del = false) {
         const data = app.moment(pedido.horario).startOf('day').toDate();
@@ -41,7 +48,7 @@ function PedidosController(app) {
         });
     }
 
-    var geraIdItens = function(pedido) {
+    var geraIdItens = function (pedido) {
         if (pedido.itens) {
             pedido.itens.forEach(function (item) {
                 if (!item.hasOwnProperty('_id') || !item._id) {
@@ -113,13 +120,30 @@ function PedidosController(app) {
         Pedido.findById(id, callback);
     }
 
-    this.post = function (pedido, callback) {
+    this.post = async function (pedido, callback) {
         pedido = geraIdItens(pedido);
         new Pedido(pedido).save(function (err, novoPedido) {
             if (err) {
                 callback(err, null);
                 return;
             }
+
+            await new Log({
+                pedidoId: novoPedido._id,
+                logs: [
+                    {
+                        horario: new Date(),
+                        usuario: pedido.usuario,
+                        tipo: tiposLogs.criacao,
+                    }
+                ]
+            }).save(function (err, log) {
+                if (err) {
+                    callback(err, null);
+                    return;
+                }
+            });
+
             atualizaReservas(pedido, function (err) {
                 if (err) {
                     console.error(`Erro ao atualizar reservas: ${JSON.stringify(err)}!`);
@@ -214,7 +238,7 @@ function PedidosController(app) {
                 callback(null, result);
                 return;
             }
-            
+
             atualizaReservaItem({ item: item, data: app.moment(result.data).startOf('day').toDate(), del: true }, function (err) {
                 if (err) {
                     console.error(`Erro ao atualizar reservas: ${JSON.stringify(err)}`);
