@@ -1,4 +1,6 @@
 var mongoose = require('mongoose'); 
+var promise = require('bluebird');
+mongoose.Promise = promise;
 // var Mockgoose = require('mockgoose').Mockgoose;
 // var mockgoose = new Mockgoose(mongoose);
 

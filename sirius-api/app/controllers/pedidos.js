@@ -2,12 +2,12 @@ function PedidosController(app) {
 
     this._app = app;
     var Pedido = app.models.pedido;
-    var Pedido = app.models.log;
     var Reserva = app.models.reserva;
     var Impressao = app.models.impressao;
     var Usuario = app.models.usuario;
+    var Log = app.models.log;
     var ObjectId = app.config.dbConnection.Types.ObjectId;
-    var tiposLogs = {
+    var tiposAtualizacao = {
         criacao: 'Criação do Pedido',
         alteracao: 'Alteração do Pedido',
         exclusao: 'Exclusão do Pedido',
@@ -120,37 +120,35 @@ function PedidosController(app) {
         Pedido.findById(id, callback);
     }
 
-    this.post = async function (pedido, callback) {
+    this.post = function (pedido, callback) {
         pedido = geraIdItens(pedido);
-        new Pedido(pedido).save(function (err, novoPedido) {
-            if (err) {
-                callback(err, null);
-                return;
-            }
-
-            await new Log({
-                pedidoId: novoPedido._id,
-                logs: [
-                    {
-                        horario: new Date(),
-                        usuario: pedido.usuario,
-                        tipo: tiposLogs.criacao,
+        var pedidoSalvo = null;
+        new Pedido(pedido).save()
+            .then(function (novoPedido) {
+                pedidoSalvo = novoPedido;
+                return new Log({
+                    pedidoId: novoPedido._id,
+                    logs: [
+                        {
+                            horario: new Date(),
+                            usuario: pedido.usuario,
+                            tipo: tiposAtualizacao.criacao,
+                            depois: novoPedido
+                        },
+                    ]
+                }).save();
+            }).then(function (log) {
+                atualizaReservas(pedido, function (err) {
+                    if (err) {
+                        console.error(`Erro ao atualizar reservas: ${JSON.stringify(err)}!`);
                     }
-                ]
-            }).save(function (err, log) {
-                if (err) {
-                    callback(err, null);
-                    return;
-                }
+                    callback(null, pedidoSalvo);
+                });
+            }).catch(function (err) {
+                console.error('erro', err);
+                callback(err, null);
             });
 
-            atualizaReservas(pedido, function (err) {
-                if (err) {
-                    console.error(`Erro ao atualizar reservas: ${JSON.stringify(err)}!`);
-                }
-                callback(null, novoPedido);
-            });
-        });
     }
 
     this.put = function (id, pedido, callback) {
@@ -160,6 +158,7 @@ function PedidosController(app) {
                 if (err) {
                     console.error(`Erro ao atualizar reservas ${JSON.stringify(err)}.`);
                     callback(err, null);
+                    return;
                 }
                 // atualizaReservas(pedido, function (err) {
                 //     if (err) {

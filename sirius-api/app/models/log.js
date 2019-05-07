@@ -9,7 +9,10 @@ module.exports = function (app) {
         logs: [
             {
                 horario: Date,
-                usuario: String,
+                usuario: {
+                    nome: String,
+                    email: String,
+                },
                 tipo: String,
                 antes:
                 {

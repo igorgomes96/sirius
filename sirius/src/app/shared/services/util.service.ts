@@ -33,7 +33,6 @@ export class UtilService {
       let month = parseInt(dateItems[monthIndex]);
       month -= 1;
       const formatedDate = new Date(dateItems[yearIndex], month, dateItems[dayIndex]);
-      console.log(formatedDate);
       return formatedDate;
     } catch {
       return 'Erro na conversão!';
