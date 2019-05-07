@@ -14,15 +14,23 @@ function PedidosController(app) {
         restauracao: 'Restauração do Pedido'
     };
 
-    var atualizaReservas = function (pedido, callback, del = false) {
+    var atualizaReservas = function (pedido, tipo) {
         const data = app.moment(pedido.horario).startOf('day').toDate();
         const itens = pedido.itens.map(item => {
-            return { item: item, data: data, del: del }
+            return { item: item, data: data, tipo: tipo }
         });
-        app.async.eachSeries(itens, atualizaReservaItem, callback);
+        return new Promise(function (resolve, reject) {
+            app.async.eachSeries(itens, atualizaReservaItem, function (err) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(pedido);
+                }
+            });
+        });
     }
 
-    var atualizaReservaItem = function ({ item, data, del = false }, callback) {
+    var atualizaReservaItem = function ({ item, data, tipo }, callback) {
         Reserva.find({ 'item._id': item._id, data: data }, function (err, result) {
             if (err) {
                 callback(`Erro ao buscar reserva: ${JSON.stringify(err)}`);
@@ -36,16 +44,28 @@ function PedidosController(app) {
 
             var reserva = result[0];
             Reserva.findByIdAndUpdate(reserva._id,
-                { $set: { qtdaVendida: del ? (reserva.qtdaVendida - item.quantidade) : (reserva.qtdaVendida + item.quantidade) } },
+                { $set: { qtdaVendida: getQtdaVendidaReserva(reserva, item, tipo) } },
                 { new: true },
                 function (err) {
                     if (err) {
                         callback(`Erro ao atualizar reserva: ${JSON.stringify(err)}`);
-                        return;
+                    } else {
+                        callback();
                     }
-                    callback();
                 });
         });
+    }
+
+    var getQtdaVendidaReserva = function (reserva, item, tipo) {
+        switch (tipo) {
+            case tiposAtualizacao.criacao:
+            case tiposAtualizacao.restauracao:
+                return reserva.qtdaVendida + item.quantidade;
+            case tiposAtualizacao.exclusao:
+                return reserva.qtdaVendida - item.quantidade;
+            default:
+                throw 'Tipo Inválido';
+        }
     }
 
     var geraIdItens = function (pedido) {
@@ -122,10 +142,8 @@ function PedidosController(app) {
 
     this.post = function (pedido, callback) {
         pedido = geraIdItens(pedido);
-        var pedidoSalvo = null;
         new Pedido(pedido).save()
             .then(function (novoPedido) {
-                pedidoSalvo = novoPedido;
                 return new Log({
                     pedidoId: novoPedido._id,
                     logs: [
@@ -138,107 +156,99 @@ function PedidosController(app) {
                     ]
                 }).save();
             }).then(function (log) {
-                atualizaReservas(pedido, function (err) {
-                    if (err) {
-                        console.error(`Erro ao atualizar reservas: ${JSON.stringify(err)}!`);
-                    }
-                    callback(null, pedidoSalvo);
-                });
-            }).catch(function (err) {
-                console.error('erro', err);
-                callback(err, null);
-            });
+                return atualizaReservas(log.logs[0].depois, tiposAtualizacao.criacao);
+            }).then(function (novoPedido) {
+                callback(null, novoPedido);
+            }).catch(callback);
 
     }
 
     this.put = function (id, pedido, callback) {
         pedido = geraIdItens(pedido);
-        Pedido.findByIdAndUpdate(id, pedido, { new: true }, function (err, result) {
-            atualizaReservas(pedido, function (err) {
-                if (err) {
-                    console.error(`Erro ao atualizar reservas ${JSON.stringify(err)}.`);
-                    callback(err, null);
-                    return;
-                }
-                // atualizaReservas(pedido, function (err) {
-                //     if (err) {
-                //         console.error(`Erro ao atualizar reservas ${JSON.stringify(err)}.`);
-                //         callback(err, null);
-                //     }
-                //     callback(null, result);
-                // });
+        Pedido.findOneAndUpdate(id, pedido, { new: true })
+            .then(function (result) {
+                return atualizaReservas(result, tiposAtualizacao.exclusao); // Exclusão
+            }).then(function (result) {
+                return atualizaReservas(result, tiposAtualizacao.criacao); // Adição
+            }).then(function (result) {
                 callback(null, result);
-            }, true);
-        });
+            }).catch(function () {
+                console.error(`Erro ao atualizar reservas ${JSON.stringify(err)}.`);
+                callback(err, null);
+                return;
+            });
     }
 
     this.delete = function (id, { email, nome, senha }, callback) {
-        Usuario.find({ email: email }, function (err, result) {
-            if (err) {
-                callback(err, null);
-                console.error(err);
-                return;
-            }
-            senha = app.HmacSHA1(senha);
-            if (result[0].senha !== senha) {
-                callback('Senha incorreta!');
-                return;
-            }
+        Usuario.find({ email: email })
+            .then(function (result) {
+                senha = app.HmacSHA1(senha);
+                if (result[0].senha !== senha) {
+                    throw 'Senha incorreta!';
+                }
 
-            Pedido.findByIdAndUpdate(id, {
-                $set: {
-                    exclusao: {
-                        horario: new Date(),
-                        usuario: {
-                            email: email,
-                            nome: nome
+                return Pedido.findByIdAndUpdate(id, {
+                    $set: {
+                        exclusao: {
+                            horario: new Date(),
+                            usuario: {
+                                email: email,
+                                nome: nome
+                            }
                         }
                     }
-                }
-            }, { new: true }, callback);
-        });
-
+                }, { new: true });
+            }).then(function (result) {
+                return atualizaReservas(result, tiposAtualizacao.exclusao);
+            }).then(function (result) {
+                callback(err, result);
+            }).catch(callback);
     }
 
     this.deleteAdmin = function (id, callback) {
-        Pedido.findByIdAndDelete(id, function (err, result) {
-            if (err) {
-                callback(err, null);
-                console.error(`Erro ao deletar pedido: ${JSON.stringify(err)}.`);
-                return;
-            }
-
-            if (result.exclusao) {
-                callback(null, result);
-                return;
-            }
-
-            atualizaReservas(result, function (err) {
-                if (err) {
-                    console.error(`Erro ao atualizar reservas: ${JSON.stringify(err)}.`);
-                    callback(err, null);
+        var pedido = null;
+        Pedido.findByIdAndDelete(id)
+            .then(function (result) {
+                pedido = result;
+                if (result.exclusao) {
+                    throw 'Pedido já excluído';
                 }
+                return atualizaReservas(result, tiposAtualizacao.exclusao);
+            }).then(function (result) {
                 callback(err, result);
-            }, true);
-        });
+            }).catch(function (err) {
+                if (err === 'Pedido já excluído') {
+                    callback(null, pedido);
+                } else {
+                    callback(err, null);
+                    console.error(`Erro ao deletar pedido: ${JSON.stringify(err)}.`);
+                    return;
+                }
+            });
     }
 
     this.restauraPedido = function (id, callback) {
-        Pedido.findOneAndUpdate({ _id: id }, { $set: { exclusao: null } }, { new: true }, callback);
+        Pedido.findOneAndUpdate({ _id: id }, { $set: { exclusao: null } }, { new: true })
+        .then(function(result) {
+            return atualizaReservas(result, tiposAtualizacao.restauracao);
+        }).then(function(result) {
+            callback(result);
+        }).catch(callback);
     }
 
     this.deleteItem = function (idPedido, idItem, callback) {
-        Pedido.findOneAndUpdate({ _id: idPedido }, { $pull: { itens: { _id: idItem } } }, function (err, result) {
+        Pedido.findOneAndUpdate({ _id: idPedido }, { $pull: { itens: { _id: idItem } } })
+        .then(function (result) {
             const itens = result.itens.filter(i => i._id == idItem);
             const item = null;
-            if (item && item.length > 0) {
+            if (itens && itens.length > 0) {
                 item = itens[0];
             } else {
-                callback(null, result);
-                return;
+                throw 'Item não localizado.';
             }
 
-            atualizaReservaItem({ item: item, data: app.moment(result.data).startOf('day').toDate(), del: true }, function (err) {
+            const data = app.moment(result.data).startOf('day').toDate();
+            atualizaReservaItem({ item: item, data: data, tipo: tiposAtualizacao.exclusao }, function (err) {
                 if (err) {
                     console.error(`Erro ao atualizar reservas: ${JSON.stringify(err)}`);
                     callback(err, result);
@@ -246,7 +256,7 @@ function PedidosController(app) {
                 }
                 callback(null, result);
             });
-        });
+        }).catch(callback);
     }
 
     this.addItem = function (idPedido, item, callback) {
@@ -254,7 +264,8 @@ function PedidosController(app) {
             item._id = new ObjectId();
         }
         Pedido.findOneAndUpdate({ _id: idPedido }, { $push: { itens: item } }, { new: true }, function (err, result) {
-            atualizaReservaItem({ item: item, data: app.moment(result.data).startOf('day').toDate() }, function (err) {
+            const data = app.moment(result.data).startOf('day').toDate();
+            atualizaReservaItem({ item: item, data: data, tipo: tiposAtualizacao.criacao }, function (err) {
                 if (err) {
                     console.error(`Erro ao atualizar reservas: ${JSON.stringify(err)}`);
                     callback(err, result);

@@ -79,6 +79,20 @@ module.exports = function (app) {
     });
   });
 
+  app.put('/api/pedidos/:id/confirmacao', function (req, res) {
+    var pedido = req.body;
+    ctrl.confirmacaoPedido(req.params.id, pedido, function (err, result) {
+      if (err) {
+        res.status(500).json(err);
+      } else {
+        if (!result)
+          res.status(404).send('Pedido não encontrado!');
+        else
+          res.status(204).send();
+      }
+    });
+  });
+
   // Somente administrador
   app.delete('/api/pedidos/:id', function (req, res) {
     ctrl.deleteAdmin(req.params.id, function (err, result) {

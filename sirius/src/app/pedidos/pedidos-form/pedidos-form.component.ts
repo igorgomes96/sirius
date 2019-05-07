@@ -33,6 +33,7 @@ export class PedidosFormComponent implements OnInit {
   atualizarCliente = true;
   data: string;
   diversos: ItemCardapio[] = [];
+  edicao = false;
 
   constructor(private cardapioApi: CardapioApiService,
     private router: Router, private api: PedidosApiService,
@@ -80,6 +81,7 @@ export class PedidosFormComponent implements OnInit {
         filter(d => d.hasOwnProperty('pedido')),
         map(d => d['pedido'])
       ).subscribe((pedido: Pedido) => {
+        this.edicao = true;
         if (!pedido.entregar) {
           if (pedido.cliente.endereco) {
             pedido.enderecoEntrega = pedido.cliente.endereco;
@@ -181,7 +183,7 @@ export class PedidosFormComponent implements OnInit {
     // Verifica se cria um novo pedido ou atualiza um pedido existente
     let httpCall: Observable<Pedido | void>;
     let pedidoCall: Observable<Pedido | void>;
-    if (this.pedido._id) {
+    if (this.edicao) {
       pedidoCall = this.api.put(this.pedido._id, this.pedido);
     } else {
       pedidoCall = this.api.post(this.pedido);
@@ -204,11 +206,11 @@ export class PedidosFormComponent implements OnInit {
         );
     }
 
-    httpCall.pipe().subscribe(p => {
-      if (p) {
-        this.router.navigate([`/pedidos/${p._id}/confirmacao`]);
+    httpCall.pipe().subscribe((pedidoCriado: any) => {
+      if (this.edicao) {
+        this.router.navigate([`/pedidos`]);
       } else {
-        this.router.navigate([`/pedidos/${this.pedido._id}/confirmacao`]);
+        this.router.navigate([`/pedidos/${pedidoCriado._id}/confirmacao`]);
       }
     });
 
