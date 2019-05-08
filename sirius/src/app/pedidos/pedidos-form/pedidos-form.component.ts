@@ -46,7 +46,7 @@ export class PedidosFormComponent implements OnInit {
     this.pedido.enderecoEntrega.cidade = 'Araguari';
     this.pedido.enderecoEntrega.uf = 'MG';
     this.pedido.horario = new Date();
-    this.data = new Date().toLocaleDateString();
+    this.data = new Date().toLocaleDateString('pt-BR');
     // const onSelectDate = (value: any) => {
     //   const data = new Date(value);
     //   this.pedido.horario = new Date(this.pedido.horario);
@@ -91,7 +91,7 @@ export class PedidosFormComponent implements OnInit {
         }
         this.diversos = pedido.itens.filter(i => i.tipo === TipoSalgado[TipoSalgado.Diversos]);
         this.updateQuantidades(pedido.itens);
-        this.data = new Date(pedido.horario).toLocaleDateString();
+        this.data = new Date(pedido.horario).toLocaleDateString('pt-BR');
         const hora = this.utilService.getTime(this.utilService.getDateTime(pedido.horario.toString()));
         $('#hora').val(hora);
         this.showFormCliente = true;
@@ -106,6 +106,9 @@ export class PedidosFormComponent implements OnInit {
         const salgadoFesta = this.salgadosFesta.find(s => s._id === salgado._id);
         if (salgadoFesta) {
           salgadoFesta.quantidade = salgado.quantidade;
+          if (salgadoFesta.reserva) {
+            salgadoFesta.reserva += salgado.quantidade;
+          }
         }
       });
 
@@ -114,6 +117,9 @@ export class PedidosFormComponent implements OnInit {
         const salgadoComercial = this.salgadosComerciais.find(s => s._id === salgado._id);
         if (salgadoComercial) {
           salgadoComercial.quantidade = salgado.quantidade;
+          if (salgadoComercial.reserva) {
+            salgadoComercial.reserva += salgado.quantidade;
+          }
         }
       });
   }

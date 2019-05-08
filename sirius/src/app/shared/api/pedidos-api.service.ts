@@ -7,6 +7,7 @@ import { Pedido } from '../models/pedido';
 import { take, map } from 'rxjs/operators';
 import { ItemCardapio } from '../models/item-cardapio';
 import { Util } from '../services/util';
+import { Log } from '../models/log';
 
 @Injectable({
   providedIn: 'root'
@@ -78,6 +79,15 @@ export class PedidosApiService {
   put(id: string, pedido: Pedido): Observable<void> {
     return this.httpClient.put<void>(this.url + `/${id}`, pedido).pipe(take(1));
   }
+
+  log(id: string): Observable<Log[]> {
+    return this.httpClient.get<Log[]>(this.url + `/${id}/log`).pipe(take(1));
+  }
+
+  confirmacaoPedido(id: string, pedido: Pedido): Observable<void> {
+    return this.httpClient.put<void>(this.url + `/${id}/confirmacao`, pedido).pipe(take(1));
+  }
+
 
   restauraPedido(id: string): Observable<Pedido> {
     return this.httpClient.post<Pedido>(this.url + `/${id}/restaura`, null).pipe(take(1), map(this.mapPedido));

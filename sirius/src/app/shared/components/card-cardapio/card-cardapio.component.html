@@ -5,7 +5,7 @@
         <i class="material-icons right" style="color: yellowgreen; cursor: pointer;">{{ popular() }}</i>
       </a>
       <!-- <a class="card-title activator grey-text text-darken-4">{{ item.nome }}</a> -->
-      <h6>{{ item.nome }} 
+      <h6>{{ item.nome }}
         <small class="description" *ngIf="item.detalhes">({{ item.detalhes }})</small>
       </h6>
       R$ {{ item.valor | number:'1.2-2' }} {{ item.unidade.sigla }}
@@ -15,17 +15,17 @@
         *ngIf="item.reserva !== null && item.reserva !== undefined"
         data-badge-caption="em reserva">{{ item.reserva }}</span>
     </div>
-    <div *ngIf="showAddOption && item.reserva != null && item.quantidade > item.reserva" class="aviso-reserva">
-      <small class="red-text">Excede a quantidade em reserva!</small>
-    </div>
-    <div class="card-action" [class.left]="showAddOption">
+
+    <div class="card-action" [class.left]="showAddOption" [ngClass]="showAddOption && excedeReserva ? 'reserva-excedida' : ''">
+      <div *ngIf="showAddOption && excedeReserva" class="aviso-reserva">
+        <small>Excede a quantidade em reserva!</small>
+      </div>  
       <div *ngIf="showAddOption">
         <!-- <div class="input-field inline m-r-m"> -->
         <div class="input-field m-r-m">
           <div class="row" style="margin-bottom: 0">
             <div class="col m3">
-              <input type="number" [(ngModel)]="item.quantidade" (keyup.enter)="addItem()"
-                placeholder="Qtda.">
+              <input type="number" [(ngModel)]="item.quantidade" (keyup.enter)="addItem()" placeholder="Qtda.">
             </div>
 
             <div class="col m9">

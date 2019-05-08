@@ -8,9 +8,7 @@ h6 {
 }
 
 .card-content {
-    /* padding: 15px 15px 24px 15px; */
     padding: 24px;
-    /* margin-bottom: 90px; */
 }
 
 .card-action {
@@ -22,22 +20,25 @@ h6 {
     margin-top: 0;
 }
 
-/* .description {
-    display: grid;
-    margin-right: 100px;
-} */
-
 span.badge {
     margin-left: 0;
-    bottom: 89px;
-    position: absolute;
-    right: 24px;
+    position: relative;
+    float: right;
+
+}
+
+.reserva-excedida .aviso-reserva,
+.reserva-excedida input {
+    color: red;
 }
 
 .aviso-reserva {
-    position: absolute;
-    bottom: 58px;
-    left: 24px;
+    position: relative;
+    top: -10px;
+}
+
+.card-action input {
+    max-width: 149px;
 }
 
 .card-action .qtda-item span.badge {

@@ -21,8 +21,7 @@ export class PedidosListComponent implements OnInit, OnDestroy {
   pedidoExcluir: Pedido;
   openModalSenha: EventEmitter<boolean>;
 
-  constructor(private api: PedidosApiService, private router: Router,
-    private pedidosService: PedidosService, private toasts: ToastsService) { }
+  constructor(private api: PedidosApiService, private router: Router, private toasts: ToastsService) { }
 
   ngOnInit() {
     this.openModalSenha = new EventEmitter<boolean>();

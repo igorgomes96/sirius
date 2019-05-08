@@ -4,17 +4,18 @@ import { PedidosRoutingModule } from './pedidos-routing.module';
 import { SharedModule } from './../shared/shared.module';
 import { PedidosListComponent } from './pedidos-list/pedidos-list.component';
 import { PedidosFormComponent } from './pedidos-form/pedidos-form.component';
-import { PedidosDetalheComponent } from './pedidos-detalhe/pedidos-detalhe.component';
 import { ItemModalComponent } from './item-modal/item-modal.component';
 import { ClienteModalComponent } from './cliente-modal/cliente-modal.component';
 import { NgxPrintModule } from 'ngx-print';
 import { PedidosAgrupadosComponent } from './pedidos-agrupados/pedidos-agrupados.component';
 import { ConfirmacaoPedidoComponent } from './confirmacao-pedido/confirmacao-pedido.component';
 import { AgendaComponent } from './agenda/agenda.component';
+import { LogPedidoComponent } from './log-pedido/log-pedido.component';
+import { LogCompareComponent } from './log-compare/log-compare.component';
 
 @NgModule({
-  declarations: [PedidosListComponent, PedidosFormComponent, PedidosDetalheComponent, ItemModalComponent,
-    ClienteModalComponent, PedidosAgrupadosComponent, ConfirmacaoPedidoComponent, AgendaComponent],
+  declarations: [PedidosListComponent, PedidosFormComponent, ItemModalComponent,
+    ClienteModalComponent, PedidosAgrupadosComponent, ConfirmacaoPedidoComponent, AgendaComponent, LogPedidoComponent, LogCompareComponent],
   imports: [
     SharedModule,
     NgxPrintModule,

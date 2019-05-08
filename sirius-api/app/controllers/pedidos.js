@@ -8,10 +8,10 @@ function PedidosController(app) {
     var Log = app.models.log;
     var ObjectId = app.config.dbConnection.Types.ObjectId;
     var tiposAtualizacao = {
-        criacao: 'Criação do Pedido',
-        alteracao: 'Alteração do Pedido',
-        exclusao: 'Exclusão do Pedido',
-        restauracao: 'Restauração do Pedido'
+        criacao: 'Criação',
+        alteracao: 'Edição',
+        exclusao: 'Exclusão',
+        restauracao: 'Restauração'
     };
 
     var atualizaReservas = function (pedido, tipo) {
@@ -43,7 +43,7 @@ function PedidosController(app) {
             }
 
             var reserva = result[0];
-            Reserva.findByIdAndUpdate(reserva._id,
+            Reserva.findOneAndUpdate({ _id: reserva._id },
                 { $set: { qtdaVendida: getQtdaVendidaReserva(reserva, item, tipo) } },
                 { new: true },
                 function (err) {
@@ -77,6 +77,33 @@ function PedidosController(app) {
             });
         }
         return pedido;
+    }
+
+    var cloneObject = function (obj) {
+        return JSON.parse(JSON.stringify(obj));
+    }
+
+    // Obtem um cópia do pedido, com as quantidades dos itens ajustadas
+    // de forma a poder atulizar as reservar, usando tiposAtualizacao.criacao
+    var getDiferencaReserva = function (pedidoAnterior, novoPedido) {
+        var diferenca = cloneObject(novoPedido);
+        // Atualiza os itens comuns entre o anterior e o novo, mantendo os itens adicionais do novo
+        diferenca.itens.forEach(function (item) {
+            var itemAnterior = pedidoAnterior.itens.find(i => i._id == item._id);
+            if (itemAnterior) {
+                item.quantidade = item.quantidade - itemAnterior.quantidade;
+            }
+        });
+
+        // Itens removidos
+        var itensRemovidos = pedidoAnterior.itens.filter(function (item) {
+            return !novoPedido.itens.find(i => i._id == item._id);
+        }).map(function (item) { // Multiplica a quantidade por -1
+            item.quantidade = item.quantidade * -1;
+            return item;
+        });
+        diferenca.itens = diferenca.itens.concat(itensRemovidos);
+        return diferenca;
     }
 
     this.getAll = function (callback) {
@@ -137,7 +164,7 @@ function PedidosController(app) {
     }
 
     this.get = function (id, callback) {
-        Pedido.findById(id, callback);
+        Pedido.findOne({ _id: id }, callback);
     }
 
     this.post = function (pedido, callback) {
@@ -151,32 +178,45 @@ function PedidosController(app) {
                             horario: new Date(),
                             usuario: pedido.usuario,
                             tipo: tiposAtualizacao.criacao,
-                            depois: novoPedido
                         },
                     ]
-                }).save();
-            }).then(function (log) {
-                return atualizaReservas(log.logs[0].depois, tiposAtualizacao.criacao);
+                }).save().then(function (log) {
+                    return Promise.resolve({ log: log, novoPedido: novoPedido });
+                });
+            }).then(function ({ log, novoPedido }) {
+                return atualizaReservas(novoPedido, tiposAtualizacao.criacao);
             }).then(function (novoPedido) {
                 callback(null, novoPedido);
             }).catch(callback);
 
     }
 
-    this.put = function (id, pedido, callback) {
+    this.put = function (id, pedido, confirmacao = false, callback) {
         pedido = geraIdItens(pedido);
-        Pedido.findOneAndUpdate(id, pedido, { new: true })
+        Pedido.findOneAndUpdate({ _id: id }, pedido, { new: false })
             .then(function (result) {
-                return atualizaReservas(result, tiposAtualizacao.exclusao); // Exclusão
-            }).then(function (result) {
-                return atualizaReservas(result, tiposAtualizacao.criacao); // Adição
-            }).then(function (result) {
-                callback(null, result);
-            }).catch(function () {
-                console.error(`Erro ao atualizar reservas ${JSON.stringify(err)}.`);
-                callback(err, null);
-                return;
-            });
+                if (confirmacao) {  // Se for somente confirmação pedido, não cria log
+                    return Promise.all([
+                        atualizaReservas(getDiferencaReserva(result, pedido), tiposAtualizacao.criacao)
+                    ]);
+                } else {
+                    return Promise.all([
+                        atualizaReservas(getDiferencaReserva(result, pedido), tiposAtualizacao.criacao),
+                        Log.findOneAndUpdate({ pedidoId: id }, {
+                            $push: {
+                                logs: {
+                                    horario: new Date(),
+                                    usuario: result.usuario,
+                                    tipo: tiposAtualizacao.alteracao,
+                                    pedido: result
+                                }
+                            }
+                        })
+                    ]);
+                }
+            }).then(function () {
+                callback(null, pedido);
+            }).catch(callback);
     }
 
     this.delete = function (id, { email, nome, senha }, callback) {
@@ -187,7 +227,7 @@ function PedidosController(app) {
                     throw 'Senha incorreta!';
                 }
 
-                return Pedido.findByIdAndUpdate(id, {
+                return Pedido.findOneAndUpdate({ _id: id }, {
                     $set: {
                         exclusao: {
                             horario: new Date(),
@@ -197,17 +237,31 @@ function PedidosController(app) {
                             }
                         }
                     }
-                }, { new: true });
+                }, { new: false });
+            }).then(function (pedidoAnterior) {
+                return Promise.all([
+                    Pedido.findOne({ _id: id }), // Retorna o pedido atualizado
+                    Log.findOneAndUpdate({ pedidoId: id }, {
+                        $push: {
+                            logs: {
+                                horario: new Date(),
+                                usuario: pedidoAnterior.usuario,
+                                tipo: tiposAtualizacao.exclusao,
+                                pedido: pedidoAnterior
+                            }
+                        }
+                    })
+                ]);
             }).then(function (result) {
-                return atualizaReservas(result, tiposAtualizacao.exclusao);
+                return atualizaReservas(result[0], tiposAtualizacao.exclusao);
             }).then(function (result) {
-                callback(err, result);
+                callback(null, result);
             }).catch(callback);
     }
 
     this.deleteAdmin = function (id, callback) {
         var pedido = null;
-        Pedido.findByIdAndDelete(id)
+        Pedido.findOneAndDelete({ _id: id })
             .then(function (result) {
                 pedido = result;
                 if (result.exclusao) {
@@ -228,35 +282,49 @@ function PedidosController(app) {
     }
 
     this.restauraPedido = function (id, callback) {
-        Pedido.findOneAndUpdate({ _id: id }, { $set: { exclusao: null } }, { new: true })
-        .then(function(result) {
-            return atualizaReservas(result, tiposAtualizacao.restauracao);
-        }).then(function(result) {
-            callback(result);
-        }).catch(callback);
+        Pedido.findOneAndUpdate({ _id: id }, { $set: { exclusao: null } }, { new: false })
+            .then(function (pedido) {
+                return Promise.all([
+                    atualizaReservas(pedido, tiposAtualizacao.restauracao),
+                    Log.findOneAndUpdate({ pedidoId: id }, {
+                        $push: {
+                            logs: {
+                                horario: new Date(),
+                                usuario: pedido.usuario,
+                                tipo: tiposAtualizacao.restauracao,
+                                pedido: pedido
+                            }
+                        }
+                    })
+                ]);
+            }).then(function () {
+                return Pedido.findOne({ _id: id });
+            }).then(function (pedidoAtualizado) {
+                callback(null, pedidoAtualizado);
+            }).catch(callback);
     }
 
     this.deleteItem = function (idPedido, idItem, callback) {
-        Pedido.findOneAndUpdate({ _id: idPedido }, { $pull: { itens: { _id: idItem } } })
-        .then(function (result) {
-            const itens = result.itens.filter(i => i._id == idItem);
-            const item = null;
-            if (itens && itens.length > 0) {
-                item = itens[0];
-            } else {
-                throw 'Item não localizado.';
-            }
-
-            const data = app.moment(result.data).startOf('day').toDate();
-            atualizaReservaItem({ item: item, data: data, tipo: tiposAtualizacao.exclusao }, function (err) {
-                if (err) {
-                    console.error(`Erro ao atualizar reservas: ${JSON.stringify(err)}`);
-                    callback(err, result);
-                    return;
+        Pedido.findOneAndUpdate({ _id: idPedido }, { $pull: { itens: { _id: idItem } } }, { new: false })
+            .then(function (result) {
+                const itens = result.itens.filter(i => i._id == idItem);
+                let item = null;
+                if (itens && itens.length > 0) {
+                    item = itens[0];
+                } else {
+                    throw 'Item não localizado.';
                 }
-                callback(null, result);
-            });
-        }).catch(callback);
+
+                const data = app.moment(result.data).startOf('day').toDate();
+                atualizaReservaItem({ item: item, data: data, tipo: tiposAtualizacao.exclusao }, function (err) {
+                    if (err) {
+                        console.error(`Erro ao atualizar reservas: ${JSON.stringify(err)}`);
+                        callback(err, result);
+                        return;
+                    }
+                    callback(null, result);
+                });
+            }).catch(callback);
     }
 
     this.addItem = function (idPedido, item, callback) {
@@ -296,6 +364,13 @@ function PedidosController(app) {
                 callback(err, result);
             });
         });
+    }
+
+    this.getLog = function(pedidoId, callback) {
+        Log.findOne({ pedidoId: pedidoId})
+        .then(function(log) {
+            callback(null, log.logs);
+        }).catch(callback);
     }
 
     this.getImpressoes = function (callback) {

@@ -71,7 +71,7 @@ export class ConfirmacaoPedidoComponent implements OnInit {
   }
 
   salvar(imprimir = false) {
-    this.api.put(this.pedido._id, this.pedido)
+    this.api.confirmacaoPedido(this.pedido._id, this.pedido)
       .subscribe(_ => {
         this.toasts.toast('Pedido salvo com sucesso!');
         this.router.navigate(['/pedidos']);

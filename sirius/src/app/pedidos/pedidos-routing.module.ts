@@ -5,11 +5,11 @@ import { CommonModule } from '@angular/common';
 import { PedidosListComponent } from './pedidos-list/pedidos-list.component';
 import { PedidosFormComponent } from './pedidos-form/pedidos-form.component';
 import { PedidoResolverService } from './pedido-resolver.service';
-import { PedidosDetalheComponent } from './pedidos-detalhe/pedidos-detalhe.component';
-import { CancelaPedidoDeactivateGuard } from './cancela-pedido-guard';
 import { PedidosAgrupadosComponent } from './pedidos-agrupados/pedidos-agrupados.component';
 import { ConfirmacaoPedidoComponent } from './confirmacao-pedido/confirmacao-pedido.component';
 import { AgendaComponent } from './agenda/agenda.component';
+import { LogPedidoComponent } from './log-pedido/log-pedido.component';
+import { LogResolverService } from './log-resolver.service';
 
 const routes: Routes = [
     { path: '', component: PedidosListComponent },
@@ -28,6 +28,13 @@ const routes: Routes = [
         component: ConfirmacaoPedidoComponent,
         resolve: {
             pedido: PedidoResolverService
+        }
+    },
+    {
+        path: ':id/log',
+        component: LogPedidoComponent,
+        resolve: {
+            log: LogResolverService
         }
     }
 ];

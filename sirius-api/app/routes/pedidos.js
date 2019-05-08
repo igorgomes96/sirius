@@ -52,6 +52,19 @@ module.exports = function (app) {
     });
   });
 
+  app.get('/api/pedidos/:id/log', function (req, res) {
+    ctrl.getLog(req.params.id, function (err, result) {
+      if (err)
+        res.status(500).json(err);
+      else {
+        if (!result)
+          res.status(404).send('Log não encontrado!');
+        else
+          res.json(result);
+      }
+    });
+  });
+
   app.post('/api/pedidos', function (req, res) {
     var pedido = req.body;
     pedido.usuario = req.session.usuario;
@@ -67,7 +80,7 @@ module.exports = function (app) {
 
   app.put('/api/pedidos/:id', function (req, res) {
     var pedido = req.body;
-    ctrl.put(req.params.id, pedido, function (err, result) {
+    ctrl.put(req.params.id, pedido, false, function (err, result) {
       if (err) {
         res.status(500).json(err);
       } else {
@@ -81,7 +94,7 @@ module.exports = function (app) {
 
   app.put('/api/pedidos/:id/confirmacao', function (req, res) {
     var pedido = req.body;
-    ctrl.confirmacaoPedido(req.params.id, pedido, function (err, result) {
+    ctrl.put(req.params.id, pedido, true, function (err, result) {
       if (err) {
         res.status(500).json(err);
       } else {

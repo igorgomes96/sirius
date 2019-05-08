@@ -65,4 +65,8 @@ export class CardCardapioComponent implements OnInit {
       return ['amber', 'accent-4'];
     }
   }
+
+  get excedeReserva(): boolean {
+    return this.item.reserva != null && this.item.quantidade > this.item.reserva;
+  }
 }
