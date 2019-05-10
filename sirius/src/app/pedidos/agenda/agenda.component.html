@@ -29,7 +29,7 @@
             <div class="row">
                 <div *ngFor="let pedido of pedidos" class="col s12">
                     <app-card-agenda [pedido]="pedido" [mostrarRestaurar]="true" (editPedido)="editPedido($event)"
-                        (pagamento)="atualizaPedido($event)" (restaurar)="restaurarPedido($event)" (deletePedido)="deletePedido($event)"></app-card-agenda>
+                        (pagamento)="atualizaPedido($event)" [oneColumn]="false" (restaurar)="restaurarPedido($event)" (deletePedido)="deletePedido($event)"></app-card-agenda>
                 </div>
             </div>
         </div>

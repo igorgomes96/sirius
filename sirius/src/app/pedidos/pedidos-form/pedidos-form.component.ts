@@ -100,6 +100,13 @@ export class PedidosFormComponent implements OnInit {
 
   }
 
+  cancelarPedido() {
+    const confirmacao = confirm('Tem certeza que deseja cancelar o pedido?');
+    if (confirmacao) {
+      this.router.navigate(['/pedidos']);
+    }
+  }
+
   updateQuantidades(salgados: ItemCardapio[]) {
     salgados.filter(s => s.tipo === TipoSalgado[TipoSalgado.Festa])
       .forEach(salgado => {
@@ -145,6 +152,7 @@ export class PedidosFormComponent implements OnInit {
 
     this.loadClientes(telefone);
   }
+
 
   // deletePedido(): Observable<boolean> {
   //   return this.api.delete(this.pedido._id)
@@ -210,6 +218,8 @@ export class PedidosFormComponent implements OnInit {
           }),
           switchMap(_ => pedidoCall)
         );
+    } else {
+      httpCall = pedidoCall;
     }
 
     httpCall.pipe().subscribe((pedidoCriado: any) => {

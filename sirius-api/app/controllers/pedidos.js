@@ -167,7 +167,7 @@ function PedidosController(app) {
         Pedido.findOne({ _id: id }, callback);
     }
 
-    this.post = function (pedido, callback) {
+    this.post = function (pedido, { email, nome}, callback) {
         pedido = geraIdItens(pedido);
         new Pedido(pedido).save()
             .then(function (novoPedido) {
@@ -176,7 +176,10 @@ function PedidosController(app) {
                     logs: [
                         {
                             horario: new Date(),
-                            usuario: pedido.usuario,
+                            usuario: {
+                                email: email,
+                                nome: nome
+                            },
                             tipo: tiposAtualizacao.criacao,
                         },
                     ]
@@ -191,7 +194,7 @@ function PedidosController(app) {
 
     }
 
-    this.put = function (id, pedido, confirmacao = false, callback) {
+    this.put = function (id, pedido, { email, nome }, confirmacao = false, callback) {
         pedido = geraIdItens(pedido);
         Pedido.findOneAndUpdate({ _id: id }, pedido, { new: false })
             .then(function (result) {
@@ -206,7 +209,10 @@ function PedidosController(app) {
                             $push: {
                                 logs: {
                                     horario: new Date(),
-                                    usuario: result.usuario,
+                                    usuario: {
+                                        email: email,
+                                        nome: nome
+                                    },
                                     tipo: tiposAtualizacao.alteracao,
                                     pedido: result
                                 }
@@ -245,7 +251,10 @@ function PedidosController(app) {
                         $push: {
                             logs: {
                                 horario: new Date(),
-                                usuario: pedidoAnterior.usuario,
+                                usuario: {
+                                    email: email,
+                                    nome: nome
+                                },
                                 tipo: tiposAtualizacao.exclusao,
                                 pedido: pedidoAnterior
                             }
@@ -264,12 +273,16 @@ function PedidosController(app) {
         Pedido.findOneAndDelete({ _id: id })
             .then(function (result) {
                 pedido = result;
-                if (result.exclusao) {
+                if (result.exclusao && result.exclusao.horario) {
                     throw 'Pedido já excluído';
                 }
-                return atualizaReservas(result, tiposAtualizacao.exclusao);
+                
+                return Promise.all([
+                    atualizaReservas(result, tiposAtualizacao.exclusao),
+                    Log.findOneAndDelete({ pedidoId: id })
+                ]);
             }).then(function (result) {
-                callback(err, result);
+                callback(null, result[0]);
             }).catch(function (err) {
                 if (err === 'Pedido já excluído') {
                     callback(null, pedido);
@@ -281,7 +294,7 @@ function PedidosController(app) {
             });
     }
 
-    this.restauraPedido = function (id, callback) {
+    this.restauraPedido = function (id, { email, nome }, callback) {
         Pedido.findOneAndUpdate({ _id: id }, { $set: { exclusao: null } }, { new: false })
             .then(function (pedido) {
                 return Promise.all([
@@ -290,7 +303,10 @@ function PedidosController(app) {
                         $push: {
                             logs: {
                                 horario: new Date(),
-                                usuario: pedido.usuario,
+                                usuario: {
+                                    email: email,
+                                    nome: nome
+                                },
                                 tipo: tiposAtualizacao.restauracao,
                                 pedido: pedido
                             }
@@ -366,11 +382,11 @@ function PedidosController(app) {
         });
     }
 
-    this.getLog = function(pedidoId, callback) {
-        Log.findOne({ pedidoId: pedidoId})
-        .then(function(log) {
-            callback(null, log.logs);
-        }).catch(callback);
+    this.getLog = function (pedidoId, callback) {
+        Log.findOne({ pedidoId: pedidoId })
+            .then(function (log) {
+                callback(null, log);
+            }).catch(callback);
     }
 
     this.getImpressoes = function (callback) {

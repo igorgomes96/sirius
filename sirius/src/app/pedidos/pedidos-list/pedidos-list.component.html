@@ -26,7 +26,7 @@
 
       <div class="row">
         <div class="col">
-          <h6>Pedidos do Dia</h6>
+          <h6>{{ pedidos && pedidos.length ? 'Pedidos do Dia' : 'Não há pedidos para hoje' }}</h6>
         </div>
       </div>
 
@@ -48,7 +48,7 @@
       <div id="pedidos">
         <div class="row">
           <div *ngFor="let pedido of pedidos" class="col s12">
-            <app-card-agenda [pedido]="pedido" [mostrarRestaurar]="false" (editPedido)="editPedido($event)" (pagamento)="atualizaPedido($event)" (deletePedido)="deletePedido($event)"></app-card-agenda>
+            <app-card-agenda [pedido]="pedido" [mostrarRestaurar]="false" [oneColumn]="false" (editPedido)="editPedido($event)" (pagamento)="atualizaPedido($event)" (deletePedido)="deletePedido($event)"></app-card-agenda>
           </div>
         </div>
       </div>

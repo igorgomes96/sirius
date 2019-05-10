@@ -53,9 +53,9 @@ app.use(expressValidator());
 var protectedRoutes = ['/usuarios', '/clientes', '/pedidos', '/reservas', '/cardapio', '/usuario'];
 protectedRoutes.forEach(function (route) {
 	app.use(route, function (req, res, next) {
-		if (req.session.usuario && req.session.usuario.autorizado)
+		if (req.session.usuario && req.session.usuario.autorizado) {
 			next();
-		else
+		} else
 			res.status(401).send("Usuário não autenticado!");
 	});
 });

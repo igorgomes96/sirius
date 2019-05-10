@@ -1,7 +1,7 @@
 <div class="card" [class.excluido]="pedido.exclusao">
   <div class="card-content">
     <div class="row" style="margin-bottom: 0">
-      <div class="col l3 m4 s12">
+      <div class="col l3 m4 s12" *ngIf="!oneColumn">
 
         <strong><i class="material-icons">access_time</i> {{ pedido.horario | date:'HH:mm'}}</strong><br>
         <small><i class="material-icons">local_offer</i> {{ pedido.usuario?.nome }}</small>
@@ -19,7 +19,7 @@
         <div class="row m-t-l">
           <div class="col">
             <label>
-              <input type="checkbox" [disabled]="pedido.exclusao" [(ngModel)]="pedido.pago" (change)="pedidoPago()" />
+              <input type="checkbox" [disabled]="pedido.exclusao || !enbableCkbPago" [(ngModel)]="pedido.pago" (change)="pedidoPago()" />
               <span>Pago?</span>
             </label>
           </div>
@@ -36,7 +36,7 @@
       </div>
 
 
-      <div class="col l9 m8 s12">
+      <div class="col" [ngClass]="oneColumn ? 'm12' : 'l9 m8 s12'">
         <strong><i class="material-icons">person</i> {{ pedido.cliente.nome }}</strong><br>
         <small>
           <i class="material-icons">phone</i> {{ pedido.cliente.fone1 | mask:'(00) 00009-0000' }}
@@ -44,12 +44,36 @@
           {{ pedido.cliente.fone2 | mask:'(00) 00009-0000' }}
         </small>
 
+        <div *ngIf="oneColumn">
+          <small><i class="material-icons">access_time</i> {{ pedido.horario | date:'HH:mm'}}</small><br>
+          <small><i class="material-icons">local_offer</i> {{ pedido.usuario?.nome }}</small>
+
+          <div class="endereco" *ngIf="pedido.enderecoEntrega" style="margin-top: 10px">
+            <span [ngClass]="!pedido.exclusao ? 'orange-text text-darken-3' : ''">Entregar no endereço:</span><br>
+            <span><i class="material-icons">location_on</i> {{ pedido.enderecoStrSimples }}</span><br>
+            <span *ngIf="pedido.enderecoEntrega?.bairro">
+              <i class="material-icons">domain</i> Bairro {{ pedido.enderecoEntrega?.bairro }}<br>
+            </span>
+            <i class="material-icons">location_city</i> {{ pedido.enderecoEntrega?.cidade }} - {{
+              pedido.enderecoEntrega?.uf }}<br>
+          </div>
+
+          <div class="row m-t-l">
+            <div class="col">
+              <label>
+                <input type="checkbox" [disabled]="pedido.exclusao || !enbableCkbPago" [(ngModel)]="pedido.pago" (change)="pedidoPago()" />
+                <span>Pago?</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
         <table>
           <thead>
             <tr>
-              <th>Item/Salgado</th>
-              <th>Qtda.</th>
-              <th class="right">Valor</th>
+              <th width="48%">Item/Salgado</th>
+              <th width="20%">Qtda.</th>
+              <th width="32%" class="right-align">Valor</th>
             </tr>
           </thead>
 
@@ -72,6 +96,14 @@
           Obs.: {{ pedido.observacoes }}
         </small>
 
+        <div class="exclusao-info m-t-l" *ngIf="oneColumn && isAdmin && mostrarRestaurar">
+          <span>Excluído por {{ pedido.exclusao?.usuario.nome }}</span><br>
+          <i class="material-icons">access_time</i> {{ pedido.exclusao?.horario | date:'dd/MM/yyyy HH:mm' }} <br>
+          <button class="btn waves-effect m-t-m m-b-l" (click)="restaurarPedido()">
+            Restaurar Pedido
+          </button>
+        </div>
+
       </div>
     </div>
 
@@ -79,7 +111,7 @@
 
   </div>
 
-  <div class="card-action">
+  <div class="card-action" *ngIf="showActions">
     <div class="actions">
       <button class="btn-flat waves-effect orange-text text-darken-3" (click)="log()">
         Log

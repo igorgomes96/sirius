@@ -12,6 +12,9 @@ export class CardAgendaComponent implements OnInit {
 
   isAdmin = false;
 
+  @Input() enbableCkbPago = true;
+  @Input() showActions = true;
+  @Input() oneColumn = false;
   @Input() pedido: Pedido;
   @Input() mostrarRestaurar = false;
   @Output() pagamento: EventEmitter<Pedido> = new EventEmitter<Pedido>();

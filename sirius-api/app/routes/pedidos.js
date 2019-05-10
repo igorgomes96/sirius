@@ -69,7 +69,7 @@ module.exports = function (app) {
     var pedido = req.body;
     pedido.usuario = req.session.usuario;
     if (pedido.hasOwnProperty('_id')) delete pedido._id;
-    ctrl.post(pedido, function (err, result) {
+    ctrl.post(pedido, pedido.usuario, function (err, result) {
       if (err) {
         res.status(500).json(err);
       } else {
@@ -80,7 +80,9 @@ module.exports = function (app) {
 
   app.put('/api/pedidos/:id', function (req, res) {
     var pedido = req.body;
-    ctrl.put(req.params.id, pedido, false, function (err, result) {
+    const usuario = req.session.usuario;
+    usuario.senha = req.body.senha;
+    ctrl.put(req.params.id, pedido, usuario, false, function (err, result) {
       if (err) {
         res.status(500).json(err);
       } else {
@@ -94,7 +96,9 @@ module.exports = function (app) {
 
   app.put('/api/pedidos/:id/confirmacao', function (req, res) {
     var pedido = req.body;
-    ctrl.put(req.params.id, pedido, true, function (err, result) {
+    const usuario = req.session.usuario;
+    usuario.senha = req.body.senha;
+    ctrl.put(req.params.id, pedido, usuario, true, function (err, result) {
       if (err) {
         res.status(500).json(err);
       } else {
@@ -106,7 +110,6 @@ module.exports = function (app) {
     });
   });
 
-  // Somente administrador
   app.delete('/api/pedidos/:id', function (req, res) {
     ctrl.deleteAdmin(req.params.id, function (err, result) {
       if (err) {
@@ -121,7 +124,9 @@ module.exports = function (app) {
   });
 
   app.post('/api/pedidos/:id/restaura', function (req, res) {
-    ctrl.restauraPedido(req.params.id, function (err, result) {
+    const usuario = req.session.usuario;
+    usuario.senha = req.body.senha;
+    ctrl.restauraPedido(req.params.id, usuario, function (err, result) {
       if (err) {
         res.status(500).json(err);
       } else {

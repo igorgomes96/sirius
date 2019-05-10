@@ -7,7 +7,7 @@ import { Pedido } from '../models/pedido';
 import { take, map } from 'rxjs/operators';
 import { ItemCardapio } from '../models/item-cardapio';
 import { Util } from '../services/util';
-import { Log } from '../models/log';
+import { Log, PedidoLog } from '../models/log';
 
 @Injectable({
   providedIn: 'root'
@@ -29,8 +29,8 @@ export class PedidosApiService {
           enderecoStr: Util.enderecoCompleto(pedido.cliente.endereco),
           enderecoStrSimples: Util.enderecoSimples(pedido.cliente.endereco)
         }),
-        enderecoStr: Util.enderecoCompleto(pedido.cliente.endereco),
-        enderecoStrSimples: Util.enderecoSimples(pedido.cliente.endereco)
+        enderecoStr: Util.enderecoCompleto(pedido.enderecoEntrega),
+        enderecoStrSimples: Util.enderecoSimples(pedido.enderecoEntrega)
       });
   }
 
@@ -45,8 +45,8 @@ export class PedidosApiService {
             enderecoStr: Util.enderecoCompleto(pedido.cliente.endereco),
             enderecoStrSimples: Util.enderecoSimples(pedido.cliente.endereco)
           }),
-          enderecoStr: Util.enderecoCompleto(pedido.cliente.endereco),
-          enderecoStrSimples: Util.enderecoSimples(pedido.cliente.endereco)
+          enderecoStr: Util.enderecoCompleto(pedido.enderecoEntrega),
+          enderecoStrSimples: Util.enderecoSimples(pedido.enderecoEntrega)
         });
       }
     );
@@ -80,8 +80,8 @@ export class PedidosApiService {
     return this.httpClient.put<void>(this.url + `/${id}`, pedido).pipe(take(1));
   }
 
-  log(id: string): Observable<Log[]> {
-    return this.httpClient.get<Log[]>(this.url + `/${id}/log`).pipe(take(1));
+  log(id: string): Observable<PedidoLog> {
+    return this.httpClient.get<PedidoLog>(this.url + `/${id}/log`).pipe(take(1));
   }
 
   confirmacaoPedido(id: string, pedido: Pedido): Observable<void> {

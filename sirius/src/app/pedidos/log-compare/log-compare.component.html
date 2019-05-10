@@ -3,9 +3,19 @@
 
     <div class="row">
       <div class="col m6 s12">
-        <app-card-agenda *ngIf="antes" [pedido]="antes" [mostrarRestaurar]="false"></app-card-agenda>
-        <!-- <app-card-agenda [pedido]="depois" [mostrarRestaurar]="false"></app-card-agenda> -->
+        <p>Antes</p>
+        <app-card-agenda *ngIf="antes" [pedido]="antes" [enbableCkbPago]="false" [showActions]="false"
+          [mostrarRestaurar]="false" [oneColumn]="true"></app-card-agenda>
       </div>
+      <div class="col m6 s12">
+        <p>Depois</p>
+        <app-card-agenda *ngIf="depois" [pedido]="depois" [enbableCkbPago]="false" [showActions]="false"
+          [mostrarRestaurar]="false" [oneColumn]="true"></app-card-agenda>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="modal-close btn-flat">Fechar</button>
     </div>
 
   </div>

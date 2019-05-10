@@ -10,10 +10,16 @@
       </div>
 
       <div class="row">
+        <div class="col">
+          <a class="btn orange darken-3" (click)="voltar()">Voltar</a>
+        </div>
+      </div>
+
+      <div class="row">
         <div class="col s12">
           <div class="card-panel">
             <div class="row">
-              <div class="col s12">                
+              <div class="col s12">
                 <table>
                   <thead>
                     <tr>
@@ -29,7 +35,8 @@
                       <td>{{ log.usuario.nome }}</td>
                       <td>{{ log.tipo }}</td>
                       <td>
-                        <a class="btn-floating btn-small" *ngIf="log.tipo === 'Edição'" (click)="compare(log)"><i class="material-icons">zoom_in</i></a>
+                        <a class="btn-floating btn-small" *ngIf="log.tipo === 'Edição'" (click)="compare(log)"><i
+                            class="material-icons">zoom_in</i></a>
                       </td>
                     </tr>
                   </tbody>
@@ -46,4 +53,4 @@
   </div>
 </div>
 
-<app-log-compare [open]="openModalLogCompare" [antes]="pedidoAnterior"></app-log-compare>
+<app-log-compare [open]="openModalLogCompare" [antes]="pedidoAnterior" [depois]="pedidoPosterior"></app-log-compare>
