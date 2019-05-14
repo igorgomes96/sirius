@@ -39,12 +39,12 @@ export class AgendaComponent implements OnInit {
   ngOnInit() {
 
     this.openModalSenha = new EventEmitter<boolean>();
-    this.data = new Date();
     this.data = this.pedidosService.data;
     $('#data').datepicker(Object.assign(datepicker, {
       defaultDate: this.data,
       onSelect: (novaData: any) => {
         this.data = novaData;
+        this.pedidosService.data = novaData;
         this.load();
       }
     }));

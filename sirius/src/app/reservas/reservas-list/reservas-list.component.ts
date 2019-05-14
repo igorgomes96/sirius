@@ -36,6 +36,7 @@ export class ReservasListComponent implements OnInit, OnDestroy {
     options.defaultDate = this.data;
     $('#data').datepicker(Object.assign(datepicker, {
       onSelect: (novaData: any) => {
+        this.reservasService.data = novaData;
         this.data = novaData;
         this.load();
       }

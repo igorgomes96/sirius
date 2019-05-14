@@ -4,3 +4,7 @@
     position: relative;
     min-height: 72px;
 }
+
+a.secondary-content {
+    cursor: pointer;
+}

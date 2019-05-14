@@ -23,3 +23,10 @@ strong {
 .title a:hover {
     background: initial;
 }
+
+@media (max-width: 600px) {
+    #btnOutros {
+        float: left !important;
+    }
+}
+
