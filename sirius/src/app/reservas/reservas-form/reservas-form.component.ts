@@ -8,6 +8,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { filter, map, distinctUntilChanged, debounceTime, tap } from 'rxjs/operators';
 import { ItemCardapio, TipoSalgado } from 'src/app/shared/models/item-cardapio';
 import { datepicker } from 'src/environments/datepicker-options';
+import { ReservasService } from 'src/app/shared/services/reservas.service';
+import { componentNeedsResolution } from '@angular/core/src/metadata/resource_loading';
 
 declare var $: any;
 declare var M: any;
@@ -27,13 +29,13 @@ export class ReservasFormComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
     private api: ReservasApiService, private toasts: ToastsService,
     private router: Router, private route: ActivatedRoute,
-    private cardapioApi: CardapioApiService) { }
+    private cardapioApi: CardapioApiService, private reservasService: ReservasService) { }
 
   ngOnInit() {
     this.form = this.formBuilder.group({
       tipo: [TipoSalgado.Festa],
-      pesquisa: [''],
-      data: [''],
+      pesquisa: ['', Validators.required],
+      data: [this.reservasService.data],
       qtda: [0, Validators.required],
       qtdaVendida: [0, Validators.required],
       item: this.formBuilder.group({
@@ -96,6 +98,7 @@ export class ReservasFormComponent implements OnInit {
         });
 
         $('#data').datepicker(Object.assign(datepicker, {
+          defaultDate: this.reservasService.data,
           onSelect: (novaData: any) => {
             this.dataAtual = novaData;
           }

@@ -231,11 +231,13 @@
             <div *ngIf="showFormCliente">
                 <!-- <div> -->
                 <div class="row">
-                    <div class="col s12">
-                        <a class="btn primary-color m-r-s" (click)="fecharPedido()" *ngIf="habilitaFecharPedido">{{ edicao ? 'Salvar Alterações' : 'Fechar
+                    <div class="col m9 s12">
+                        <a class="btn primary-color m-r-s m-t-m" (click)="fecharPedido()" *ngIf="habilitaFecharPedido">{{ edicao ? 'Salvar Alterações' : 'Fechar
                             Pedido' }}</a>
-                        <a class="btn red darken-2" *ngIf="!edicao" (click)="cancelarPedido()">Cancelar Pedido</a>
-                        <a class="btn orange darken-3 right" (click)="addItemForaCardapio()">Outros</a>
+                        <a class="btn red darken-2 m-t-m" *ngIf="!edicao" (click)="cancelarPedido()">Cancelar Pedido</a>
+                    </div>
+                    <div class="col m3 s12">
+                        <a class="btn orange darken-3 right m-t-m" id="btnOutros" (click)="addItemForaCardapio()">Outros</a>
                     </div>
                 </div>
 
@@ -288,9 +290,9 @@
 
                 <div class="row">
                     <div class="col">
-                        <a class="btn primary-color m-r-s" (click)="fecharPedido()" *ngIf="habilitaFecharPedido">{{ edicao ? 'Salvar Alterações' : 'Fechar
+                        <a class="btn primary-color m-r-s m-t-m" (click)="fecharPedido()" *ngIf="habilitaFecharPedido">{{ edicao ? 'Salvar Alterações' : 'Fechar
                                     Pedido' }}</a>
-                        <a class="btn red darken-2" (click)="cancelarPedido()"
+                        <a class="btn red darken-2 m-t-m" (click)="cancelarPedido()"
                             *ngIf="!edicao">Cancelar Pedido</a>
                     </div>
                 </div>
