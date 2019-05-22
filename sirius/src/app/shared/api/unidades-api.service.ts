@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { take, retry } from 'rxjs/operators';
 
 import { Unidade } from '../models/item-cardapio';
 import { environment } from 'src/environments/environment';
@@ -18,14 +18,20 @@ export class UnidadesApiService {
   }
 
   getAll(): Observable<Unidade[]> {
-    return this.httpClient.get<Unidade[]>(this.url).pipe(take(1));
+    return this.httpClient.get<Unidade[]>(this.url).pipe(
+      retry(3),
+      take(1));
   }
 
   post(unidade: Unidade): Observable<Unidade>  {
-    return this.httpClient.post<Unidade>(this.url, unidade).pipe(take(1));
+    return this.httpClient.post<Unidade>(this.url, unidade).pipe(
+      retry(3),
+      take(1));
   }
 
   delete(id: string): Observable<Unidade>  {
-    return this.httpClient.delete<Unidade>(this.url + `/${id}`).pipe(take(1));
+    return this.httpClient.delete<Unidade>(this.url + `/${id}`).pipe(
+      retry(3),
+      take(1));
   }
 }

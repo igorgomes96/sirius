@@ -18,15 +18,14 @@ export class ErrorInterceptor implements HttpInterceptor {
         tap(_ => {}, (event: HttpEvent<any>) => {
           if (event instanceof HttpErrorResponse) {
             if (event.status === 401) {
-              console.log('Interceptor');
               this.router.navigate(['login']);
               return Observable.create(empty);
             }
-            if (event.status === 403) {
-              this.toast.toast(event.error || event.message);
-              return Observable.create(empty);
+            let mensagem = event.error || event.message;
+            if (typeof(mensagem) === 'object') {
+              mensagem = 'Erro desconhecido! Verifique sua conexão de rede';
             }
-            this.toast.toast(event.error || event.message);
+            this.toast.toast(mensagem);
             return Observable.create(empty);
           }
           return of(event);

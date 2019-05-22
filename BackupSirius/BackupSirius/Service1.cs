@@ -15,24 +15,25 @@ namespace BackupSirius
 {
     public partial class Service1 : ServiceBase
     {
-        Timer timer = new Timer();
+        readonly Timer timer = new Timer();
         public Service1()
         {
             InitializeComponent();
         }
+
 
         protected override void OnStart(string[] args)
         {
             WriteLog("Service is started at " + DateTime.Now);
 
             timer.Elapsed += new ElapsedEventHandler(OnElapsedTime);
-            timer.Interval = int.Parse(ConfigurationManager.AppSettings["interval"]) * 1000; //number in milisecinds
+            timer.Interval = int.Parse(ConfigurationManager.AppSettings["interval"]) * 1000; //number in miliseconds
             timer.Enabled = true;
         }
 
         protected override void OnStop()
         {
-            WriteLog("Service is stopped at " + DateTime.Now);
+            WriteLog("O Serviço foi interrompido às " + DateTime.Now);
         }
 
         private void OnElapsedTime(object source, ElapsedEventArgs e)
@@ -53,24 +54,32 @@ namespace BackupSirius
                     CreateNoWindow = true,
                     UseShellExecute = false,
                     FileName = Path.Combine(Environment.SystemDirectory, "cmd.exe"),
-                    Arguments = ConfigurationManager.AppSettings["cmd"],
                     RedirectStandardOutput = true,
-                    RedirectStandardError = true
+                    RedirectStandardError = true,
+                    RedirectStandardInput = true 
                 };
+
                 proc.StartInfo = startInfo;
                 proc.Start();
 
-                string errorMessage = proc.StandardError.ReadToEnd();
+                using (StreamWriter sw = proc.StandardInput)
+                {
+                    if (sw.BaseStream.CanWrite)
+                    {
+                        var fileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "scripts.txt");
+                        var lines = File.ReadAllLines(fileName);
+                        foreach (var line in lines) 
+                            sw.WriteLine(line);
+                    }
+                }
+
                 proc.WaitForExit();
 
-                string outputMessage = proc.StandardOutput.ReadToEnd();
-                proc.WaitForExit();
+                string message = proc.StandardError.ReadToEnd();
 
-                if (!string.IsNullOrEmpty(outputMessage))
-                    WriteLog($"Log da execução: {Environment.NewLine}{outputMessage}");
+                if (!string.IsNullOrEmpty(message))
+                    WriteLog($"Log da execução: {Environment.NewLine}{message}");
 
-                if (!string.IsNullOrEmpty(errorMessage))
-                    throw new Exception(errorMessage);
             }
             catch (Exception e)
             {

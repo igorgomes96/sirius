@@ -264,3 +264,49 @@ Parâmetros afetados são:
 Removendo a origem do EventLog Service1.
 Serviço Service1 está sendo removido do sistema...
 Serviço Service1 foi removido com êxito do sistema.
+Instalando o assembly 'C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Debug\BackupSirius.exe'.
+Parâmetros afetados são:
+   logtoconsole = 
+   logfile = C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Debug\BackupSirius.InstallLog
+   assemblypath = C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Debug\BackupSirius.exe
+Instalando o serviço Service1...
+Criando a origem de EventLog Service1 no log Application...
+Revertendo o assembly 'C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Debug\BackupSirius.exe'.
+Parâmetros afetados são:
+   logtoconsole = 
+   logfile = C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Debug\BackupSirius.InstallLog
+   assemblypath = C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Debug\BackupSirius.exe
+Restaurando o log de eventos para o estado anterior da origem Service1.
+Ocorreu uma exceção durante a fase de reversão do instalador System.Diagnostics.EventLogInstaller.
+System.Security.SecurityException: Fonte não encontrada, mas alguns ou todos os logs de evento não puderam ser pesquisados. Logs inacessíveis: Security, State.
+Ocorreu uma exceção durante a fase de reversão da instalação. Essa exceção será ignorada e a reversão continuará. Mas talvez o computador não reverta totalmente para o estado inicial após a conclusão da reversão.
+Instalando o assembly 'C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Debug\BackupSirius.exe'.
+Parâmetros afetados são:
+   logtoconsole = 
+   logfile = C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Debug\BackupSirius.InstallLog
+   assemblypath = C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Debug\BackupSirius.exe
+Instalando o serviço Service1...
+Serviço Service1 foi instalado com êxito.
+Criando a origem de EventLog Service1 no log Application...
+Confirmando o assembly 'C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Debug\BackupSirius.exe'.
+Parâmetros afetados são:
+   logtoconsole = 
+   logfile = C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Debug\BackupSirius.InstallLog
+   assemblypath = C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Debug\BackupSirius.exe
+Desinstalando o assembly 'C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Debug\BackupSirius.exe'.
+Parâmetros afetados são:
+   logtoconsole = 
+   logfile = C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Debug\BackupSirius.InstallLog
+   assemblypath = C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Debug\BackupSirius.exe
+Removendo a origem do EventLog Service1.
+Serviço Service1 está sendo removido do sistema...
+Serviço Service1 foi removido com êxito do sistema.
+Desinstalando o assembly 'C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Debug\BackupSirius.exe'.
+Parâmetros afetados são:
+   logtoconsole = 
+   logfile = C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Debug\BackupSirius.InstallLog
+   assemblypath = C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Debug\BackupSirius.exe
+Removendo a origem do EventLog Service1.
+Aviso: a origem Service1 não está registrada no computador local.
+Serviço Service1 está sendo removido do sistema...
+Serviço Service1 foi removido com êxito do sistema.

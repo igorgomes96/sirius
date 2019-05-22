@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { take, map } from 'rxjs/operators';
+import { take, map, retry } from 'rxjs/operators';
 
 import { Usuario } from './../models/usuario';
 import { environment } from './../../../environments/environment';
@@ -19,28 +19,39 @@ export class UsuariosApiService {
 
   getAll(): Observable<Usuario[]> {
     return this.httpClient.get<Usuario[]>(this.url).pipe(
+      retry(3),
       take(1),
       map((usuarios: Usuario[]) => usuarios.filter(u => u.email !== 'admin@admin.com')));
   }
 
   getByNome(nome: string): Observable<Usuario[]> {
-    return this.httpClient.get<Usuario[]>(this.url, { params: { nome: nome }}).pipe(take(1));
+    return this.httpClient.get<Usuario[]>(this.url, { params: { nome: nome }}).pipe(
+      retry(3),
+      take(1));
   }
 
   get(id: string): Observable<Usuario>  {
-    return this.httpClient.get<Usuario>(this.url + `/${id}`).pipe(take(1));
+    return this.httpClient.get<Usuario>(this.url + `/${id}`).pipe(
+      retry(3),
+      take(1));
   }
 
   post(usuario: Usuario): Observable<Usuario>  {
-    return this.httpClient.post<Usuario>(this.url, usuario).pipe(take(1));
+    return this.httpClient.post<Usuario>(this.url, usuario).pipe(
+      retry(3),
+      take(1));
   }
 
   put(id: string, usuario: Usuario): Observable<void> {
-    return this.httpClient.put<void>(this.url + `/${id}`, usuario).pipe(take(1));
+    return this.httpClient.put<void>(this.url + `/${id}`, usuario).pipe(
+      retry(3),
+      take(1));
   }
 
   delete(id: string, senha: string): Observable<Usuario>  {
-    return this.httpClient.post<Usuario>(this.url + `/${id}/delete`, { senha: senha }).pipe(take(1));
+    return this.httpClient.post<Usuario>(this.url + `/${id}/delete`, { senha: senha }).pipe(
+      retry(3),
+      take(1));
   }
 
   // delete(id: string): Observable<Usuario>  {

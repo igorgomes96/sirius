@@ -14,12 +14,17 @@ namespace BackupSirius
         /// </summary>
         static void Main()
         {
+#if !DEBUG
             ServiceBase[] ServicesToRun;
             ServicesToRun = new ServiceBase[]
             {
                 new Service1()
             };
             ServiceBase.Run(ServicesToRun);
+#else
+            Service1 service = new Service1();
+            service.Backup();
+#endif
         }
     }
 }

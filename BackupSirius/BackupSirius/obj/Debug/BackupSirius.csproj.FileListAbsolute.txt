@@ -6,3 +6,4 @@ C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\obj\Debug\Bac
 C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\obj\Debug\BackupSirius.csproj.CoreCompileInputs.cache
 C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\obj\Debug\BackupSirius.exe
 C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\obj\Debug\BackupSirius.pdb
+C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\obj\Debug\BackupSirius.csprojAssemblyReference.cache

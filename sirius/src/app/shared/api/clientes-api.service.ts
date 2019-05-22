@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Cliente } from '../models/cliente';
 import { Observable } from 'rxjs';
-import { take, map } from 'rxjs/operators';
+import { take, map, retry } from 'rxjs/operators';
 import { UtilService } from '../services/util.service';
 import { Util } from '../services/util';
 
@@ -34,40 +34,48 @@ export class ClientesApiService {
 
   getAll(): Observable<Cliente[]> {
     return this.httpClient.get<Cliente[]>(this.url).pipe(
+      retry(3),
       take(1),
       map(this.mapClientes));
   }
 
   getByNome(nome: string): Observable<Cliente[]> {
     return this.httpClient.get<Cliente[]>(this.url, { params: { nome: nome } }).pipe(
+      retry(3),
       take(1),
       map(this.mapClientes));
   }
 
   getByTelefone(telefone: string): Observable<Cliente[]> {
     return this.httpClient.get<Cliente[]>(this.url, { params: { telefone: telefone } }).pipe(
+      retry(3),
       take(1),
       map(this.mapClientes));
   }
 
   get(id: string): Observable<Cliente> {
     return this.httpClient.get<Cliente>(this.url + `/${id}`).pipe(
+      retry(3),
       take(1),
       map(this.mapCliente));
   }
 
   post(cliente: Cliente): Observable<Cliente> {
     return this.httpClient.post<Cliente>(this.url, cliente).pipe(
+      retry(3),
       take(1),
       map(this.mapCliente));
   }
 
   put(id: string, cliente: Cliente): Observable<void> {
-    return this.httpClient.put<void>(this.url + `/${id}`, cliente).pipe(take(1));
+    return this.httpClient.put<void>(this.url + `/${id}`, cliente).pipe(
+      retry(3),
+      take(1));
   }
 
   delete(id: string): Observable<Cliente> {
     return this.httpClient.delete<Cliente>(this.url + `/${id}`).pipe(
+      retry(3),
       take(1),
       map(this.mapCliente));
   }
