@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Pedido } from '../../models/pedido';
 import { UsuarioService } from '../../services/usuario.service';
 import { Router } from '@angular/router';
+import { PedidosApiService } from '../../api/pedidos-api.service';
 
 declare var $: any;
 @Component({
@@ -24,8 +25,10 @@ export class CardAgendaComponent implements OnInit {
   @Output() restaurar: EventEmitter<Pedido> = new EventEmitter<Pedido>();
   @Output() editPedido = new EventEmitter<Pedido>();
   @Output() deletePedido = new EventEmitter<Pedido>();
+  @Output() imprimePedido = new EventEmitter<Pedido>();
 
-  constructor(private usuarioService: UsuarioService, private router: Router) { }
+  constructor(private usuarioService: UsuarioService, private router: Router,
+    private api: PedidosApiService) { }
 
   ngOnInit() {
     this.isAdmin = this.usuarioService.isAdmin();
@@ -57,11 +60,29 @@ export class CardAgendaComponent implements OnInit {
   }
 
   imprimir() {
+    if (this.pedido.impressao && this.pedido.impressao.horario && this.pedido.impressao.usuario) {
+      // tslint:disable-next-line: max-line-length
+      const confirmacao = confirm(`Esse pedido foi impresso às ${new Date(this.pedido.impressao.horario).toLocaleString()} por ${this.pedido.impressao.usuario.nome}. Deseja imprimir novamente?`);
+      if (confirmacao) {
+        this.imprime();
+      }
+    } else {
+      this.imprime();
+    }
+  }
+
+  private imprime() {
+    this.api.postImpressao(this.pedido._id)
+    .subscribe(pedidoAlterado => {
+      this.pedido = pedidoAlterado;
+    });
+
+    let str = this.pedido.itens.map(i => `<li>${i.quantidade} un. de ${i.nome}</li>`)
+      .reduce((acc, cur) => `${acc}\n${cur}`, '<ul>') + '</ul>';
+    str = this.htmlImpressao.replace('@DADOS', str);
     const w = window.open('', 'print');
     if (w) {
-      const str = this.pedido.itens.map(i => `<li>${i.quantidade} un. de ${i.nome}</li>`)
-        .reduce((acc, cur) => `${acc}\n${cur}`, '<ul>') + '</ul>';
-      w.document.write(this.htmlImpressao.replace('@DADOS', str));
+      w.document.write(str);
       setTimeout(() => {
         w.document.close();
       }, 1000);

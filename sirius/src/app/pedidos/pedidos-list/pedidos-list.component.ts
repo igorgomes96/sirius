@@ -65,7 +65,7 @@ export class PedidosListComponent implements OnInit, OnDestroy {
     // this.pedidosService.data = this.data;
   }
 
-  print() {
+  /*print() {
     this.api.getImpressoes()
       .subscribe((impressoes: any[]) => {
         let confirmation = false;
@@ -81,7 +81,7 @@ export class PedidosListComponent implements OnInit, OnDestroy {
           this.api.postImpressao().subscribe();
         }
       });
-  }
+  }*/
 
   atualizaPedido(pedido: Pedido) {
     this.api.put(pedido._id, pedido)

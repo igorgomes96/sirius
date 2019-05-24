@@ -360,6 +360,25 @@ function PedidosController(app) {
         })
     }
 
+    this.imprimePedido = function(id, usuario, callback) {
+        Pedido.findOne({ _id: id })
+            .then(function(pedido) {
+                if (!pedido.impressao.horario) {
+                    pedido.impressao = {
+                        usuario: {
+                            nome: usuario.nome,
+                            email: usuario.email
+                        },
+                        horario: new Date()
+                    }
+                }
+                console.log(pedido.impressao);
+                return Pedido.findOneAndUpdate({ _id: id }, { $set: { impressao: pedido.impressao } }, { new: true });
+            }).then(function(pedido) {
+                callback(null, pedido);
+            }).catch(callback);
+    }
+
     this.addItens = function (idPedido, itens, callback) {
         itens = itens.map(item => {
             if (!item.hasOwnProperty('_id') || !item._id) {

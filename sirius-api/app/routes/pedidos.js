@@ -135,6 +135,17 @@ module.exports = function (app) {
     });
   });
 
+  app.post('/api/pedidos/:id/imprime', function (req, res) {
+    const usuario = req.session.usuario;
+    ctrl.imprimePedido(req.params.id, usuario, function (err, result) {
+      if (err) {
+        res.status(500).json(err);
+      } else {
+        res.json(result);
+      }
+    });
+  });
+
 
   app.post('/api/pedidos/:id/delete', function (req, res) {
     const usuario = req.session.usuario;

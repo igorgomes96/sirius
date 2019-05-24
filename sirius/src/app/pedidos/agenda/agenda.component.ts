@@ -5,6 +5,7 @@ import { ToastsService } from 'src/app/shared/services/toasts.service';
 import { PedidosService } from 'src/app/shared/services/pedidos.service';
 import { datepicker } from 'src/environments/datepicker-options';
 import { Router } from '@angular/router';
+import { tap } from 'rxjs/operators';
 
 declare var $: any;
 
@@ -73,6 +74,16 @@ export class AgendaComponent implements OnInit {
     this.api.getByData(this.data)
       .subscribe((pedidos: Pedido[]) => {
         this.pedidos = pedidos;
+      });
+  }
+
+  imprimePedido(pedido: Pedido) {
+    this.api.postImpressao(pedido._id)
+      .subscribe(pedidoAlterado => {
+        let pedidoEncontrado = this.pedidos.find(p => p._id === pedido._id);
+        if (pedidoEncontrado) {
+          pedidoEncontrado = pedidoAlterado;
+        }
       });
   }
 

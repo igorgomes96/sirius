@@ -150,9 +150,8 @@ export class PedidosApiService {
       take(1));
   }
 
-  postImpressao(): Observable<any> {
-    return this.httpClient.post<any>(this.url + `/impressoes`, null).pipe(
-      retry(3),
+  postImpressao(id: string): Observable<any> {
+    return this.httpClient.post<any>(this.url + `/${id}/imprime`, null).pipe(
       take(1));
   }
 }

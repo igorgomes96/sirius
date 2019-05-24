@@ -15,9 +15,15 @@ export class Pedido {
     usuario: Usuario;
     pago: boolean;
     exclusao: Exclusao;
+    impressao: Impressao;
 }
 
 export class Exclusao {
+    horario: Date;
+    usuario: Usuario;
+}
+
+export class Impressao {
     horario: Date;
     usuario: Usuario;
 }

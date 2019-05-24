@@ -53,7 +53,14 @@ module.exports = function (app) {
                 email: String,
             }
         },
-        pago: Boolean
+        pago: Boolean,
+        impressao: {
+            usuario:{
+                nome: String,
+                email: String,
+            },
+            horario: Date
+        }
     });
 
     return db.model('pedidos', pedidoSchema);
