@@ -3,6 +3,7 @@ import { Pedido } from '../../models/pedido';
 import { UsuarioService } from '../../services/usuario.service';
 import { Router } from '@angular/router';
 
+declare var $: any;
 @Component({
   selector: 'app-card-agenda',
   templateUrl: './card-agenda.component.html',
@@ -11,6 +12,8 @@ import { Router } from '@angular/router';
 export class CardAgendaComponent implements OnInit {
 
   isAdmin = false;
+  htmlImpressao = `<style>ul{list-style-type: none;padding: 0;}</style><body onload="window.focus(); window.print()">
+    <h2>Teste</h2>@DADOS</body>`;
 
   @Input() enbableCkbPago = true;
   @Input() showActions = true;
@@ -51,6 +54,18 @@ export class CardAgendaComponent implements OnInit {
   get valorTotal() {
     return this.pedido.itens.map(i => i.valor * (!i.quantidade ? 0 : i.quantidade))
       .reduce((p, c) => p + c);
+  }
+
+  imprimir() {
+    const w = window.open('', 'print');
+    if (w) {
+      const str = this.pedido.itens.map(i => `<li>${i.quantidade} un. de ${i.nome}</li>`)
+        .reduce((acc, cur) => `${acc}\n${cur}`, '<ul>') + '</ul>';
+      w.document.write(this.htmlImpressao.replace('@DADOS', str));
+      setTimeout(() => {
+        w.document.close();
+      }, 1000);
+    }
   }
 
 

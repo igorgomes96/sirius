@@ -91,7 +91,7 @@ export class PedidosListComponent implements OnInit, OnDestroy {
   private imprimir() {
     const w = window.open('', 'print');
     if (w) {
-      w.document.write(htmlImpressao.replace('@DADOS', $('#pedidos').html()));
+      w.document.write(htmlImpressao.replace('@DADOS', $('table').html()));
       setTimeout(() => {
         w.document.close();
       }, 1000);
