@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.ServiceProcess;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 
@@ -15,7 +16,8 @@ namespace BackupSirius
 {
     public partial class Service1 : ServiceBase
     {
-        readonly Timer timer = new Timer();
+        private bool active = true;
+        //readonly Timer timer = new Timer();
         public Service1()
         {
             InitializeComponent();
@@ -24,62 +26,100 @@ namespace BackupSirius
 
         protected override void OnStart(string[] args)
         {
-            WriteLog("Service is started at " + DateTime.Now);
-
-            timer.Elapsed += new ElapsedEventHandler(OnElapsedTime);
-            timer.Interval = int.Parse(ConfigurationManager.AppSettings["interval"]) * 1000; //number in miliseconds
-            timer.Enabled = true;
+            WriteLog("Serviço iniciado em " + DateTime.Now);
+            active = true;
+            Thread th = new Thread(Backup);
+            th.Start();
+            //timer.Elapsed += new ElapsedEventHandler(OnElapsedTime);
+            //timer.Interval = int.Parse(ConfigurationManager.AppSettings["interval"]) * 1000; //number in miliseconds
+            //timer.Enabled = true;
         }
 
         protected override void OnStop()
         {
+            active = false;
             WriteLog("O Serviço foi interrompido às " + DateTime.Now);
         }
 
-        private void OnElapsedTime(object source, ElapsedEventArgs e)
-        {
-            Backup();
-            WriteLog("Backup finalizado: " + DateTime.Now);
-        }
+        //private void OnElapsedTime(object source, ElapsedEventArgs e)
+        //{
+        //    Backup();
+        //}
 
         public void Backup()
         {
             try
             {
-                WriteLog("Iniciando backup... " + DateTime.Now);
-                Process proc = new Process();
-                ProcessStartInfo startInfo = new ProcessStartInfo
+                while (active)
                 {
-                    WindowStyle = ProcessWindowStyle.Hidden,
-                    CreateNoWindow = true,
-                    UseShellExecute = false,
-                    FileName = Path.Combine(Environment.SystemDirectory, "cmd.exe"),
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    RedirectStandardInput = true 
-                };
-
-                proc.StartInfo = startInfo;
-                proc.Start();
-
-                using (StreamWriter sw = proc.StandardInput)
-                {
-                    if (sw.BaseStream.CanWrite)
+                    WriteLog("Iniciando backup... " + DateTime.Now);
+                    Process proc = new Process();
+                    ProcessStartInfo startInfo = new ProcessStartInfo
                     {
-                        var fileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "scripts.txt");
-                        var lines = File.ReadAllLines(fileName);
-                        foreach (var line in lines) 
-                            sw.WriteLine(line);
+                        FileName = "cmd.exe",
+                        CreateNoWindow = true,
+                        UseShellExecute = false,
+                        RedirectStandardError = true,
+                        RedirectStandardOutput = true,
+                        RedirectStandardInput = true
+                    };
+                    proc.StartInfo = startInfo;
+                    proc.Start();
+
+                    using (StreamWriter sw = proc.StandardInput)
+                    {
+                        if (sw.BaseStream.CanWrite)
+                        {
+                            foreach (var line in File.ReadAllLines(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "scripts-backup.txt"))) {
+                                var novaLinha = line.Replace("\r", "");
+                                sw.WriteLine(novaLinha);
+                            }
+                        }
                     }
+
+                    string messageError = proc.StandardError.ReadToEnd();
+                    string messageOutput = proc.StandardOutput.ReadToEnd();
+
+
+                    WriteLog($"------------Standard Error - Backup------------\n{messageError}\n\n------------Standard Output - Backup------------\n{messageOutput}\n");
+
+                    string scriptLog = File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "scripts-log.txt"));
+
+                    proc = new Process();
+                    startInfo = new ProcessStartInfo
+                    {
+                        FileName = "cmd.exe",
+                        CreateNoWindow = true,
+                        UseShellExecute = false,
+                        RedirectStandardError = true,
+                        RedirectStandardOutput = true,
+                        RedirectStandardInput = true
+                    };
+                    proc.StartInfo = startInfo;
+                    proc.Start();
+
+                    using (StreamWriter sw = proc.StandardInput)
+                    {
+                        if (sw.BaseStream.CanWrite)
+                        {
+                            foreach (var line in scriptLog.Split('\n'))
+                            {
+                                var novaLinha = line.Replace("\r", "");
+                                sw.WriteLine(novaLinha);
+                            }
+                        }
+                    }
+
+                    messageError = proc.StandardError.ReadToEnd();
+                    messageOutput = proc.StandardOutput.ReadToEnd();
+
+                    proc.WaitForExit();
+
+                    WriteLog($"------------Standard Error - Log------------\n{messageError}\n\n------------Standard Output - Log------------\n{messageOutput}\n");
+                    WriteLog("Backup finalizado: " + DateTime.Now);
+
+                    Thread.Sleep(int.Parse(ConfigurationManager.AppSettings["interval"]) * 1000);
                 }
-
-                proc.WaitForExit();
-
-                string message = proc.StandardError.ReadToEnd();
-
-                if (!string.IsNullOrEmpty(message))
-                    WriteLog($"Log da execução: {Environment.NewLine}{message}");
-
             }
             catch (Exception e)
             {

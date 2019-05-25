@@ -73,7 +73,8 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="scripts.txt" />
+    <Content Include="scripts-backup.txt" />
+    <Content Include="scripts-log.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

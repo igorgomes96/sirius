@@ -1,0 +1,3 @@
+﻿mongo mongodb://kamino.mongodb.umbler.com:53768/sirius --username sirius --password [jZ[*2cdZ.4I
+use sirius
+db.backup.insertOne({ "mensagem": "Sucesso!" ,"horario" : new Date() })
