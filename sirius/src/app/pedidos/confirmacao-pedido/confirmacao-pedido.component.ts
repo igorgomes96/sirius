@@ -22,7 +22,8 @@ export class ConfirmacaoPedidoComponent implements OnInit {
   constructor(private route: ActivatedRoute,
     private api: PedidosApiService,
     private toasts: ToastsService,
-    private router: Router) { }
+    private router: Router,
+    private util: UtilService) { }
 
   ngOnInit() {
 
@@ -72,9 +73,12 @@ export class ConfirmacaoPedidoComponent implements OnInit {
 
   salvar(imprimir = false) {
     this.api.confirmacaoPedido(this.pedido._id, this.pedido)
-      .subscribe(_ => {
+      .subscribe(() => {
         this.toasts.toast('Pedido salvo com sucesso!');
         this.router.navigate(['/pedidos']);
+        if (imprimir) {
+          this.util.imprimirPedido(this.pedido);
+        }
       });
   }
 

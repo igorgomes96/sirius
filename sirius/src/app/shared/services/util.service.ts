@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Cliente } from '../models/cliente';
+import { Pedido } from '../models/pedido';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,17 @@ export class UtilService {
 
   public getTime(data: Date) {
     return data.toISOString().substr(11, 5);
+  }
+
+  public imprimirPedido(pedido: Pedido) {
+    const str = pedido.itens.map(i => `${i.quantidade} un. de ${i.nome}\n`)
+      .reduce((acc, cur) => `${acc}\n${cur}`, `Salgados Sirius\n\nCliente: ${pedido.cliente.nome}\n`);
+
+    try {
+      window.navigator['share']({ data: str });
+    } catch {
+      alert('Seu navegador não é compatível com a função de impressão.');
+    }
   }
 
   public stringToDate(date: any, format: any, delimiter: any): any {
