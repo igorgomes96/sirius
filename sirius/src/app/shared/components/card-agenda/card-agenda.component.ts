@@ -80,24 +80,6 @@ export class CardAgendaComponent implements OnInit {
 
     this.utilService.imprimirPedido(this.pedido);
 
-    /*let str = this.pedido.itens.map(i => `<li>${i.quantidade} un. de ${i.nome}</li>`)
-      .reduce((acc, cur) => `${acc}\n${cur}`, '<ul>') + '</ul>';
-    str = this.htmlImpressao.replace('@DADOS', str);
-    const w = window.open('', 'print');
-    if (w) {
-      w.document.write(str);
-      setTimeout(() => {
-        w.document.close();
-      }, 1000);
-    }*/
-    // const str = this.pedido.itens.map(i => `${i.quantidade} un. de ${i.nome}\n`)
-    //   .reduce((acc, cur) => `${acc}\n${cur}`, 'Teste\n');
-
-    // try {
-    //   window.navigator['share']({ data: str });
-    // } catch {
-    //   alert('Seu navegador não é compatível com a função de impressão.');
-    // }
   }
 }
 

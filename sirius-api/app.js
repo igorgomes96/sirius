@@ -10,6 +10,8 @@ var HmacSHA1 = require("crypto-js/hmac-sha1");
 
 var async = require('async');
 
+require('dotenv').config();
+
 /* iniciar o objeto do express */
 var app = express();
 app.moment = moment;
@@ -33,7 +35,7 @@ app.use(cors({
 /* configura o middleware express-session */
 var config = require('./app/config/config.js');
 var store = new MongoDBStore({
-	uri: config.productionMode ? config.connectionStringProd : config.connectionStringDev,
+	uri: process.env['NODE_ENV'] === 'prod' ? config.connectionStringProd : config.connectionStringDev,
 	collection: 'sessions'
 });
 
@@ -191,6 +193,18 @@ var allowedExt = [
 	'.svg',
 ];
 var path = require('path');
+
+app.get('*', (req, res, next) => {
+    if (req.headers['x-forwarded-proto'] != 'https' && process.env['NODE_ENV'] === 'prod') {
+		// check if the header returns HTTP or HTTPS
+        res.redirect("https://" + req.headers.host + req.url);
+		// redirects to HTTPS
+    } else {
+        next();
+		// continues executing the file
+    }
+});
+
 app.get('*', function (req, res) {
 	if (allowedExt.filter(ext => req.url.indexOf(ext) > 0).length > 0) {
 		res.sendFile(path.resolve(`public/${req.url}`));

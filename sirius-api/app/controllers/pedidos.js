@@ -372,7 +372,6 @@ function PedidosController(app) {
                         horario: new Date()
                     }
                 }
-                console.log(pedido.impressao);
                 return Pedido.findOneAndUpdate({ _id: id }, { $set: { impressao: pedido.impressao } }, { new: true });
             }).then(function(pedido) {
                 callback(null, pedido);

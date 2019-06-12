@@ -20,10 +20,10 @@ export class UtilService {
 
   public imprimirPedido(pedido: Pedido) {
     const str = pedido.itens.map(i => `${i.quantidade} un. de ${i.nome}\n`)
-      .reduce((acc, cur) => `${acc}\n${cur}`, `Salgados Sirius\n\nCliente: ${pedido.cliente.nome}\n`);
+      .reduce((acc, cur) => `${acc}${cur}`, `Salgados Sirius\n\nCliente: ${pedido.cliente.nome}\n\n`);
 
     try {
-      window.navigator['share']({ data: str });
+      window.navigator['share']({ text: str });
     } catch {
       alert('Seu navegador não é compatível com a função de impressão.');
     }
