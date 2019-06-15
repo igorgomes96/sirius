@@ -20,7 +20,11 @@ export class UtilService {
 
   public imprimirPedido(pedido: Pedido, tamanhoLinha: number = 38) {
 
-    let str = `Salgados Sirius\nCliente: ${pedido.cliente.nome}\nEnd.: ${pedido.enderecoStr}\nPago? ${pedido.pago ? 'Sim' : 'Não'}\n\n`;
+    let endereco = 'Cliente não solicitou entrega.\n';
+    if (pedido.entregar) {
+      endereco = `End.: ${pedido.enderecoStr}\n`;
+    }
+    let str = `Salgados Sirius\nCliente: ${pedido.cliente.nome}\n${endereco}Pago? ${pedido.pago ? 'Sim' : 'Não'}\n\n`;
 
     pedido.itens.forEach(item => {
       const nome = `${item.quantidade} un. de ${item.nome} .`;
@@ -32,11 +36,11 @@ export class UtilService {
     const total = ` ${this.convertToReal(pedido.itens.reduce((prev, cur) => prev + (cur.quantidade * cur.valor), 0))}`;
     const difTotal = tamanhoLinha - ((totalStr.length + total.length) % tamanhoLinha);
     str += `\n${totalStr}${'.'.repeat(difTotal)}${total}\n`;
-    console.log(str);
 
     try {
       window.navigator['share']({ text: str });
     } catch {
+      console.log(str);
       alert('Seu navegador não é compatível com a função de impressão.');
     }
   }

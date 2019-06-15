@@ -196,17 +196,14 @@ export class PedidosFormComponent implements OnInit {
 
     // Verifica se cria um novo pedido ou atualiza um pedido existente
     let httpCall: Observable<Pedido | void>;
-    let pedidoCall: Observable<Pedido | void>;
-    if (this.edicao) {
-      pedidoCall = this.api.put(this.pedido._id, this.pedido);
-    } else {
-      pedidoCall = this.api.post(this.pedido);
-    }
 
     // Verifica se cria um novo cliente ou atualiza um cliente existente
     if (!this.pedido.cliente._id) {
       httpCall = this.clientesApi.post(this.pedido.cliente)
-        .pipe(switchMap(_ => pedidoCall));
+        .pipe(
+          tap((novoCliente: Cliente) => this.pedido.cliente._id = novoCliente._id),
+          switchMap(_ => this.pedidoCall)
+        );
     } else if (this.atualizarCliente) {
       httpCall = this.clientesApi.put(this.pedido.cliente._id, this.pedido.cliente)
         .pipe(
@@ -216,10 +213,10 @@ export class PedidosFormComponent implements OnInit {
             }
             return of(null);
           }),
-          switchMap(_ => pedidoCall)
+          switchMap(_ => this.pedidoCall)
         );
     } else {
-      httpCall = pedidoCall;
+      httpCall = this.pedidoCall;
     }
 
     httpCall.pipe().subscribe((pedidoCriado: any) => {
@@ -230,6 +227,14 @@ export class PedidosFormComponent implements OnInit {
       }
     });
 
+  }
+
+  get pedidoCall(): Observable<Pedido | void> {
+    if (this.edicao) {
+      return this.api.put(this.pedido._id, this.pedido);
+    } else {
+      return this.api.post(this.pedido);
+    }
   }
 
   get habilitaFecharPedido() {

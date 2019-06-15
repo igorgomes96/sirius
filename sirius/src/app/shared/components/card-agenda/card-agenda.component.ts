@@ -73,13 +73,8 @@ export class CardAgendaComponent implements OnInit {
   }
 
   private imprime() {
-    this.api.postImpressao(this.pedido._id)
-      .subscribe(pedidoAlterado => {
-        this.pedido = pedidoAlterado;
-      });
-
+    this.api.postImpressao(this.pedido._id).subscribe();
     this.utilService.imprimirPedido(this.pedido);
-
   }
 }
 

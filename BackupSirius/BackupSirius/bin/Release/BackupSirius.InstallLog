@@ -155,3 +155,43 @@ Parâmetros afetados são:
    logtoconsole = 
    assemblypath = C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Release\BackupSirius.exe
    logfile = C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Release\BackupSirius.InstallLog
+Instalando o assembly 'C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Release\BackupSirius.exe'.
+Parâmetros afetados são:
+   logtoconsole = 
+   assemblypath = C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Release\BackupSirius.exe
+   logfile = C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Release\BackupSirius.InstallLog
+Instalando o serviço Service1...
+Criando a origem de EventLog Service1 no log Application...
+Revertendo o assembly 'C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Release\BackupSirius.exe'.
+Parâmetros afetados são:
+   logtoconsole = 
+   assemblypath = C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Release\BackupSirius.exe
+   logfile = C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Release\BackupSirius.InstallLog
+Restaurando o log de eventos para o estado anterior da origem Service1.
+Desinstalando o assembly 'C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Release\BackupSirius.exe'.
+Parâmetros afetados são:
+   logtoconsole = 
+   assemblypath = C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Release\BackupSirius.exe
+   logfile = C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Release\BackupSirius.InstallLog
+Removendo a origem do EventLog Service1.
+Ocorreu uma exceção durante a desinstalação do instalador System.Diagnostics.EventLogInstaller.
+System.Security.SecurityException: Acesso ao Registro solicitado não é permitido.
+Ocorreu uma exceção ao desinstalar. Essa exceção será ignorada e a desinstalação continuará. Mas talvez o aplicativo não seja totalmente desinstalado após a conclusão da desinstalação.
+Desinstalando o assembly 'C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Release\BackupSirius.exe'.
+Parâmetros afetados são:
+   logtoconsole = 
+   assemblypath = C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Release\BackupSirius.exe
+   logfile = C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Release\BackupSirius.InstallLog
+Removendo a origem do EventLog Service1.
+Ocorreu uma exceção durante a desinstalação do instalador System.Diagnostics.EventLogInstaller.
+System.Security.SecurityException: Acesso ao Registro solicitado não é permitido.
+Ocorreu uma exceção ao desinstalar. Essa exceção será ignorada e a desinstalação continuará. Mas talvez o aplicativo não seja totalmente desinstalado após a conclusão da desinstalação.
+Desinstalando o assembly 'C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Release\BackupSirius.exe'.
+Parâmetros afetados são:
+   logtoconsole = 
+   assemblypath = C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Release\BackupSirius.exe
+   logfile = C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Release\BackupSirius.InstallLog
+Removendo a origem do EventLog Service1.
+Serviço Service1 está sendo removido do sistema...
+Serviço Service1 foi removido com êxito do sistema.
+Tentativa de parar o serviço Service1.

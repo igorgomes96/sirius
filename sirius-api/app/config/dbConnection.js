@@ -8,7 +8,7 @@ module.exports = function(app) {
     mongoose.connect(process.env['NODE_ENV'] === 'prod' ? 
         app.config.config.connectionStringProd : 
         app.config.config.connectionStringDev,
-        { useNewUrlParser: true, autoIndex: process.env['NODE_ENV'] === 'dev' });
+        { useNewUrlParser: true });  // autoIndex: process.env['NODE_ENV'] === 'dev'
     mongoose.pluralize(null);
     // mockgoose.prepareStorage().then(function() {
     //     console.log('mockgoose prepared.');	
