@@ -195,3 +195,16 @@ Removendo a origem do EventLog Service1.
 Serviço Service1 está sendo removido do sistema...
 Serviço Service1 foi removido com êxito do sistema.
 Tentativa de parar o serviço Service1.
+Instalando o assembly 'C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Release\BackupSirius.exe'.
+Parâmetros afetados são:
+   logtoconsole = 
+   assemblypath = C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Release\BackupSirius.exe
+   logfile = C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Release\BackupSirius.InstallLog
+Instalando o serviço Service1...
+Serviço Service1 foi instalado com êxito.
+Criando a origem de EventLog Service1 no log Application...
+Confirmando o assembly 'C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Release\BackupSirius.exe'.
+Parâmetros afetados são:
+   logtoconsole = 
+   assemblypath = C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Release\BackupSirius.exe
+   logfile = C:\Users\igorg\Documents\Projetos\sirius\BackupSirius\BackupSirius\bin\Release\BackupSirius.InstallLog
