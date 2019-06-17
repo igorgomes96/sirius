@@ -70,7 +70,8 @@ namespace BackupSirius
                     {
                         if (sw.BaseStream.CanWrite)
                         {
-                            foreach (var line in File.ReadAllLines(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "scripts-backup.txt"))) {
+                            foreach (var line in File.ReadAllLines(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "scripts-backup.txt")))
+                            {
                                 var novaLinha = line.Replace("\r", "");
                                 sw.WriteLine(novaLinha);
                             }
@@ -118,6 +119,8 @@ namespace BackupSirius
                     WriteLog($"------------Standard Error - Log------------\n{messageError}\n\n------------Standard Output - Log------------\n{messageOutput}\n");
                     WriteLog("Backup finalizado: " + DateTime.Now);
 
+                    AtualizaProjeto();
+                    
                     Thread.Sleep(int.Parse(ConfigurationManager.AppSettings["interval"]) * 1000);
                 }
             }
@@ -125,6 +128,36 @@ namespace BackupSirius
             {
                 WriteLog($"Erro ao executar comando: {e.Message}{Environment.NewLine}{e.StackTrace}");
             }
+        }
+
+        public void AtualizaProjeto()
+        {
+            WriteLog("Baixando alterações do Projeto via Git.");
+
+            Process proc = new Process();
+            ProcessStartInfo startInfo = new ProcessStartInfo
+            {
+                FileName = "cmd.exe",
+                CreateNoWindow = true,
+                UseShellExecute = false,
+                RedirectStandardError = true,
+                RedirectStandardOutput = true,
+                RedirectStandardInput = true
+            };
+            proc.StartInfo = startInfo;
+            proc.Start();
+
+            using (StreamWriter sw = proc.StandardInput)
+            {
+                sw.WriteLine("cd..");
+                sw.WriteLine("git pull umbler master");
+            }
+
+            string messageError = proc.StandardError.ReadToEnd();
+            string messageOutput = proc.StandardOutput.ReadToEnd();
+
+
+            WriteLog($"------------Standard Error - Git Pull------------\n{messageError}\n\n------------Standard Output - Git Pull------------\n{messageOutput}\n");
         }
 
         /// <summary>
