@@ -149,8 +149,9 @@ namespace BackupSirius
 
             using (StreamWriter sw = proc.StandardInput)
             {
+                sw.WriteLine("cd " + AppDomain.CurrentDomain.BaseDirectory);
                 sw.WriteLine("cd..");
-                sw.WriteLine("git pull umbler master");
+                sw.WriteLine("git pull");
             }
 
             string messageError = proc.StandardError.ReadToEnd();
