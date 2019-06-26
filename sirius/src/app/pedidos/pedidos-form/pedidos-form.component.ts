@@ -113,6 +113,7 @@ export class PedidosFormComponent implements OnInit {
         const salgadoFesta = this.salgadosFesta.find(s => s._id === salgado._id);
         if (salgadoFesta) {
           salgadoFesta.quantidade = salgado.quantidade;
+          salgadoFesta.comPimenta = salgado.comPimenta;
           if (salgadoFesta.reserva) {
             salgadoFesta.reserva += salgado.quantidade;
           }
@@ -124,6 +125,7 @@ export class PedidosFormComponent implements OnInit {
         const salgadoComercial = this.salgadosComerciais.find(s => s._id === salgado._id);
         if (salgadoComercial) {
           salgadoComercial.quantidade = salgado.quantidade;
+          salgadoComercial.comPimenta = salgado.comPimenta;
           if (salgadoComercial.reserva) {
             salgadoComercial.reserva += salgado.quantidade;
           }

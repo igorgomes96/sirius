@@ -14,6 +14,7 @@ module.exports = function (app) {
                 },
                 tipo: String,
                 detalhes: String,
+                comPimenta: Boolean,
                 quantidade: Number
             }
         ],

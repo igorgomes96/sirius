@@ -9,17 +9,23 @@
         <small class="description" *ngIf="item.detalhes">({{ item.detalhes }})</small>
       </h6>
       R$ {{ item.valor | number:'1.2-2' }} {{ item.unidade.sigla }}
-      <br>
+      <div class="m-t-s">
+        <label>
+          <input type="checkbox" [(ngModel)]="item.comPimenta" />
+          <span>Com Pimenta</span>
+        </label>
+      </div>
 
       <span class="new badge m-t-s" [ngClass]="classReserva()"
         *ngIf="item.reserva !== null && item.reserva !== undefined"
         data-badge-caption="em reserva">{{ item.reserva }}</span>
     </div>
 
-    <div class="card-action" [class.left]="showAddOption" [ngClass]="showAddOption && excedeReserva ? 'reserva-excedida' : ''">
+    <div class="card-action" [class.left]="showAddOption"
+      [ngClass]="showAddOption && excedeReserva ? 'reserva-excedida' : ''">
       <div *ngIf="showAddOption && excedeReserva" class="aviso-reserva">
         <small>Excede a quantidade em reserva!</small>
-      </div>  
+      </div>
       <div *ngIf="showAddOption">
         <!-- <div class="input-field inline m-r-m"> -->
         <div class="input-field m-r-m">
@@ -28,7 +34,7 @@
               <input type="number" [(ngModel)]="item.quantidade" (keyup.enter)="addItem()" placeholder="Qtda.">
             </div>
 
-            <div class="col m9">
+            <div class="col m9" style="padding-left: 0;padding-right: 0;">
               <div class="row" style="margin-bottom: 6px">
                 <div class="col s12">
                   <button *ngFor="let qtda of qtdas.slice(0, qtdas.length / 2).reverse()" (click)="addQtda(qtda)"
@@ -37,7 +43,7 @@
                   </button>
                 </div>
               </div>
-              <div class="row" style="margin-bottom: 0">
+              <div class="row" style="margin-bottom: 0;padding-left: 0;padding-right: 0;">
                 <div class="col s12">
                   <button *ngFor="let qtda of qtdas.slice(qtdas.length / 2).reverse()" (click)="addQtda(qtda)"
                     class="qtda-item">

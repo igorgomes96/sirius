@@ -46,7 +46,7 @@
             <ul class="collection">
               <li class="collection-item" *ngFor="let is of pedido?.itens">
                 <div class="row" style="margin-bottom: 0">
-                  <div class="col m6">
+                  <div class="col m6 s12">
                     <span class="title">
                       <input type="text" [(ngModel)]="is.quantidade" appOnlyNumber="true"
                         [attr.disabled]="!is.selecionado ? '' : null">
@@ -58,23 +58,34 @@
                   <div class="col m3 s6">
                     <small>Un.: R$ {{ is.valor | number:'1.2'}}</small>
                   </div>
-                  <div class="col m3 s12 right-align">
+                  <div class="col m3 s6 right-align">
                     <small>Sub: <strong>R$ {{ (is.valor * is.quantidade) | number:'1.2'}}</strong></small>
                   </div>
 
                 </div>
-                <div class="row" style="margin-bottom: 0">
-                  <button class="btn-small btn-flat right red-text text-darken-2" (click)="removeItem(is)">
-                    Remover
-                  </button>
-                  <button class="btn-small btn-flat right blue-text text-darken-2" *ngIf="!is.selecionado"
-                    (click)="is.selecionado = true">
-                    Editar
-                  </button>
-                  <button class="btn-small btn-flat right blue-text text-darken-2" *ngIf="is.selecionado"
-                    (click)="alteraItem(is)">
-                    Confirmar
-                  </button>
+
+                <div class="row m-t-m" style="margin-bottom: 0;">
+                  <div class="col m5 s12 m-t-s m-b-m">
+                    <small>
+                      <label>
+                        <input type="checkbox" [(ngModel)]="is.comPimenta" />
+                        <span>Com Pimenta</span>
+                      </label>
+                    </small>
+                  </div>
+                  <div class="col m7 s12">
+                    <button class="btn-small btn-flat right red-text text-darken-2" (click)="removeItem(is)">
+                      Remover
+                    </button>
+                    <button class="btn-small btn-flat right blue-text text-darken-2" *ngIf="!is.selecionado"
+                      (click)="is.selecionado = true">
+                      Editar
+                    </button>
+                    <button class="btn-small btn-flat right blue-text text-darken-2" *ngIf="is.selecionado"
+                      (click)="alteraItem(is)">
+                      Confirmar
+                    </button>
+                  </div>
                 </div>
               </li>
             </ul>

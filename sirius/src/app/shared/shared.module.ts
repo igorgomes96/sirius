@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule, CurrencyPipe } from '@angular/common';
+import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
@@ -46,6 +46,6 @@ import { CardAgendaComponent } from './components/card-agenda/card-agenda.compon
     OnlyNumberDirective,
     ConfirmacaoModalComponent
   ],
-  providers: [CurrencyPipe]
+  providers: [CurrencyPipe, DatePipe]
 })
 export class SharedModule { }

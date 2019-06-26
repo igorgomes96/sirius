@@ -2,7 +2,7 @@
   <div class="col s12">
     <div class="card">
       <div class="card-content">
-        <span class="card-title">{{ cliente.nome }}</span>
+        <span class="card-title truncate">{{ cliente.nome }}</span>
 
         <span class="truncate"><i class="material-icons">phone</i> {{ cliente.fone1 | mask:'(00) 00009-0000' }} <span [hidden]="!cliente.fone1 || !cliente.fone2">/</span>
         {{ cliente.fone2 | mask:'(00) 00009-0000' }}</span>
