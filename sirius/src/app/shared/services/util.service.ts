@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Pedido } from '../models/pedido';
-import { CurrencyPipe, DatePipe } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
+import { MaskPipe } from 'ngx-mask';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UtilService {
 
-  constructor(private currencyPipe: CurrencyPipe, private datePipe: DatePipe) { }
+  constructor(private decimalPipe: DecimalPipe, private datePipe: DatePipe, private maskPipe: MaskPipe) { }
 
   public getDateTime(dataStr: string): Date {
     const data = new Date(dataStr);
@@ -25,13 +26,19 @@ export class UtilService {
       endereco = `End.: ${pedido.enderecoStr}\n`;
     }
     const horario = this.datePipe.transform(pedido.horario, 'dd/MM/yy HH:mm');
-    let str = `Salgados Sirius\nHorário: ${horario}\nCliente: ${pedido.cliente.nome}\n${endereco}Pago? ${pedido.pago ? 'Sim' : 'Não'}\n\n`;
+    let telefone = '';
+    if (pedido.cliente.fone1) {
+      // tslint:disable-next-line: max-line-length
+      telefone = this.maskPipe.transform(pedido.cliente.fone1, '(00)00009-0000') + (pedido.cliente.fone2 ? ` / ${this.maskPipe.transform(pedido.cliente.fone2, '(00)00009-0000')}` : '');
+    }
+    // tslint:disable-next-line: max-line-length
+    let str = `Salgados Sirius\nHorário: ${horario}\nCliente: ${pedido.cliente.nome}\nFone: ${telefone}\n${endereco}Pago? ${pedido.pago ? 'Sim' : 'Não'}\n\n`;
     str = this.retira_acentos(str);
 
     pedido.itens.forEach(item => {
       const detalhes = item.detalhes ? ` (${item.detalhes})` : '';
-      const comPimenta = item.comPimenta ? ' - Com Pimenta' : '';
-      const nome = `${item.quantidade} un. de ${item.nome}${comPimenta}${detalhes} .`;
+      const semPimenta = item.semPimenta ? ' - Sem Pimenta' : '';
+      const nome = `${item.quantidade} un. de ${item.nome}${semPimenta}${detalhes} .`;
       const valor = ` ${this.convertToReal(item.quantidade * item.valor)}`;
       const dif = tamanhoLinha - ((nome.length + valor.length) % tamanhoLinha);
       str += `${nome}${'.'.repeat(dif)}${valor}\n`;
@@ -40,6 +47,7 @@ export class UtilService {
     const total = ` ${this.convertToReal(pedido.itens.reduce((prev, cur) => prev + (cur.quantidade * cur.valor), 0))}`;
     const difTotal = tamanhoLinha - ((totalStr.length + total.length) % tamanhoLinha);
     str += this.retira_acentos(`\n${totalStr}${'.'.repeat(difTotal)}${total}\n`);
+    console.log(str);
 
     try {
       window.navigator['share']({ text: str });
@@ -70,8 +78,8 @@ export class UtilService {
   }
 
   convertToReal(num: number): string {
-    return this.currencyPipe.transform(num, 'BRL', 'R$ ')
-      .replace('.', '@').replace(',', '.').replace('@', ',');
+    return 'R$ ' + this.decimalPipe.transform(num, '1.2-2');
+    // .replace('.', '@').replace(',', '.').replace('@', ',');
   }
 
   public stringToDate(date: any, format: any, delimiter: any): any {

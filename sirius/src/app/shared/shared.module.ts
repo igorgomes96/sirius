@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
+import { CommonModule, DatePipe, DecimalPipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
@@ -7,7 +7,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { CardCardapioComponent } from './components/card-cardapio/card-cardapio.component';
 import { CardPedidoComponent } from './components/card-pedido/card-pedido.component';
 import { CardClienteComponent } from './components/card-cliente/card-cliente.component';
-import { NgxMaskModule } from 'ngx-mask';
+import { NgxMaskModule, MaskPipe } from 'ngx-mask';
 import { CardReservaComponent } from './components/card-reserva/card-reserva.component';
 import { CardUsuarioComponent } from './components/card-usuario/card-usuario.component';
 import { ValidatorMessageComponent } from './components/validator-message/validator-message.component';
@@ -46,6 +46,6 @@ import { CardAgendaComponent } from './components/card-agenda/card-agenda.compon
     OnlyNumberDirective,
     ConfirmacaoModalComponent
   ],
-  providers: [CurrencyPipe, DatePipe]
+  providers: [DecimalPipe, DatePipe, MaskPipe]
 })
 export class SharedModule { }

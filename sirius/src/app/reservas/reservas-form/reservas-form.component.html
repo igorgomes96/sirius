@@ -1,12 +1,12 @@
 <div class="section">
   <div class="row">
-    <div class="col m6 s1">
+    <div class="col offset-l3 l6 offset-m2 m8 s12">
       <h5>Cadastrar Reserva</h5>
     </div>
   </div>
 
   <div class="row">
-    <div class="col s12">
+    <div class="col offset-l3 l6 offset-m2 m8 s12">
       <div class="card-panel">
         <div class="row">
           <div class="col s12">
@@ -14,31 +14,11 @@
             <form [formGroup]="form">
 
               <div class="row">
-                <div class="col m6 s12">
-
-                  <!-- Somente Salgados de Festa -->
-                  <!-- <div class="row">  
-                    <div class="col s12">
-                      <div class="input-field">
-                        <select name="tipo" formControlName="tipo">
-                          <option [value]="TipoSalgado.Comercial" selected>Salgados Comerciais</option>
-                          <option [value]="TipoSalgado.Festa">Salgados de Festa</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div> -->
+                <div class="col s12">
 
                   <div class="row">
                     <div class="input-field col s12">
-                      <i class="material-icons prefix">fastfood</i>
-                      <input type="text" id="pesquisa" autocomplete="off" class="autocomplete" formControlName="pesquisa">
-                      <label for="pesquisa" [class.active]="hasValue('pesquisa')">Salgado</label>
-                      <app-validator-message controlName="Pesquisa" [control]="form.get('pesquisa')"></app-validator-message>
-                    </div>
-                  </div>
-
-                  <div class="row">
-                    <div class="input-field col s12">
+                      <i class="material-icons prefix">calendar_today</i>
                       <input type="text" id="data" class="datepicker" formControlName="data">
                       <label for="data" [class.active]="hasValue('data')">Data</label>
                       <app-validator-message controlName="Data" [control]="form.get('data')"></app-validator-message>
@@ -46,28 +26,35 @@
                   </div>
 
                   <div class="row">
-                    <div class="input-field col m6 s12">
-                      <input type="number" id="qtda" class="datepicker" formControlName="qtda">
-                      <label for="qtda" [class.active]="hasValue('qtda')">Qtda.</label>
-                      <app-validator-message controlName="Quantidade" [control]="form.get('qtda')"></app-validator-message>
-                    </div>
-
-                    <div class="input-field col m6 s12">
-                      <input type="number" id="qtdaVendida" class="datepicker" formControlName="qtdaVendida">
-                      <label for="qtdaVendida" [class.active]="hasValue('qtdaVendida')">Qtda. Vendida</label>
-                      <app-validator-message controlName="Quantidade Vendida" [control]="form.get('qtdaVendida')"></app-validator-message>
+                    <div class="input-field col s12">
+                      <i class="material-icons prefix">fastfood</i>
+                      <input type="text" id="pesquisa" autocomplete="off" class="autocomplete"
+                        formControlName="pesquisa">
+                      <label for="pesquisa" [class.active]="hasValue('pesquisa')">Salgado</label>
+                      <app-validator-message controlName="Pesquisa" [control]="form.get('pesquisa')">
+                      </app-validator-message>
                     </div>
                   </div>
-                </div>
 
-                <div class="col m6 s12">
                   <div formGroupName="item">
+
                     <input type="hidden" id="id" formControlName="_id">
+
+                    <div class="row">
+                      <div class="col s12">
+                        <label>
+                          <input type="checkbox" formControlName="semPimenta" />
+                          <span>Sem Pimenta</span>
+                        </label>
+                      </div>
+                    </div>
+
                     <div class="row">
                       <div class="input-field col s12">
                         <input type="text" id="nome" formControlName="nome">
                         <label for="nome" [class.active]="hasValue('item.nome')">Nome</label>
-                        <app-validator-message controlName="Nome do Salgado" [control]="form.get('item.nome')"></app-validator-message>
+                        <app-validator-message controlName="Nome do Salgado" [control]="form.get('item.nome')">
+                        </app-validator-message>
                       </div>
                     </div>
 
@@ -79,14 +66,16 @@
                         <i class="material-icons prefix">attach_money</i>
                         <input type="text" id="valor" formControlName="valor">
                         <label for="valor" [class.active]="hasValue('item.valor')">Valor</label>
-                        <app-validator-message controlName="Valor" [control]="form.get('item.valor')"></app-validator-message>
+                        <app-validator-message controlName="Valor" [control]="form.get('item.valor')">
+                        </app-validator-message>
                       </div>
 
                       <div formGroupName="unidade">
                         <div class="input-field col s6">
                           <input type="text" id="nome" formControlName="nome">
                           <label for="nome" [class.active]="hasValue('item.unidade.nome')">Unidade</label>
-                          <app-validator-message controlName="Unidade" [control]="form.get('item.unidade.nome')"></app-validator-message>
+                          <app-validator-message controlName="Unidade" [control]="form.get('item.unidade.nome')">
+                          </app-validator-message>
                         </div>
                         <input type="hidden" id="sigla" formControlName="sigla">
                       </div>
@@ -98,11 +87,27 @@
                       <div class="input-field col s12">
                         <textarea id="detalhes" class="materialize-textarea" formControlName="detalhes"></textarea>
                         <label for="detalhes" [class.active]="hasValue('item.detalhes')">Detalhes</label>
-                        <app-validator-message controlName="Detalhes do Salgado" [control]="form.get('item.detalhes')"></app-validator-message>
+                        <app-validator-message controlName="Detalhes do Salgado" [control]="form.get('item.detalhes')">
+                        </app-validator-message>
                       </div>
                     </div>
 
+                  </div>
 
+                  <div class="row">
+                    <div class="input-field col m6 s12">
+                      <input type="number" id="qtda" class="datepicker" formControlName="qtda">
+                      <label for="qtda" [class.active]="hasValue('qtda')">Qtda. Reserva</label>
+                      <app-validator-message controlName="Quantidade" [control]="form.get('qtda')">
+                      </app-validator-message>
+                    </div>
+
+                    <div class="input-field col m6 s12">
+                      <input type="number" id="qtdaVendida" class="datepicker" formControlName="qtdaVendida">
+                      <label for="qtdaVendida" [class.active]="hasValue('qtdaVendida')">Qtda. Vendida</label>
+                      <app-validator-message controlName="Quantidade Vendida" [control]="form.get('qtdaVendida')">
+                      </app-validator-message>
+                    </div>
                   </div>
                 </div>
               </div>

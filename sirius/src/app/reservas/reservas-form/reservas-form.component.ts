@@ -40,6 +40,7 @@ export class ReservasFormComponent implements OnInit {
       qtdaVendida: [0, Validators.required],
       item: this.formBuilder.group({
         _id: [''],
+        semPimenta: [false],
         nome: [{ value: '', disabled: true }, Validators.required],
         detalhes: [{ value: '', disabled: true }],
         valor: [{ value: '', disabled: true }],
@@ -57,10 +58,6 @@ export class ReservasFormComponent implements OnInit {
         this.reserva = reserva;
         this.form.patchValue(reserva);
       });
-
-      // this.form.get('tipo').valueChanges
-      // .pipe(distinctUntilChanged(), debounceTime(300))
-      // .subscribe(v => this.loadCardapio(v));
 
       this.loadCardapio(this.form.get('tipo').value);
   }

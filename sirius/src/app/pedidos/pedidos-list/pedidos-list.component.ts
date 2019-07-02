@@ -14,7 +14,7 @@ declare var $: any;
   templateUrl: './pedidos-list.component.html',
   styleUrls: ['./pedidos-list.component.css']
 })
-export class PedidosListComponent implements OnInit, OnDestroy {
+export class PedidosListComponent implements OnInit {
 
   pedidos: Pedido[] = [];
   data: Date;
@@ -26,14 +26,7 @@ export class PedidosListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.openModalSenha = new EventEmitter<boolean>();
     this.data = new Date();
-    // this.data = this.pedidosService.data;
-    // $('#data').datepicker(Object.assign(datepicker, {
-    //   defaultDate: this.data,
-    //   onSelect: (novaData: any) => {
-    //     this.data = novaData;
-    //     this.load();
-    //   }
-    // }));
+
     this.load();
   }
 
@@ -61,41 +54,9 @@ export class PedidosListComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy() {
-    // this.pedidosService.data = this.data;
-  }
-
-  /*print() {
-    this.api.getImpressoes()
-      .subscribe((impressoes: any[]) => {
-        let confirmation = false;
-        if (impressoes.length > 0) {
-          // tslint:disable-next-line:max-line-length
-          confirmation = window.confirm(`Os pedidos já foram impressos hoje pelo usuário '${impressoes[0]['usuario']['nome']}'. Deseja imprimir novamente?`);
-          if (!confirmation) {
-            return;
-          }
-        }
-        this.imprimir();
-        if (!confirmation) {
-          this.api.postImpressao().subscribe();
-        }
-      });
-  }*/
-
   atualizaPedido(pedido: Pedido) {
     this.api.put(pedido._id, pedido)
       .subscribe(_ => this.toasts.toast('Pedido atualizado com sucesso.'));
-  }
-
-  private imprimir() {
-    const w = window.open('', 'print');
-    if (w) {
-      w.document.write(htmlImpressao.replace('@DADOS', $('table').html()));
-      setTimeout(() => {
-        w.document.close();
-      }, 1000);
-    }
   }
 
 }

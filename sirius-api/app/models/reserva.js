@@ -12,7 +12,8 @@ module.exports = function (app) {
                 nome: String,
                 sigla: String
             },
-            detalhes: String
+            detalhes: String,
+            semPimenta: Boolean
         },
         data: Date,
         qtda: Number,

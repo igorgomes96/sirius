@@ -18,9 +18,8 @@ export interface ItemCardapio {
     popular: boolean;
     tipo: TipoSalgado;
     detalhes: string;
-    comPimenta: boolean;
+    semPimenta: boolean;
     selecionado: boolean;
     quantidade: number;
     reserva: number;
-
 }

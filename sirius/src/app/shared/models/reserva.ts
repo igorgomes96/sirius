@@ -11,6 +11,7 @@ export class Reserva {
         valor: Number,
         tipo: String,
         unidade: Unidade,
-        detalhes: String
+        detalhes: String,
+        semPimenta: boolean
     };
 }

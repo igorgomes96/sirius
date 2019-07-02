@@ -31,7 +31,7 @@ function PedidosController(app) {
     }
 
     var atualizaReservaItem = function ({ item, data, tipo }, callback) {
-        Reserva.find({ 'item._id': item._id, data: data }, function (err, result) {
+        Reserva.find({ 'item._id': item._id, data: data, 'item.semPimenta': item.semPimenta }, function (err, result) {
             if (err) {
                 callback(`Erro ao buscar reserva: ${JSON.stringify(err)}`);
                 return;
@@ -89,7 +89,7 @@ function PedidosController(app) {
         var diferenca = cloneObject(novoPedido);
         // Atualiza os itens comuns entre o anterior e o novo, mantendo os itens adicionais do novo
         diferenca.itens.forEach(function (item) {
-            var itemAnterior = pedidoAnterior.itens.find(i => i._id == item._id);
+            var itemAnterior = pedidoAnterior.itens.find(i => i._id == item._id && i.semPimenta == item.semPimenta);
             if (itemAnterior) {
                 item.quantidade = item.quantidade - itemAnterior.quantidade;
             }
@@ -97,7 +97,7 @@ function PedidosController(app) {
 
         // Itens removidos
         var itensRemovidos = pedidoAnterior.itens.filter(function (item) {
-            return !novoPedido.itens.find(i => i._id == item._id);
+            return !novoPedido.itens.find(i => i._id == item._id && i.semPimenta == item.semPimenta);
         }).map(function (item) { // Multiplica a quantidade por -1
             item.quantidade = item.quantidade * -1;
             return item;
@@ -167,7 +167,7 @@ function PedidosController(app) {
         Pedido.findOne({ _id: id }, callback);
     }
 
-    this.post = function (pedido, { email, nome}, callback) {
+    this.post = function (pedido, { email, nome }, callback) {
         pedido = geraIdItens(pedido);
         new Pedido(pedido).save()
             .then(function (novoPedido) {
@@ -276,7 +276,7 @@ function PedidosController(app) {
                 if (result.exclusao && result.exclusao.horario) {
                     throw 'Pedido já excluído';
                 }
-                
+
                 return Promise.all([
                     atualizaReservas(result, tiposAtualizacao.exclusao),
                     Log.findOneAndDelete({ pedidoId: id })
@@ -360,9 +360,9 @@ function PedidosController(app) {
         })
     }
 
-    this.imprimePedido = function(id, usuario, callback) {
+    this.imprimePedido = function (id, usuario, callback) {
         Pedido.findOne({ _id: id })
-            .then(function(pedido) {
+            .then(function (pedido) {
                 if (!pedido.impressao.horario) {
                     pedido.impressao = {
                         usuario: {
@@ -373,7 +373,7 @@ function PedidosController(app) {
                     }
                 }
                 return Pedido.findOneAndUpdate({ _id: id }, { $set: { impressao: pedido.impressao } }, { new: true });
-            }).then(function(pedido) {
+            }).then(function (pedido) {
                 callback(null, pedido);
             }).catch(callback);
     }

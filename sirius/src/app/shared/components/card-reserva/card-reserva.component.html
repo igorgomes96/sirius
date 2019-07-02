@@ -3,7 +3,9 @@
     <div class="card-content">
       <p class="card-title activator grey-text text-darken-4">{{ restante }} <small>/ {{ item.qtda}} {{
           item.item.unidade.sigla }}</small></p>
-      <small>{{ item.item.nome }} <span [hidden]="!item.item.detalhes">| {{ item.item.detalhes.slice(0, 30) }}</span></small>
+      <small>{{ item.item.nome }}<span [hidden]="!item.item.detalhes">
+          ({{ item.item.detalhes.slice(0, 30) }})</span><span> -
+          {{ item.item.semPimenta ? 'Sem Pimenta' : 'Com Pimenta' }}</span></small>
     </div>
     <div class="progress" [ngClass]="classProgressBack">
       <div class="determinate" [ngClass]="classProgress" [style.width]="percentual + '%'"></div>

@@ -19,7 +19,7 @@ export class CardapioApiService {
   }
 
   mapItem(item: ItemCardapio, reservas: Reserva[]): ItemCardapio {
-    const reserva = reservas.find(r => r.item._id === item._id);
+    const reserva = reservas.find(r => r.item._id === item._id && r.item.semPimenta === item.semPimenta);
     if (reserva) {
       item.reserva = reserva.qtda - reserva.qtdaVendida;
     }
