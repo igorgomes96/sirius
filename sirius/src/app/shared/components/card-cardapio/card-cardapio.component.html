@@ -4,7 +4,6 @@
       <a (click)="favorite()" *ngIf="showFavoriteButton">
         <i class="material-icons right" style="color: yellowgreen; cursor: pointer;">{{ popular() }}</i>
       </a>
-      <!-- <a class="card-title activator grey-text text-darken-4">{{ item.nome }}</a> -->
       <h6>{{ item.nome }}
         <small class="description" *ngIf="item.detalhes">({{ item.detalhes }})</small>
       </h6>
@@ -17,8 +16,8 @@
       </div>
 
       <span class="new badge m-t-s" [ngClass]="classReserva()"
-        *ngIf="item.reserva !== null && item.reserva !== undefined"
-        data-badge-caption="em reserva">{{ item.reserva }}</span>
+        *ngIf="reserva !== undefined && reserva !== null"
+        data-badge-caption="em reserva">{{ reserva }}</span>
     </div>
 
     <div class="card-action" [class.left]="showAddOption"
@@ -27,7 +26,6 @@
         <small>Excede a quantidade em reserva!</small>
       </div>
       <div *ngIf="showAddOption">
-        <!-- <div class="input-field inline m-r-m"> -->
         <div class="input-field m-r-m">
           <div class="row" style="margin-bottom: 0">
             <div class="col m3">

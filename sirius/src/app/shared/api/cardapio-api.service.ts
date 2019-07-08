@@ -19,9 +19,12 @@ export class CardapioApiService {
   }
 
   mapItem(item: ItemCardapio, reservas: Reserva[]): ItemCardapio {
-    const reserva = reservas.find(r => r.item._id === item._id && r.item.semPimenta === item.semPimenta);
-    if (reserva) {
-      item.reserva = reserva.qtda - reserva.qtdaVendida;
+    const reservasEncontradas = reservas.filter(r => r.item._id === item._id);
+    if (reservasEncontradas) {
+      const reservaComPimenta = reservasEncontradas.find(r => !r.item.semPimenta);
+      const reservaSemPimenta = reservasEncontradas.find(r => r.item.semPimenta);
+      item.reservaComPimenta = reservaComPimenta ? reservaComPimenta.qtda - reservaComPimenta.qtdaVendida : undefined;
+      item.reservaSemPimenta = reservaSemPimenta ? reservaSemPimenta.qtda - reservaSemPimenta.qtdaVendida : undefined;
     }
     return item;
   }

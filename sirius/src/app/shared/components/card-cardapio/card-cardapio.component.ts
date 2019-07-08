@@ -56,10 +56,21 @@ export class CardCardapioComponent implements OnInit {
     this.editItem.emit(this.item);
   }
 
+  get reserva() {
+    if (this.item) {
+      if (this.item.semPimenta) {
+        return this.item.reservaSemPimenta;
+      } else {
+        return this.item.reservaComPimenta;
+      }
+    }
+  }
+
   classReserva() {
-    if (this.item.reserva >= 50) {
+    const valorReserva = this.reserva;
+    if (valorReserva >= 50) {
       return '';
-    } else if (this.item.reserva <= 10) {
+    } else if (valorReserva <= 10) {
       return ['deep-orange', 'accent-4'];
     } else {
       return ['amber', 'accent-4'];
@@ -67,6 +78,6 @@ export class CardCardapioComponent implements OnInit {
   }
 
   get excedeReserva(): boolean {
-    return this.item.reserva != null && this.item.quantidade > this.item.reserva;
+    return this.reserva != null && this.item.quantidade > this.reserva;
   }
 }

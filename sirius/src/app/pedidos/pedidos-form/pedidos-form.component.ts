@@ -47,13 +47,6 @@ export class PedidosFormComponent implements OnInit {
     this.pedido.enderecoEntrega.uf = 'MG';
     this.pedido.horario = new Date();
     this.data = new Date().toLocaleDateString('pt-BR');
-    // const onSelectDate = (value: any) => {
-    //   const data = new Date(value);
-    //   this.pedido.horario = new Date(this.pedido.horario);
-    //   data.setHours(this.pedido.horario.getHours());
-    //   data.setMinutes(this.pedido.horario.getMinutes());
-    //   this.pedido.horario = data;
-    // };
 
     const onSelectHour = (hour: any, minutes: any) => {
       const data = new Date(this.pedido.horario);
@@ -61,10 +54,6 @@ export class PedidosFormComponent implements OnInit {
       data.setMinutes(minutes);
       this.pedido.horario = data;
     };
-
-    // $('#data').datepicker(Object.assign(datepicker, {
-    //   onSelect: onSelectDate
-    // }));
 
     $('#hora').timepicker(Object.assign(timepicker, {
       onSelect: onSelectHour
@@ -114,8 +103,10 @@ export class PedidosFormComponent implements OnInit {
         if (salgadoFesta) {
           salgadoFesta.quantidade = salgado.quantidade;
           salgadoFesta.semPimenta = salgado.semPimenta;
-          if (salgadoFesta.reserva) {
-            salgadoFesta.reserva += salgado.quantidade;
+          if (salgadoFesta.semPimenta && salgadoFesta.reservaSemPimenta) {
+            salgadoFesta.reservaSemPimenta += salgado.quantidade;
+          } else if (salgadoFesta.reservaComPimenta) {
+            salgadoFesta.reservaComPimenta += salgado.quantidade;
           }
         }
       });
@@ -126,8 +117,10 @@ export class PedidosFormComponent implements OnInit {
         if (salgadoComercial) {
           salgadoComercial.quantidade = salgado.quantidade;
           salgadoComercial.semPimenta = salgado.semPimenta;
-          if (salgadoComercial.reserva) {
-            salgadoComercial.reserva += salgado.quantidade;
+          if (salgadoComercial.semPimenta && salgadoComercial.reservaSemPimenta) {
+            salgadoComercial.reservaSemPimenta += salgado.quantidade;
+          } else if (salgadoComercial.reservaComPimenta) {
+            salgadoComercial.reservaComPimenta += salgado.quantidade;
           }
         }
       });
@@ -164,6 +157,12 @@ export class PedidosFormComponent implements OnInit {
     return numeros.reduce((prev: string, curr: string) => prev + curr, '');
   }
 
+  get itensSelecionados(): ItemCardapio[] {
+    return this.salgadosComerciais.filter(s => s.quantidade)
+      .concat(this.salgadosFesta.filter(s => s.quantidade))
+      .concat(this.diversos.filter(s => s.quantidade));
+  }
+
   fecharPedido() {
 
     const dataFormatted = this.utilService.stringToDate(this.data, 'dd/MM/yyyy', '/');
@@ -172,14 +171,18 @@ export class PedidosFormComponent implements OnInit {
       return;
     }
 
+    const alemReserva = this.itensAlemReserva();
+    if (alemReserva && alemReserva.length > 0) {
+      this.toasts.toast(`O salgado '${alemReserva[0].nome}' ultrapassou a quantidade em reserva!`);
+      return;
+    }
+
     this.pedido.horario = new Date(this.pedido.horario);
     dataFormatted.setHours(this.pedido.horario.getHours());
     dataFormatted.setMinutes(this.pedido.horario.getMinutes());
     this.pedido.horario = dataFormatted;
 
-    this.pedido.itens = this.salgadosComerciais.filter(s => s.quantidade)
-      .concat(this.salgadosFesta.filter(s => s.quantidade))
-      .concat(this.diversos.filter(s => s.quantidade));
+    this.pedido.itens = this.itensSelecionados;
 
     if (!this.pedido.entregar) {
       this.pedido.enderecoEntrega = null;
@@ -243,6 +246,15 @@ export class PedidosFormComponent implements OnInit {
     this.itemPersonalizadoModal.emit(true);
   }
 
+  itensAlemReserva(): ItemCardapio[] {
+    return this.itensSelecionados.filter(item => {
+      if (item.semPimenta) {
+        return item.reservaSemPimenta && item.quantidade > item.reservaSemPimenta;
+      } else {
+        return item.reservaComPimenta && item.quantidade > item.reservaComPimenta;
+      }
+    });
+  }
 
   loadItensPromisse(nome: string = null): Observable<ItemCardapio[]> {
     let obs: Observable<ItemCardapio[]>;
