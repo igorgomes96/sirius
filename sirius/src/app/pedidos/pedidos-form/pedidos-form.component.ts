@@ -12,6 +12,7 @@ import { timepicker } from 'src/environments/timepicker-options';
 import { ToastsService } from 'src/app/shared/services/toasts.service';
 import { UtilService } from 'src/app/shared/services/util.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { datepicker } from 'src/environments/datepicker-options';
 
 declare var $: any;
 
@@ -31,7 +32,7 @@ export class PedidosFormComponent implements OnInit {
   TipoSalgado: typeof TipoSalgado = TipoSalgado;
   itemPersonalizadoModal = new EventEmitter<boolean>();
   atualizarCliente = true;
-  data: string;
+  // data: string;
   diversos: ItemCardapio[] = [];
   edicao = false;
 
@@ -46,7 +47,7 @@ export class PedidosFormComponent implements OnInit {
     this.pedido.enderecoEntrega.cidade = 'Araguari';
     this.pedido.enderecoEntrega.uf = 'MG';
     this.pedido.horario = new Date();
-    this.data = new Date().toLocaleDateString('pt-BR');
+    // this.data = new Date().toLocaleDateString('pt-BR');
 
     const onSelectHour = (hour: any, minutes: any) => {
       const data = new Date(this.pedido.horario);
@@ -54,6 +55,19 @@ export class PedidosFormComponent implements OnInit {
       data.setMinutes(minutes);
       this.pedido.horario = data;
     };
+
+    const onSelectDate = (value: any) => {
+      const data = new Date(value);
+      this.pedido.horario = new Date(this.pedido.horario);
+      data.setHours(this.pedido.horario.getHours());
+      data.setMinutes(this.pedido.horario.getMinutes());
+      this.pedido.horario = data;
+      console.log(this.pedido.horario);
+    };
+
+    $('#data').datepicker(Object.assign(datepicker, {
+      onSelect: onSelectDate
+    }));
 
     $('#hora').timepicker(Object.assign(timepicker, {
       onSelect: onSelectHour
@@ -80,7 +94,7 @@ export class PedidosFormComponent implements OnInit {
         }
         this.diversos = pedido.itens.filter(i => i.tipo === TipoSalgado[TipoSalgado.Diversos]);
         this.updateQuantidades(pedido.itens);
-        this.data = new Date(pedido.horario).toLocaleDateString('pt-BR');
+        // this.data = new Date(pedido.horario).toLocaleDateString('pt-BR');
         const hora = this.utilService.getTime(this.utilService.getDateTime(pedido.horario.toString()));
         $('#hora').val(hora);
         this.showFormCliente = true;
@@ -165,11 +179,11 @@ export class PedidosFormComponent implements OnInit {
 
   fecharPedido() {
 
-    const dataFormatted = this.utilService.stringToDate(this.data, 'dd/MM/yyyy', '/');
-    if (dataFormatted === 'Erro na conversão!') {
-      this.toasts.toast('A data deve estar no formato "dd/mm/aaaa"!');
-      return;
-    }
+    // const dataFormatted = this.utilService.stringToDate(this.data, 'dd/MM/yyyy', '/');
+    // if (dataFormatted === 'Erro na conversão!') {
+    //   this.toasts.toast('A data deve estar no formato "dd/mm/aaaa"!');
+    //   return;
+    // }
 
     const alemReserva = this.itensAlemReserva();
     if (alemReserva && alemReserva.length > 0) {
@@ -178,9 +192,9 @@ export class PedidosFormComponent implements OnInit {
     }
 
     this.pedido.horario = new Date(this.pedido.horario);
-    dataFormatted.setHours(this.pedido.horario.getHours());
-    dataFormatted.setMinutes(this.pedido.horario.getMinutes());
-    this.pedido.horario = dataFormatted;
+    // dataFormatted.setHours(this.pedido.horario.getHours());
+    // dataFormatted.setMinutes(this.pedido.horario.getMinutes());
+    // this.pedido.horario = dataFormatted;
 
     this.pedido.itens = this.itensSelecionados;
 

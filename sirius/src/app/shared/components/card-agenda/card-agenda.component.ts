@@ -60,6 +60,11 @@ export class CardAgendaComponent implements OnInit {
       .reduce((p, c) => p + c);
   }
 
+  get qtdaTotal() {
+    return this.pedido.itens.map(i => i.quantidade)
+      .reduce((p, c) => p + c);
+  }
+
   imprimir() {
     if (this.pedido.impressao && this.pedido.impressao.horario && this.pedido.impressao.usuario) {
       // tslint:disable-next-line: max-line-length
