@@ -5,7 +5,6 @@ import { SharedModule } from './../shared/shared.module';
 import { PedidosListComponent } from './pedidos-list/pedidos-list.component';
 import { PedidosFormComponent } from './pedidos-form/pedidos-form.component';
 import { ItemModalComponent } from './item-modal/item-modal.component';
-import { ClienteModalComponent } from './cliente-modal/cliente-modal.component';
 import { NgxPrintModule } from 'ngx-print';
 import { PedidosAgrupadosComponent } from './pedidos-agrupados/pedidos-agrupados.component';
 import { ConfirmacaoPedidoComponent } from './confirmacao-pedido/confirmacao-pedido.component';
@@ -15,7 +14,7 @@ import { LogCompareComponent } from './log-compare/log-compare.component';
 
 @NgModule({
   declarations: [PedidosListComponent, PedidosFormComponent, ItemModalComponent,
-    ClienteModalComponent, PedidosAgrupadosComponent, ConfirmacaoPedidoComponent, AgendaComponent, LogPedidoComponent, LogCompareComponent],
+    PedidosAgrupadosComponent, ConfirmacaoPedidoComponent, AgendaComponent, LogPedidoComponent, LogCompareComponent],
   imports: [
     SharedModule,
     NgxPrintModule,

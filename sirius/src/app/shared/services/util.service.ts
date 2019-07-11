@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Pedido } from '../models/pedido';
 import { DatePipe, DecimalPipe } from '@angular/common';
-import { MaskPipe } from 'ngx-mask';
+
+import { Pedido } from '../models/pedido';
+import { MaskPipe } from 'ngx-mask-2';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +33,7 @@ export class UtilService {
       telefone = this.maskPipe.transform(pedido.cliente.fone1, '(00)00009-0000') + (pedido.cliente.fone2 ? ` / ${this.maskPipe.transform(pedido.cliente.fone2, '(00)00009-0000')}` : '');
     }
     // tslint:disable-next-line: max-line-length
-    let str = `Salgados Sirius\nHorário: ${horario}\nCliente: ${pedido.cliente.nome}\nFone: ${telefone}\n${endereco}Pago? ${pedido.pago ? 'Sim' : 'Não'}\n\n`;
+    let str = `Salgados Sirius\nHorário: ${horario}\nCliente: ${pedido.cliente.nome}\nFone: ${telefone}\n${endereco}Pago? ${pedido.pago ? 'Sim' : 'Não'}\nObs.: ${pedido.observacoes}\n\n`;
     str = this.retira_acentos(str);
 
     pedido.itens.forEach(item => {
@@ -43,7 +44,8 @@ export class UtilService {
       const dif = tamanhoLinha - ((nome.length + valor.length) % tamanhoLinha);
       str += `${nome}${'.'.repeat(dif)}${valor}\n`;
     });
-    const totalStr = 'Total .';
+    const qtdaTotal = pedido.itens.reduce((prev, cur) => prev + cur.quantidade, 0);
+    const totalStr = `${qtdaTotal} un. Total .`;
     const total = ` ${this.convertToReal(pedido.itens.reduce((prev, cur) => prev + (cur.quantidade * cur.valor), 0))}`;
     const difTotal = tamanhoLinha - ((totalStr.length + total.length) % tamanhoLinha);
     str += this.retira_acentos(`\n${totalStr}${'.'.repeat(difTotal)}${total}\n`);

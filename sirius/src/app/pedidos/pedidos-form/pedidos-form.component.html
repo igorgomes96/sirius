@@ -68,6 +68,7 @@
                     <i class="material-icons prefix">access_time</i>
                     <input id="hora" type="text" class="timepicker">
                     <label for="hora" class="active">Hora</label>
+                    <span class="helper-text" *ngIf="!horario">A hora é obrigatória!</span>
                 </div>
 
             </div>
@@ -97,7 +98,7 @@
                     (selectCliente)="selecionaCliente($event)" class="col l4 m6 s12"></app-card-cliente>
             </div>
 
-            <div class="row" *ngIf="showFormCliente">
+            <div *ngIf="showFormCliente">
                 <div class="row">
                     <div class="col s12">
                         <div class="card-panel">
@@ -225,6 +226,19 @@
                 </div>
             </div>
 
+            <div class="row" *ngIf="showFormCliente">
+                <div class="col s12">
+                    <div class="card-panel">
+                        <div class="row" style="margin-bottom: 0;">
+                            <div class="col s12 input-field" style="margin-bottom: 0;">
+                                <textarea id="observacoes" class="materialize-textarea" style="margin-bottom: 0;" [(ngModel)]="pedido.observacoes"></textarea>
+                                <label for="observacoes" class="active">Observações sobre o pedido</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
             <div class="section"></div>
 
@@ -237,7 +251,8 @@
                         <a class="btn red darken-2 m-t-m" *ngIf="!edicao" (click)="cancelarPedido()">Cancelar Pedido</a>
                     </div>
                     <div class="col m3 s12">
-                        <a class="btn orange darken-3 right m-t-m" id="btnOutros" (click)="addItemForaCardapio()">Outros</a>
+                        <a class="btn orange darken-3 right m-t-m" id="btnOutros"
+                            (click)="addItemForaCardapio()">Outros</a>
                     </div>
                 </div>
 
@@ -292,8 +307,7 @@
                     <div class="col">
                         <a class="btn primary-color m-r-s m-t-m" (click)="fecharPedido()" *ngIf="habilitaFecharPedido">{{ edicao ? 'Salvar Alterações' : 'Fechar
                                     Pedido' }}</a>
-                        <a class="btn red darken-2 m-t-m" (click)="cancelarPedido()"
-                            *ngIf="!edicao">Cancelar Pedido</a>
+                        <a class="btn red darken-2 m-t-m" (click)="cancelarPedido()" *ngIf="!edicao">Cancelar Pedido</a>
                     </div>
                 </div>
             </div>

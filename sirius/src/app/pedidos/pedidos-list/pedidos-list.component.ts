@@ -1,11 +1,9 @@
-import { Component, OnInit, OnDestroy, EventEmitter } from '@angular/core';
+import { Component, OnInit, EventEmitter } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { PedidosApiService } from './../../shared/api/pedidos-api.service';
 import { Pedido } from 'src/app/shared/models/pedido';
-import { Router } from '@angular/router';
-import { PedidosService } from 'src/app/shared/services/pedidos.service';
 import { ToastsService } from 'src/app/shared/services/toasts.service';
-import { htmlImpressao } from 'src/environments/impressao';
 
 declare var $: any;
 

@@ -19,7 +19,8 @@
         <div class="row m-t-l">
           <div class="col">
             <label>
-              <input type="checkbox" [disabled]="pedido.exclusao || !enbableCkbPago" [(ngModel)]="pedido.pago" (change)="pedidoPago()" />
+              <input type="checkbox" [disabled]="pedido.exclusao || !enbableCkbPago" [(ngModel)]="pedido.pago"
+                (change)="pedidoPago()" />
               <span>Pago?</span>
             </label>
           </div>
@@ -39,9 +40,14 @@
       <div class="col" [ngClass]="oneColumn ? 'm12' : 'l9 m8 s12'">
         <strong><i class="material-icons">person</i> {{ pedido.cliente.nome }}</strong><br>
         <small>
-          <i class="material-icons">phone</i> {{ pedido.cliente.fone1 | mask:'(00) 00009-0000' }}
+          <i class="material-icons">phone</i> {{ pedido.cliente.fone1 | mask:'(00) 90000-0000' }}
           <span [hidden]="!pedido.cliente.fone1 || !pedido.cliente.fone2">/</span>
-          {{ pedido.cliente.fone2 | mask:'(00) 00009-0000' }}
+          {{ pedido.cliente.fone2 | mask:'(00) 90000-0000' }}
+          <br>
+          <span *ngIf="pedido.observacoes">
+            Obs.: {{ pedido.observacoes }}
+            <br>
+          </span>
         </small>
 
         <div *ngIf="oneColumn">
@@ -61,7 +67,8 @@
           <div class="row m-t-l">
             <div class="col">
               <label>
-                <input type="checkbox" [disabled]="pedido.exclusao || !enbableCkbPago" [(ngModel)]="pedido.pago" (change)="pedidoPago()" />
+                <input type="checkbox" [disabled]="pedido.exclusao || !enbableCkbPago" [(ngModel)]="pedido.pago"
+                  (change)="pedidoPago()" />
                 <span>Pago?</span>
               </label>
             </div>
@@ -79,7 +86,8 @@
 
           <tbody>
             <tr *ngFor="let item of pedido.itens">
-              <td>{{ item.nome }}<span *ngIf="item.semPimenta"> - Sem Pimenta</span><span *ngIf="item.detalhes"> ({{ item.detalhes }})</span></td>
+              <td>{{ item.nome }}<span *ngIf="item.semPimenta"> - Sem Pimenta</span><span *ngIf="item.detalhes">
+                  ({{ item.detalhes }})</span></td>
               <td>{{ item.quantidade }}</td>
               <td class="right">R$ {{ item.valor * item.quantidade | number:'1.2' }}</td>
             </tr>
@@ -91,10 +99,6 @@
           </tbody>
         </table>
 
-
-        <small *ngIf="pedido.observacoes">
-          Obs.: {{ pedido.observacoes }}
-        </small>
 
         <div class="exclusao-info m-t-l" *ngIf="oneColumn && isAdmin && mostrarRestaurar">
           <span>Excluído por {{ pedido.exclusao?.usuario.nome }}</span><br>

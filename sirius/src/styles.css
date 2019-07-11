@@ -114,10 +114,6 @@ app-card-cardapio {
     display: flex;
 }
 
-app-card-pedido {
-    height: 100%;
-    display: flex;
-}
 
 small {
     font-size: 82%;

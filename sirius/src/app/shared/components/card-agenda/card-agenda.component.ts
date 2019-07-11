@@ -1,11 +1,13 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Router } from '@angular/router';
+
 import { Pedido } from '../../models/pedido';
 import { UsuarioService } from '../../services/usuario.service';
-import { Router } from '@angular/router';
 import { PedidosApiService } from '../../api/pedidos-api.service';
 import { UtilService } from '../../services/util.service';
 
 declare var $: any;
+
 @Component({
   selector: 'app-card-agenda',
   templateUrl: './card-agenda.component.html',

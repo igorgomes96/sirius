@@ -5,9 +5,8 @@ import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 
 import { CardCardapioComponent } from './components/card-cardapio/card-cardapio.component';
-import { CardPedidoComponent } from './components/card-pedido/card-pedido.component';
 import { CardClienteComponent } from './components/card-cliente/card-cliente.component';
-import { NgxMaskModule, MaskPipe } from 'ngx-mask';
+import { NgxMaskModule, MaskPipe } from 'ngx-mask-2';
 import { CardReservaComponent } from './components/card-reserva/card-reserva.component';
 import { CardUsuarioComponent } from './components/card-usuario/card-usuario.component';
 import { ValidatorMessageComponent } from './components/validator-message/validator-message.component';
@@ -17,7 +16,7 @@ import { ConfirmacaoModalComponent } from './components/confirmacao-modal/confir
 import { CardAgendaComponent } from './components/card-agenda/card-agenda.component';
 
 @NgModule({
-  declarations: [CardCardapioComponent, CardPedidoComponent, CardClienteComponent, CardReservaComponent,
+  declarations: [CardCardapioComponent, CardClienteComponent, CardReservaComponent,
     CardUsuarioComponent, ValidatorMessageComponent, OnlyNumberDirective, SenhaModalComponent, ConfirmacaoModalComponent,
     CardAgendaComponent],
   imports: [
@@ -34,7 +33,6 @@ import { CardAgendaComponent } from './components/card-agenda/card-agenda.compon
     ReactiveFormsModule,
     RouterModule,
     CardCardapioComponent,
-    CardPedidoComponent,
     CardClienteComponent,
     CardUsuarioComponent,
     CardReservaComponent,

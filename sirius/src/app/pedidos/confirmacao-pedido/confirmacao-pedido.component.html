@@ -12,6 +12,7 @@
         </p>
 
         <div class="row" *ngIf="pedido?.cliente">
+
           <div class="col m6 s12">
             <h6>Informações do Cliente</h6>
             <span class="cliente-info">
@@ -19,7 +20,8 @@
               <i class="material-icons">phone</i> {{ pedido.cliente.fone1 | mask:'(00) 00009-0000' }} <span
                 [hidden]="!pedido.cliente.fone1 || !pedido.cliente.fone2">/</span>
               {{ pedido.cliente.fone2 | mask:'(00) 00009-0000' }}<br>
-              <i class="material-icons">note</i> {{ pedido.cliente.observacoes }}
+              <span [hidden]="!pedido.cliente.observacoes"><i class="material-icons">note</i>
+                {{ pedido.cliente.observacoes }}</span>
             </span>
           </div>
 
@@ -36,6 +38,13 @@
                 <i class="material-icons">not_interested</i> Cliente não solicitou entrega<br>
               </ng-template>
             </span>
+          </div>
+        </div>
+
+        <div class="row" *ngIf="pedido.observacoes">
+          <div class="col s12">
+            <h6>Observações sobre o Pedido</h6>
+            <p>{{ pedido.observacoes }}</p>
           </div>
         </div>
 

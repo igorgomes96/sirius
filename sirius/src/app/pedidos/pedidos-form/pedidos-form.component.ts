@@ -62,7 +62,6 @@ export class PedidosFormComponent implements OnInit {
       data.setHours(this.pedido.horario.getHours());
       data.setMinutes(this.pedido.horario.getMinutes());
       this.pedido.horario = data;
-      console.log(this.pedido.horario);
     };
 
     $('#data').datepicker(Object.assign(datepicker, {
@@ -72,7 +71,7 @@ export class PedidosFormComponent implements OnInit {
     $('#hora').timepicker(Object.assign(timepicker, {
       onSelect: onSelectHour
     }));
-    $('#hora').val(this.utilService.getTime(this.utilService.getDateTime(new Date().toString())));
+    // $('#hora').val(this.utilService.getTime(this.utilService.getDateTime(new Date().toString())));
 
     this.loadItensPromisse(null)
       .pipe(
@@ -101,6 +100,10 @@ export class PedidosFormComponent implements OnInit {
         this.pedido = pedido;
       });
 
+  }
+
+  get horario() {
+    return $('#hora').val();
   }
 
   cancelarPedido() {
@@ -185,6 +188,11 @@ export class PedidosFormComponent implements OnInit {
     //   return;
     // }
 
+    if (!this.horario) {
+      this.toasts.toast(`É necessário informar o horário!`);
+      return;
+    }
+
     const alemReserva = this.itensAlemReserva();
     if (alemReserva && alemReserva.length > 0) {
       this.toasts.toast(`O salgado '${alemReserva[0].nome}' ultrapassou a quantidade em reserva!`);
@@ -232,6 +240,7 @@ export class PedidosFormComponent implements OnInit {
     } else {
       httpCall = this.pedidoCall;
     }
+
 
     httpCall.pipe().subscribe((pedidoCriado: any) => {
       if (this.edicao) {
