@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { filter, map, switchMap } from 'rxjs/operators';
 import { Pedido } from 'src/app/shared/models/pedido';
@@ -18,6 +18,8 @@ declare var M: any;
 export class ConfirmacaoPedidoComponent implements OnInit {
 
   pedido: Pedido;
+  openModalSenha: EventEmitter<boolean>;
+  imprimir = false;
 
   constructor(private route: ActivatedRoute,
     private api: PedidosApiService,
@@ -26,7 +28,7 @@ export class ConfirmacaoPedidoComponent implements OnInit {
     private util: UtilService) { }
 
   ngOnInit() {
-
+    this.openModalSenha = new EventEmitter<boolean>();
     this.route.data
       .pipe(filter(d => d.hasOwnProperty('pedido')), map(d => d['pedido']))
       .subscribe((pedido: Pedido) => {
@@ -57,6 +59,17 @@ export class ConfirmacaoPedidoComponent implements OnInit {
       });
   }
 
+  confirmarPedido(senha: string) {
+    this.api.confirmacaoPedido(this.pedido._id, this.pedido, senha)
+      .subscribe(() => {
+        this.toasts.toast('Pedido salvo com sucesso!');
+        this.router.navigate(['/pedidos']);
+        if (this.imprimir) {
+          this.util.imprimirPedido(this.pedido);
+        }
+      });
+  }
+
   get valorTotal() {
     return this.pedido.itens.map(i => i.valor * i.quantidade).reduce((p, c) => p + c, 0);
   }
@@ -72,14 +85,8 @@ export class ConfirmacaoPedidoComponent implements OnInit {
   }
 
   salvar(imprimir = false) {
-    this.api.confirmacaoPedido(this.pedido._id, this.pedido)
-      .subscribe(() => {
-        this.toasts.toast('Pedido salvo com sucesso!');
-        this.router.navigate(['/pedidos']);
-        if (imprimir) {
-          this.util.imprimirPedido(this.pedido);
-        }
-      });
+    this.imprimir = imprimir;
+    this.openModalSenha.emit(true);
   }
 
 }

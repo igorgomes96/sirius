@@ -17,38 +17,26 @@ export class ReservasApiService {
   }
 
   getAll(): Observable<Reserva[]> {
-    return this.httpClient.get<Reserva[]>(this.url).pipe(
-      retry(3),
-      take(1));
+    return this.httpClient.get<Reserva[]>(this.url).pipe(take(1));
   }
 
   getByData(data: Date): Observable<Reserva[]>  {
-    return this.httpClient.get<Reserva[]>(this.url, { params: { data: data.toString() } }).pipe(
-      retry(3),
-      take(1));
+    return this.httpClient.get<Reserva[]>(this.url, { params: { data: data.toString() } }).pipe(take(1));
   }
 
   get(id: string): Observable<Reserva>  {
-    return this.httpClient.get<Reserva>(this.url + `/${id}`).pipe(
-      retry(3),
-      take(1));
+    return this.httpClient.get<Reserva>(this.url + `/${id}`).pipe(take(1));
   }
 
   post(reserva: Reserva): Observable<Reserva>  {
-    return this.httpClient.post<Reserva>(this.url, reserva).pipe(
-      retry(3),
-      take(1));
+    return this.httpClient.post<Reserva>(this.url, reserva).pipe(take(1));
   }
 
   put(id: string, reserva: Reserva): Observable<void> {
-    return this.httpClient.put<void>(this.url + `/${id}`, reserva).pipe(
-      retry(3),
-      take(1));
+    return this.httpClient.put<void>(this.url + `/${id}`, reserva).pipe(take(1));
   }
 
   delete(id: string): Observable<Reserva>  {
-    return this.httpClient.delete<Reserva>(this.url + `/${id}`).pipe(
-      retry(3),
-      take(1));
+    return this.httpClient.delete<Reserva>(this.url + `/${id}`).pipe(take(1));
   }
 }

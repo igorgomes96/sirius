@@ -11,6 +11,7 @@ declare var M: any;
 })
 export class SenhaModalComponent implements OnInit, AfterViewInit {
 
+  @Input() message = 'Essa ação não poderá ser desfeita. Deseja confirmar?';
   @Input() open: EventEmitter<boolean>;
   @Output() confirmar: EventEmitter<string> = new EventEmitter<string>();
 
@@ -23,6 +24,7 @@ export class SenhaModalComponent implements OnInit, AfterViewInit {
       if (v) {
         this.instanceModal.open();
       } else {
+        this.senha = '';
         this.instanceModal.close();
       }
     });
@@ -37,6 +39,7 @@ export class SenhaModalComponent implements OnInit, AfterViewInit {
       return;
     }
     this.confirmar.emit(this.senha);
+    this.senha = '';
     this.instanceModal.close();
   }
 

@@ -95,9 +95,9 @@ module.exports = function (app) {
   });
 
   app.put('/api/pedidos/:id/confirmacao', function (req, res) {
-    var pedido = req.body;
+    var pedido = req.body.pedido;
     const usuario = req.session.usuario;
-    usuario.senha = req.body.senha;
+    usuario.senha = app.HmacSHA1(req.body.senha.toString());
     ctrl.put(req.params.id, pedido, usuario, true, function (err, result) {
       if (err) {
         res.status(500).json(err);

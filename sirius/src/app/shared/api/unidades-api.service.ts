@@ -18,20 +18,14 @@ export class UnidadesApiService {
   }
 
   getAll(): Observable<Unidade[]> {
-    return this.httpClient.get<Unidade[]>(this.url).pipe(
-      retry(3),
-      take(1));
+    return this.httpClient.get<Unidade[]>(this.url).pipe(take(1));
   }
 
   post(unidade: Unidade): Observable<Unidade>  {
-    return this.httpClient.post<Unidade>(this.url, unidade).pipe(
-      retry(3),
-      take(1));
+    return this.httpClient.post<Unidade>(this.url, unidade).pipe(take(1));
   }
 
   delete(id: string): Observable<Unidade>  {
-    return this.httpClient.delete<Unidade>(this.url + `/${id}`).pipe(
-      retry(3),
-      take(1));
+    return this.httpClient.delete<Unidade>(this.url + `/${id}`).pipe(take(1));
   }
 }

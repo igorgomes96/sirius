@@ -194,10 +194,21 @@ function PedidosController(app) {
 
     }
 
-    this.put = function (id, pedido, { email, nome }, confirmacao = false, callback) {
+    this.put = function (id, pedido, { email, nome, senha }, confirmacao = false, callback) {
         pedido = geraIdItens(pedido);
-        Pedido.findOneAndUpdate({ _id: id }, pedido, { new: false })
-            .then(function (result) {
+        Usuario.find({ senha: senha })
+            .then(function (usuario) {
+                if (senha && confirmacao) {
+                    if (usuario && usuario.length > 0) {
+                        email = usuario[0].email;
+                        nome = usuario[0].nome;
+                        pedido.usuario = usuario[0];
+                    } else {
+                        throw 'Senha incorreta! Usuário não localizado.';
+                    }
+                }
+                return Pedido.findOneAndUpdate({ _id: id }, pedido, { new: false });
+            }).then(function (result) {
                 if (confirmacao) {  // Se for somente confirmação pedido, não cria log
                     return Promise.all([
                         atualizaReservas(getDiferencaReserva(result, pedido), tiposAtualizacao.criacao)
