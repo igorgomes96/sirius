@@ -131,8 +131,7 @@
 
                                     <div class="row">
                                         <div class="input-field col m6 s12">
-                                            <input id="telefone1" type="text" [(ngModel)]="pedido.cliente.fone1"
-                                                mask="(00) 00009-0000" #ngModel="ngModel">
+                                            <input id="telefone1" type="text" [(ngModel)]="pedido.cliente.fone1" #ngModel="ngModel">
                                             <label for="telefone1" [class.active]="pedido?.cliente?.fone1">Telefone
                                                 1</label>
                                             <app-validator-message controlName="Telefone 1" [control]="ngModel">
@@ -142,7 +141,7 @@
 
                                         <div class="input-field col m6 s12">
                                             <input id="telefone2" type="text" [(ngModel)]="pedido.cliente.fone2"
-                                                mask="(00) 00009-0000" #ngModel="ngModel">
+                                                #ngModel="ngModel">
                                             <label for="telefone2" [class.active]="pedido?.cliente?.fone2">Telefone
                                                 2</label>
                                             <app-validator-message controlName="Telefone 2" [control]="ngModel">

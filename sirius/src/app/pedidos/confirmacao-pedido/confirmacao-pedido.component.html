@@ -17,9 +17,9 @@
             <h6>Informações do Cliente</h6>
             <span class="cliente-info">
               <i class="material-icons">person</i> {{ pedido.cliente.nome }} <br>
-              <i class="material-icons">phone</i> {{ pedido.cliente.fone1 | mask:'(00) 00009-0000' }} <span
+              <i class="material-icons">phone</i> {{ pedido.cliente.fone1 | telefone }} <span
                 [hidden]="!pedido.cliente.fone1 || !pedido.cliente.fone2">/</span>
-              {{ pedido.cliente.fone2 | mask:'(00) 00009-0000' }}<br>
+              {{ pedido.cliente.fone2 | telefone }}<br>
               <span [hidden]="!pedido.cliente.observacoes"><i class="material-icons">note</i>
                 {{ pedido.cliente.observacoes }}</span>
             </span>

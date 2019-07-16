@@ -27,14 +27,14 @@
 
               <div class="row">
                 <div class="input-field col m6 s12">
-                  <input id="telefone1" type="text" formControlName="fone1" mask="(00) 00009-0000">
+                  <input id="telefone1" type="text" formControlName="fone1">
                   <label for="telefone1" [class.active]="cliente?.fone1">Telefone 1</label>
                   <app-validator-message controlName="Telefone 1" [control]="form.get('fone1')"></app-validator-message>
                 </div>
 
 
                 <div class="input-field col m6 s12">
-                  <input id="telefone2" type="text" formControlName="fone2" mask="(00) 00009-0000">
+                  <input id="telefone2" type="text" formControlName="fone2">
                   <label for="telefone2" [class.active]="cliente?.fone2">Telefone 2</label>
                   <app-validator-message controlName="Telefone 2" [control]="form.get('fone2')"></app-validator-message>
                 </div>

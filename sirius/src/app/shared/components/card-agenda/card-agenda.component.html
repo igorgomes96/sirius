@@ -40,9 +40,9 @@
       <div class="col" [ngClass]="oneColumn ? 'm12' : 'l9 m8 s12'">
         <strong><i class="material-icons">person</i> {{ pedido.cliente.nome }}</strong><br>
         <small>
-          <i class="material-icons">phone</i> {{ pedido.cliente.fone1 | mask:'(00) 90000-0000' }}
+          <i class="material-icons">phone</i> {{ pedido.cliente.fone1 | telefone }}
           <span [hidden]="!pedido.cliente.fone1 || !pedido.cliente.fone2">/</span>
-          {{ pedido.cliente.fone2 | mask:'(00) 90000-0000' }}
+          {{ pedido.cliente.fone2 | telefone }}
           <br>
           <span *ngIf="pedido.observacoes">
             Obs.: {{ pedido.observacoes }}
