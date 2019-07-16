@@ -6,7 +6,6 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { CardCardapioComponent } from './components/card-cardapio/card-cardapio.component';
 import { CardClienteComponent } from './components/card-cliente/card-cliente.component';
-import { NgxMaskModule, MaskPipe } from 'ngx-mask-2';
 import { CardReservaComponent } from './components/card-reserva/card-reserva.component';
 import { CardUsuarioComponent } from './components/card-usuario/card-usuario.component';
 import { ValidatorMessageComponent } from './components/validator-message/validator-message.component';
@@ -14,18 +13,21 @@ import { OnlyNumberDirective } from './directives/only-number.directive';
 import { SenhaModalComponent } from './components/senha-modal/senha-modal.component';
 import { ConfirmacaoModalComponent } from './components/confirmacao-modal/confirmacao-modal.component';
 import { CardAgendaComponent } from './components/card-agenda/card-agenda.component';
+import { TelefonePipe } from './pipes/telefone.pipe';
+import { TelefoneDirective } from './directives/telefone.directive';
 
 @NgModule({
   declarations: [CardCardapioComponent, CardClienteComponent, CardReservaComponent,
     CardUsuarioComponent, ValidatorMessageComponent, OnlyNumberDirective, SenhaModalComponent, ConfirmacaoModalComponent,
-    CardAgendaComponent],
+    CardAgendaComponent,
+    TelefonePipe,
+    TelefoneDirective],
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
     HttpClientModule,
-    NgxMaskModule.forRoot()
   ],
   exports: [
     CommonModule,
@@ -38,12 +40,12 @@ import { CardAgendaComponent } from './components/card-agenda/card-agenda.compon
     CardReservaComponent,
     CardAgendaComponent,
     ValidatorMessageComponent,
-    NgxMaskModule,
     CardReservaComponent,
     SenhaModalComponent,
     OnlyNumberDirective,
-    ConfirmacaoModalComponent
+    ConfirmacaoModalComponent,
+    TelefonePipe
   ],
-  providers: [DecimalPipe, DatePipe, MaskPipe]
+  providers: [DecimalPipe, DatePipe, TelefonePipe]
 })
 export class SharedModule { }

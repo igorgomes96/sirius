@@ -188,6 +188,12 @@ export class PedidosFormComponent implements OnInit {
     //   return;
     // }
 
+    const qtdaMenorQue0 = this.itensSelecionados.filter((item) => item.quantidade < 0);
+    if (qtdaMenorQue0.length > 0) {
+      this.toasts.toast(`O salgado ${qtdaMenorQue0[0].nome} está com quantidade negativa!`);
+      return;
+    }
+
     if (!this.horario) {
       this.toasts.toast(`É necessário informar o horário!`);
       return;

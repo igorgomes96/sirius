@@ -2,14 +2,14 @@ import { Injectable } from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
 
 import { Pedido } from '../models/pedido';
-import { MaskPipe } from 'ngx-mask-2';
+import { TelefonePipe } from '../pipes/telefone.pipe';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UtilService {
 
-  constructor(private decimalPipe: DecimalPipe, private datePipe: DatePipe, private maskPipe: MaskPipe) { }
+  constructor(private decimalPipe: DecimalPipe, private datePipe: DatePipe, private telefonePipe: TelefonePipe) { }
 
   public getDateTime(dataStr: string): Date {
     const data = new Date(dataStr);
@@ -30,10 +30,14 @@ export class UtilService {
     let telefone = '';
     if (pedido.cliente.fone1) {
       // tslint:disable-next-line: max-line-length
-      telefone = this.maskPipe.transform(pedido.cliente.fone1, '(00)00009-0000') + (pedido.cliente.fone2 ? ` / ${this.maskPipe.transform(pedido.cliente.fone2, '(00)00009-0000')}` : '');
+      telefone = this.telefonePipe.transform(pedido.cliente.fone1) + (pedido.cliente.fone2 ? ` / ${this.telefonePipe.transform(pedido.cliente.fone2)}` : '');
+    }
+    let observacoes = '';
+    if (pedido.observacoes) {
+      observacoes = `\nObs.: ${pedido.observacoes}`;
     }
     // tslint:disable-next-line: max-line-length
-    let str = `Salgados Sirius\nHorário: ${horario}\nCliente: ${pedido.cliente.nome}\nFone: ${telefone}\n${endereco}Pago? ${pedido.pago ? 'Sim' : 'Não'}\nObs.: ${pedido.observacoes}\n\n`;
+    let str = `Salgados Sirius\nHorário: ${horario}\nCliente: ${pedido.cliente.nome}\n${telefone}\n${endereco}Pago? ${pedido.pago ? 'Sim' : 'Não'}${observacoes}\n\n`;
     str = this.retira_acentos(str);
 
     pedido.itens.forEach(item => {

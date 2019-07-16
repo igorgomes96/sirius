@@ -4,8 +4,8 @@
       <div class="card-content">
         <span class="card-title truncate">{{ cliente.nome }}</span>
 
-        <span class="truncate"><i class="material-icons">phone</i> {{ cliente.fone1 | mask:'(00) 00009-0000' }} <span [hidden]="!cliente.fone1 || !cliente.fone2">/</span>
-        {{ cliente.fone2 | mask:'(00) 00009-0000' }}</span>
+        <span class="truncate"><i class="material-icons">phone</i> {{ cliente.fone1 | telefone }} <span [hidden]="!cliente.fone1 || !cliente.fone2">/</span>
+        {{ cliente.fone2 | telefone }}</span>
         <span class="truncate"><i class="material-icons">location_on</i> {{ cliente.enderecoStr }}</span>
         <i class="material-icons">location_city</i> {{ cliente.endereco?.cidade }} - {{ cliente.endereco?.uf }}<br>
         <span class="truncate"><i class="material-icons">note</i> {{ cliente.observacoes }}</span>
