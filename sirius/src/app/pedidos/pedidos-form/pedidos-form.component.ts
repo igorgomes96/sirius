@@ -32,6 +32,7 @@ export class PedidosFormComponent implements OnInit {
   TipoSalgado: typeof TipoSalgado = TipoSalgado;
   itemPersonalizadoModal = new EventEmitter<boolean>();
   atualizarCliente = true;
+  openModalSenha = new EventEmitter<boolean>();
   // data: string;
   diversos: ItemCardapio[] = [];
   edicao = false;
@@ -180,8 +181,34 @@ export class PedidosFormComponent implements OnInit {
       .concat(this.diversos.filter(s => s.quantidade));
   }
 
-  fecharPedido() {
+  atualizaInformacoesPedido() {
+    this.pedido.horario = new Date(this.pedido.horario);
+    // dataFormatted.setHours(this.pedido.horario.getHours());
+    // dataFormatted.setMinutes(this.pedido.horario.getMinutes());
+    // this.pedido.horario = dataFormatted;
 
+    this.pedido.itens = this.itensSelecionados;
+
+    if (!this.pedido.entregar) {
+      this.pedido.enderecoEntrega = null;
+    }
+
+    if (this.pedido.entregar) {
+      this.pedido.cliente.endereco = this.pedido.enderecoEntrega;
+    } else if (!this.pedido.cliente._id) { // Se não vai entregar e o cliente não existe
+      this.pedido.cliente.endereco = new Endereco();
+    }
+  }
+
+  fecharPedido() {
+    if (this.edicao) {
+      this.openModalSenha.emit(true);
+    } else {
+      this.salvar(null);
+    }
+  }
+
+  salvar(senha: string) {
     // const dataFormatted = this.utilService.stringToDate(this.data, 'dd/MM/yyyy', '/');
     // if (dataFormatted === 'Erro na conversão!') {
     //   this.toasts.toast('A data deve estar no formato "dd/mm/aaaa"!');
@@ -205,22 +232,7 @@ export class PedidosFormComponent implements OnInit {
       return;
     }
 
-    this.pedido.horario = new Date(this.pedido.horario);
-    // dataFormatted.setHours(this.pedido.horario.getHours());
-    // dataFormatted.setMinutes(this.pedido.horario.getMinutes());
-    // this.pedido.horario = dataFormatted;
-
-    this.pedido.itens = this.itensSelecionados;
-
-    if (!this.pedido.entregar) {
-      this.pedido.enderecoEntrega = null;
-    }
-
-    if (this.pedido.entregar) {
-      this.pedido.cliente.endereco = this.pedido.enderecoEntrega;
-    } else if (!this.pedido.cliente._id) { // Se não vai entregar e o cliente não existe
-      this.pedido.cliente.endereco = new Endereco();
-    }
+    this.atualizaInformacoesPedido();
 
     // Verifica se cria um novo pedido ou atualiza um pedido existente
     let httpCall: Observable<Pedido | void>;
@@ -230,7 +242,7 @@ export class PedidosFormComponent implements OnInit {
       httpCall = this.clientesApi.post(this.pedido.cliente)
         .pipe(
           tap((novoCliente: Cliente) => this.pedido.cliente._id = novoCliente._id),
-          switchMap(_ => this.pedidoCall)
+          switchMap(_ => this.pedidoCall(senha))
         );
     } else if (this.atualizarCliente) {
       httpCall = this.clientesApi.put(this.pedido.cliente._id, this.pedido.cliente)
@@ -241,12 +253,11 @@ export class PedidosFormComponent implements OnInit {
             }
             return of(null);
           }),
-          switchMap(_ => this.pedidoCall)
+          switchMap(_ => this.pedidoCall(senha))
         );
     } else {
-      httpCall = this.pedidoCall;
+      httpCall = this.pedidoCall(senha);
     }
-
 
     httpCall.pipe().subscribe((pedidoCriado: any) => {
       if (this.edicao) {
@@ -258,9 +269,9 @@ export class PedidosFormComponent implements OnInit {
 
   }
 
-  get pedidoCall(): Observable<Pedido | void> {
+  pedidoCall(senha: string = null): Observable<Pedido | void> {
     if (this.edicao) {
-      return this.api.put(this.pedido._id, this.pedido);
+      return this.api.put(this.pedido._id, this.pedido, senha);
     } else {
       return this.api.post(this.pedido);
     }

@@ -44,7 +44,8 @@ import { TelefoneDirective } from './directives/telefone.directive';
     SenhaModalComponent,
     OnlyNumberDirective,
     ConfirmacaoModalComponent,
-    TelefonePipe
+    TelefonePipe,
+    TelefoneDirective
   ],
   providers: [DecimalPipe, DatePipe, TelefonePipe]
 })

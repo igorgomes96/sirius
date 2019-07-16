@@ -14,6 +14,7 @@ declare var $: any;
 })
 export class PedidosListComponent implements OnInit {
 
+  teste = '32123123123';
   pedidos: Pedido[] = [];
   data: Date;
   pedidoExcluir: Pedido;

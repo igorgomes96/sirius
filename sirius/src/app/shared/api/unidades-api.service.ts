@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
-import { take, retry } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 
 import { Unidade } from '../models/item-cardapio';
 import { environment } from 'src/environments/environment';

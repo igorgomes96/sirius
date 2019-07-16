@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Cliente } from '../models/cliente';
 import { Observable } from 'rxjs';
-import { take, map, retry } from 'rxjs/operators';
+import { take, map } from 'rxjs/operators';
 import { UtilService } from '../services/util.service';
 import { Util } from '../services/util';
 

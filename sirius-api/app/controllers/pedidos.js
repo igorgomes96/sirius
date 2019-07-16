@@ -198,21 +198,26 @@ function PedidosController(app) {
         pedido = geraIdItens(pedido);
         Usuario.find({ senha: senha })
             .then(function (usuario) {
-                if (senha && confirmacao) {
+                if (senha) {
                     if (usuario && usuario.length > 0) {
                         email = usuario[0].email;
                         nome = usuario[0].nome;
-                        pedido.usuario = usuario[0];
+                        if (confirmacao) pedido.usuario = usuario[0];
                     } else {
                         throw 'Senha incorreta! Usuário não localizado.';
                     }
                 }
                 return Pedido.findOneAndUpdate({ _id: id }, pedido, { new: false });
             }).then(function (result) {
-                if (confirmacao) {  // Se for somente confirmação pedido, não cria log
-                    return Promise.all([
-                        atualizaReservas(getDiferencaReserva(result, pedido), tiposAtualizacao.criacao)
-                    ]);
+                if (confirmacao) {  // Se for somente confirmação pedido
+                    if (result && result.usuario && result.usuario.email !== email) {
+                        return Promise.all([
+                            atualizaReservas(getDiferencaReserva(result, pedido), tiposAtualizacao.criacao),
+                            Log.findOneAndUpdate({ pedidoId: id }, { $set: { 'logs.0.usuario': { email: email, nome: nome } }})
+                        ]);
+                    } else {
+                        return atualizaReservas(getDiferencaReserva(result, pedido), tiposAtualizacao.criacao);
+                    }
                 } else {
                     return Promise.all([
                         atualizaReservas(getDiferencaReserva(result, pedido), tiposAtualizacao.criacao),
@@ -236,21 +241,26 @@ function PedidosController(app) {
             }).catch(callback);
     }
 
-    this.delete = function (id, { email, nome, senha }, callback) {
-        Usuario.find({ email: email })
+    this.delete = function (id, senha, callback) {
+        var usuario = null;
+        Usuario.find({ senha: senha })
             .then(function (result) {
-                senha = app.HmacSHA1(senha);
-                if (result[0].senha !== senha) {
-                    throw 'Senha incorreta!';
+                if (!result || !result.length) {
+                    throw 'Senha incorreta! Usuário não encontrado!';
                 }
 
+                if (result[0].perfil !== 'Administrador') {
+                    throw 'Usuário sem permissão para excluir!';
+                }
+
+                usuario = result[0];
                 return Pedido.findOneAndUpdate({ _id: id }, {
                     $set: {
                         exclusao: {
                             horario: new Date(),
                             usuario: {
-                                email: email,
-                                nome: nome
+                                email: result[0].email,
+                                nome: result[0].nome
                             }
                         }
                     }
@@ -262,10 +272,7 @@ function PedidosController(app) {
                         $push: {
                             logs: {
                                 horario: new Date(),
-                                usuario: {
-                                    email: email,
-                                    nome: nome
-                                },
+                                usuario: usuario,
                                 tipo: tiposAtualizacao.exclusao,
                                 pedido: pedidoAnterior
                             }

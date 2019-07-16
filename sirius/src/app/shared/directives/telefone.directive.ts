@@ -1,4 +1,4 @@
-import { Directive, Input, HostListener } from '@angular/core';
+import { Directive, Input, HostListener, ElementRef } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
 @Directive({
@@ -15,12 +15,16 @@ export class TelefoneDirective implements ControlValueAccessor {
   onTouched: any;
   onChange: any;
 
-  @Input() telefoneMask: string;
-
-  constructor() { }
+  constructor(private element: ElementRef) { }
 
   writeValue(obj: any): void {
+    if (!obj) {
+      this.element.nativeElement.value = '';
+      return;
+    }
+    this.element.nativeElement.value = this.telefoneComMascara(obj);
   }
+
   registerOnChange(fn: any): void {
     this.onChange = fn;
   }
@@ -30,47 +34,85 @@ export class TelefoneDirective implements ControlValueAccessor {
   setDisabledState?(isDisabled: boolean): void {
   }
 
+  @HostListener('keydown', ['$event'])
+  onKeydown($event: any) {
+    const inputValue = $event.target.value;
+    if (!inputValue) {
+      return;
+    }
+    const numbers = this.getNumbers(inputValue);
+    if (numbers.length > 10) {
+      if ([46, 8, 9, 27, 13, 110, 149, 190].indexOf($event.keyCode) !== -1 ||
+        // Allow: Ctrl+A
+        ($event.keyCode === 65 && ($event.ctrlKey || $event.metaKey)) ||
+        // Allow: Ctrl+C
+        ($event.keyCode === 67 && ($event.ctrlKey || $event.metaKey)) ||
+        // Allow: Ctrl+V
+        ($event.keyCode === 86 && ($event.ctrlKey || $event.metaKey)) ||
+        // Allow: Ctrl+X
+        ($event.keyCode === 88 && ($event.ctrlKey || $event.metaKey)) ||
+        // Allow: home, end, left, right
+        ($event.keyCode >= 35 && $event.keyCode <= 39)) {
+        // let it happen, don't do anything
+        return;
+      }
+      $event.preventDefault();
+    }
+  }
+
   @HostListener('keyup', ['$event'])
   onKeyup($event: any) {
-    let valor = $event.target.value.replace(/\D/g, '');
-    const pad = this.telefoneMask.replace(/\D/g, '').replace(/9/g, '_');
-    const valorMask = valor + pad.substring(0, pad.length - valor.length);
-
-    // retorna caso pressionado backspace
-    if ($event.keyCode === 8) {
-      this.onChange(valor);
+    const inputValue = $event.target.value;
+    if (!inputValue) {
+      this.onChange('');
       return;
     }
-
-    if (valor.length <= pad.length) {
-      this.onChange(valor);
+    $event.target.value = this.telefoneComMascara(inputValue);
+    const numbers = this.getNumbers(inputValue);
+    if (numbers.length >= 8 && numbers.length <= 11) {
+      this.onChange(numbers);
+    } else {
+      this.onChange('');
     }
-
-    let valorMaskPos = 0;
-    valor = '';
-    for (let i = 0; i < this.telefoneMask.length; i++) {
-      // tslint:disable-next-line:radix
-      if (isNaN(parseInt(this.telefoneMask.charAt(i)))) {
-        valor += this.telefoneMask.charAt(i);
-      } else {
-        valor += valorMask[valorMaskPos++];
-      }
-    }
-
-    if (valor.indexOf('_') > -1) {
-      valor = valor.substr(0, valor.indexOf('_'));
-    }
-
-    $event.target.value = valor;
   }
 
-  @HostListener('blur', ['$event'])
-  onBlur($event: any) {
-    if ($event.target.value.length === this.telefoneMask.length) {
+  telefoneComMascara(inputValue: string): string {
+    if (!inputValue) {
+      this.onChange('');
       return;
     }
-    this.onChange('');
-    $event.target.value = '';
+    const numbers = this.getNumbers(inputValue);
+    switch (numbers.length) {
+      case 1:
+      case 2:
+      case 3:
+      case 4:
+        return numbers;
+      case 5:
+      case 6:
+      case 7:
+      case 8:
+        return `${numbers.substr(0, 4)}-${numbers.substr(4)}`;
+      case 9:
+        return `${numbers.substr(0, 1)} ${numbers.substr(1, 4)}-${numbers.substr(5)}`;
+      case 10:
+        return `(${numbers.substr(0, 2)}) ${numbers.substr(2, 4)}-${numbers.substr(6)}`;
+      case 11:
+        return `(${numbers.substr(0, 2)}) ${numbers.substr(2, 1)} ${numbers.substr(3, 4)}-${numbers.substr(7)}`;
+    }
+    return '';
   }
+
+  getNumbers(valor: string): string {
+    if (!valor) {
+      return '';
+    }
+    const numbers = valor.match(/\d/g);
+    if (!numbers) {
+      return '';
+    }
+    return numbers.join('') as string;
+  }
+
 
 }

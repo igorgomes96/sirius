@@ -79,9 +79,9 @@ module.exports = function (app) {
   });
 
   app.put('/api/pedidos/:id', function (req, res) {
-    var pedido = req.body;
+    var pedido = req.body.pedido;
     const usuario = req.session.usuario;
-    usuario.senha = req.body.senha;
+    usuario.senha = req.body.senha ? app.HmacSHA1(req.body.senha.toString()) : null;
     ctrl.put(req.params.id, pedido, usuario, false, function (err, result) {
       if (err) {
         res.status(500).json(err);
@@ -148,9 +148,7 @@ module.exports = function (app) {
 
 
   app.post('/api/pedidos/:id/delete', function (req, res) {
-    const usuario = req.session.usuario;
-    usuario.senha = req.body.senha;
-    ctrl.delete(req.params.id, usuario, function (err, result) {
+    ctrl.delete(req.params.id, app.HmacSHA1(req.body.senha.toString()), function (err, result) {
       if (err) {
         if (err === 'Senha incorreta!') {
           res.status(400).json(err);

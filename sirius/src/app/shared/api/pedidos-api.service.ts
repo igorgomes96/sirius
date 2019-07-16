@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
 import { Pedido } from '../models/pedido';
-import { take, map, retry } from 'rxjs/operators';
+import { take, map } from 'rxjs/operators';
 import { ItemCardapio } from '../models/item-cardapio';
 import { Util } from '../services/util';
 import { Log, PedidoLog } from '../models/log';
@@ -80,8 +80,8 @@ export class PedidosApiService {
       map(this.mapPedido));
   }
 
-  put(id: string, pedido: Pedido): Observable<void> {
-    return this.httpClient.put<void>(this.url + `/${id}`, pedido).pipe(take(1));
+  put(id: string, pedido: Pedido, senha: string = null): Observable<void> {
+    return this.httpClient.put<void>(this.url + `/${id}`, { pedido: pedido, senha: senha }).pipe(take(1));
   }
 
   log(id: string): Observable<PedidoLog> {
