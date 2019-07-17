@@ -20,7 +20,7 @@ export class UtilService {
     return data.toISOString().substr(11, 5);
   }
 
-  public imprimirPedido(pedido: Pedido, tamanhoLinha: number = 38) {
+  public imprimirPedido(pedido: Pedido, tamanhoLinha: number = 32) {
 
     let endereco = 'Cliente não solicitou entrega.\n';
     if (pedido.entregar) {
@@ -30,7 +30,7 @@ export class UtilService {
     let telefone = '';
     if (pedido.cliente.fone1) {
       // tslint:disable-next-line: max-line-length
-      telefone = this.telefonePipe.transform(pedido.cliente.fone1) + (pedido.cliente.fone2 ? ` / ${this.telefonePipe.transform(pedido.cliente.fone2)}` : '');
+      telefone = `Fone: ${this.telefonePipe.transform(pedido.cliente.fone1)}${pedido.cliente.fone2 ? `\nFone: ${this.telefonePipe.transform(pedido.cliente.fone2)}` : ''}`;
     }
     let observacoes = '';
     if (pedido.observacoes) {
@@ -45,7 +45,10 @@ export class UtilService {
       const semPimenta = item.semPimenta ? ' - Sem Pimenta' : '';
       const nome = `${item.quantidade} un. de ${item.nome}${semPimenta}${detalhes} .`;
       const valor = ` ${this.convertToReal(item.quantidade * item.valor)}`;
-      const dif = tamanhoLinha - ((nome.length + valor.length) % tamanhoLinha);
+      let dif = tamanhoLinha - ((nome.length + valor.length) % tamanhoLinha);
+      if (dif % tamanhoLinha === 0) {
+        dif -= tamanhoLinha;
+      }
       str += `${nome}${'.'.repeat(dif)}${valor}\n`;
     });
     const qtdaTotal = pedido.itens.reduce((prev, cur) => prev + cur.quantidade, 0);
