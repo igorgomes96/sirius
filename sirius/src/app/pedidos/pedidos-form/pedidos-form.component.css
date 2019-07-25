@@ -34,3 +34,14 @@ strong {
     }
 }
 
+.recorrencia label {
+    margin-right: 13px;
+}
+
+.recorrencia {
+    margin-left: 12px;
+}
+
+.recorrencia [type="checkbox"]+span:not(.lever) {
+    padding-left: 22px;
+}

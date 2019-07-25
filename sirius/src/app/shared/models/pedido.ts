@@ -16,6 +16,8 @@ export class Pedido {
     pago: boolean;
     exclusao: Exclusao;
     impressao: Impressao;
+    recorrencia: number[];
+    repetirAte: Date;
 }
 
 export class Exclusao {

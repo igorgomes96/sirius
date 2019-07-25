@@ -43,7 +43,8 @@ export class UtilService {
     pedido.itens.forEach(item => {
       const detalhes = item.detalhes ? ` (${item.detalhes})` : '';
       const semPimenta = item.semPimenta ? ' - Sem Pimenta' : '';
-      const nome = `${item.quantidade} un. de ${item.nome}${semPimenta}${detalhes} .`;
+      const triangulo = item.triangulo ? ' (triângulo)' : '';
+      const nome = `${item.quantidade} un. de ${item.nome}${triangulo}${semPimenta}${detalhes} .`;
       const valor = ` ${this.convertToReal(item.quantidade * item.valor)}`;
       let dif = tamanhoLinha - ((nome.length + valor.length) % tamanhoLinha);
       if (dif % tamanhoLinha === 0) {

@@ -61,6 +61,7 @@
                         [attr.disabled]="!is.selecionado ? '' : null">
                       {{ is.unidade.sigla }} de <strong>{{ is.nome }} </strong>
                       <small *ngIf="is.detalhes"> ({{ is.detalhes.slice(0, 30) }})</small>
+                      <small *ngIf="is.triangulo"> (Triângulo)</small>
                     </span>
                   </div>
 

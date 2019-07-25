@@ -21,6 +21,7 @@ export interface ItemCardapio {
     semPimenta: boolean;
     selecionado: boolean;
     quantidade: number;
+    triangulo: boolean;
     reservaComPimenta: number;
     reservaSemPimenta: number;
 }
