@@ -5,9 +5,9 @@ import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
 import { Pedido } from '../models/pedido';
 import { take, map } from 'rxjs/operators';
-import { ItemCardapio } from '../models/item-cardapio';
+import { ItemCardapio, TipoSalgado } from '../models/item-cardapio';
 import { Util } from '../services/util';
-import { Log, PedidoLog } from '../models/log';
+import { PedidoLog } from '../models/log';
 
 @Injectable({
   providedIn: 'root'
@@ -19,8 +19,48 @@ export class PedidosApiService {
     this.url = environment.url + 'pedidos';
   }
 
-  private mapPedido(pedido: Pedido): Pedido {
+  mapPedido(pedido: Pedido): Pedido {
     if (!pedido.cliente) {
+      return pedido;
+    }
+    
+    let tipo: TipoSalgado;
+    if (!pedido.itens) tipo = TipoSalgado.Festa
+    const festa = pedido.itens.filter(i => i.tipo === TipoSalgado.Festa).length;
+    const comercial = pedido.itens.filter(i => i.tipo === TipoSalgado.Comercial).length;
+    if (festa >= comercial) 
+      tipo = TipoSalgado.Festa;
+    else
+      tipo = TipoSalgado.Comercial;
+
+    return {
+      ...pedido,
+      ...{
+        cliente: {
+          ...pedido.cliente, ...{
+            enderecoStr: Util.enderecoCompleto(pedido.cliente.endereco),
+            enderecoStrSimples: Util.enderecoSimples(pedido.cliente.endereco)
+          }
+        },
+        enderecoStr: Util.enderecoCompleto(pedido.enderecoEntrega),
+        enderecoStrSimples: Util.enderecoSimples(pedido.enderecoEntrega),
+        tipo: tipo
+      }
+    };
+    /*return Object.assign(pedido,
+      {
+        cliente: Object.assign(pedido.cliente, {
+          enderecoStr: Util.enderecoCompleto(pedido.cliente.endereco),
+          enderecoStrSimples: Util.enderecoSimples(pedido.cliente.endereco)
+        }),
+        enderecoStr: Util.enderecoCompleto(pedido.enderecoEntrega),
+        enderecoStrSimples: Util.enderecoSimples(pedido.enderecoEntrega)
+      });*/
+  }
+
+  mapPedidos(mapFunction: (_: Pedido) => Pedido): (_: Pedido[]) => Pedido[] {
+    return (pedidos: Pedido[]) => pedidos.map(mapFunction);
+    /*if (!pedido.cliente) {
       return pedido;
     }
     return Object.assign(pedido,
@@ -32,36 +72,20 @@ export class PedidosApiService {
         enderecoStr: Util.enderecoCompleto(pedido.enderecoEntrega),
         enderecoStrSimples: Util.enderecoSimples(pedido.enderecoEntrega)
       });
-  }
-
-  private mapPedidos(pedidos: Pedido[]): Pedido[] {
-    return pedidos.map(pedido => {
-      if (!pedido.cliente) {
-        return pedido;
-      }
-      return Object.assign(pedido,
-        {
-          cliente: Object.assign(pedido.cliente, {
-            enderecoStr: Util.enderecoCompleto(pedido.cliente.endereco),
-            enderecoStrSimples: Util.enderecoSimples(pedido.cliente.endereco)
-          }),
-          enderecoStr: Util.enderecoCompleto(pedido.enderecoEntrega),
-          enderecoStrSimples: Util.enderecoSimples(pedido.enderecoEntrega)
-        });
-      }
-    );
+    }
+  );*/
   }
 
   getAll(): Observable<Pedido[]> {
     return this.httpClient.get<Pedido[]>(this.url).pipe(
       take(1),
-      map(this.mapPedidos));
+      map(this.mapPedidos(this.mapPedido)));
   }
 
   getByData(data: Date): Observable<Pedido[]> {
     return this.httpClient.get<Pedido[]>(this.url, { params: { data: data.toString() } }).pipe(
       take(1),
-      map(this.mapPedidos));
+      map(this.mapPedidos(this.mapPedido)));
   }
 
   getAggregatedByData(data: Date): Observable<ItemCardapio[]> {

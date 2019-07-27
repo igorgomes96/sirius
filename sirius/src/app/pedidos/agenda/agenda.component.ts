@@ -6,6 +6,7 @@ import { PedidosService } from 'src/app/shared/services/pedidos.service';
 import { datepicker } from 'src/environments/datepicker-options';
 import { Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
+import { TipoSalgado } from 'src/app/shared/models/item-cardapio';
 
 declare var $: any;
 
@@ -16,7 +17,7 @@ declare var $: any;
 })
 export class AgendaComponent implements OnInit {
 
-  pedidos: Pedido[];
+  pedidos: Pedido[] = [];
   data: Date;
   pedidoExcluir: Pedido;
   openModalSenha: EventEmitter<boolean>;
@@ -51,6 +52,14 @@ export class AgendaComponent implements OnInit {
     }));
 
     this.load();
+  }
+
+  get pedidosFesta(): Pedido[] {
+    return this.pedidos.filter(p => p.tipo === TipoSalgado.Festa);
+  }
+
+  get pedidosComerciais(): Pedido[] {
+    return this.pedidos.filter(p => p.tipo === TipoSalgado.Comercial);
   }
 
   editPedido(pedido: Pedido) {

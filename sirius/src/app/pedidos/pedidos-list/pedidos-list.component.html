@@ -30,28 +30,21 @@
         </div>
       </div>
 
-      <!-- <div class="row">
-        <div class="input-field col m6 s12">
-          <i class="material-icons prefix">calendar_today</i>
-          <input id="data" type="text" class="datepicker">
-          <label for="data">Data</label>
+      <p>{{ pedidosFesta.length ? 'Pedidos de Festa' : 'Não há pedidos de festa para hoje até o momento' }}</p>
+      <div class="row">
+        <div *ngFor="let pedido of pedidosFesta" class="col s12">
+          <app-card-agenda [pedido]="pedido" [mostrarRestaurar]="false" [oneColumn]="false"
+            (editPedido)="editPedido($event)" (pagamento)="atualizaPedido($event)"
+            (deletePedido)="deletePedido($event)"></app-card-agenda>
         </div>
-      </div> -->
+      </div>
 
-      <!-- <div class="row">
-        <div class="col">
-          <button class="btn primary-color m-r-m" (click)="print()">Imprimir</button>
-          <a class="btn orange darken-3" routerLink="/pedidos/agrupados">Agrupar Itens</a>
-        </div>
-      </div> -->
-
-      <div id="pedidos">
-        <div class="row">
-          <div *ngFor="let pedido of pedidos" class="col s12">
-            <app-card-agenda [pedido]="pedido" [mostrarRestaurar]="false" [oneColumn]="false"
-              (editPedido)="editPedido($event)" (pagamento)="atualizaPedido($event)"
-              (deletePedido)="deletePedido($event)"></app-card-agenda>
-          </div>
+      <p>{{ pedidosComerciais.length ? 'Pedidos Comerciais' : 'Não há pedidos comerciais para hoje até o momento' }}</p>
+      <div class="row">
+        <div *ngFor="let pedido of pedidosComerciais" class="col s12">
+          <app-card-agenda [pedido]="pedido" [mostrarRestaurar]="false" [oneColumn]="false"
+            (editPedido)="editPedido($event)" (pagamento)="atualizaPedido($event)"
+            (deletePedido)="deletePedido($event)"></app-card-agenda>
         </div>
       </div>
 
