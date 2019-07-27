@@ -172,11 +172,21 @@
                 <div class="col s12">
                     <div class="card-panel">
                         <h6>Informações Adicionais</h6>
+
+                        <div class="row m-t-l">
+                            <div class="col s12">
+                                <label>
+                                    <input type="checkbox" [(ngModel)]="pedido.pago" />
+                                    <span>Pago?</span>
+                                </label>
+                            </div>
+                        </div>
+
                         <div class="row">
                             <div class="col s12 input-field">
                                 <textarea id="observacoes" class="materialize-textarea"
-                                    [(ngModel)]="pedido.observacoes"></textarea>
-                                <label for="observacoes" class="active">Observações sobre o pedido</label>
+                                    [(ngModel)]="pedido.observacoes" placeholder="Digite aqui os detalhes do pedido..."></textarea>
+                                <label for="observacoes" class="active">Observações</label>
                             </div>
                         </div>
 

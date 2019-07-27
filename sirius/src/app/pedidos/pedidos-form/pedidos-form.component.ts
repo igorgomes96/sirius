@@ -67,13 +67,13 @@ export class PedidosFormComponent implements OnInit {
     };
 
     const onSelectRepetirAte = (value: any) => {
-      this.pedido.repetirAte = new Date(value);
+      this.pedido.recorrencia.repetirAte = new Date(value);
     };
 
     const onCloseRepetirAte = () => {
       const instance = this.datePickerInstance('#repetirAte');
       if (!instance.toString()) {
-        this.pedido.repetirAte = null;
+        this.pedido.recorrencia.repetirAte = null;
       }
     };
 
@@ -119,10 +119,10 @@ export class PedidosFormComponent implements OnInit {
           defaultDate: new Date(pedido.horario),
           onSelect: onSelectDate
         }});
-        if (pedido.repetirAte) {
+        if (pedido.recorrencia.repetirAte) {
           this.datePickerInstance('#repetirAte').destroy();
           this.createDatePicker('#repetirAte', { ...datepicker, ...{
-            defaultDate: new Date(pedido.repetirAte),
+            defaultDate: new Date(pedido.recorrencia.repetirAte),
             onSelect: onSelectRepetirAte,
             showClearBtn: true
           }});

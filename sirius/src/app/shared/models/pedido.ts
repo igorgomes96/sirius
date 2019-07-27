@@ -16,8 +16,11 @@ export class Pedido {
     pago: boolean;
     exclusao: Exclusao;
     impressao: Impressao;
-    recorrencia: number[];
-    repetirAte: Date;
+    recorrencia: {
+        repetirAte: Date,
+        dias: Number[],
+        pedidoOrigem: string
+    };
 }
 
 export class Exclusao {

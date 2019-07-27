@@ -63,7 +63,11 @@ module.exports = function (app) {
             },
             horario: Date
         },
-        repetirAte: Date
+        recorrencia: {
+            repetirAte: Date,
+            pedidoOrigem: ObjectId,
+            dias: [Number]
+        }
     });
 
     return db.model('pedidos', pedidoSchema);
