@@ -13,10 +13,13 @@
           <input type="checkbox" [(ngModel)]="item.semPimenta" />
           <span>Sem Pimenta</span>
         </label>
+        <label style="margin-left: 25px" *ngIf="showTriangulo(item)">
+          <input type="checkbox" [(ngModel)]="item.triangulo" />
+          <span>Triângulo</span>
+        </label>
       </div>
 
-      <span class="new badge m-t-s" [ngClass]="classReserva()"
-        *ngIf="reserva !== undefined && reserva !== null"
+      <span class="new badge m-t-s" [ngClass]="classReserva()" *ngIf="reserva !== undefined && reserva !== null"
         data-badge-caption="em reserva">{{ reserva }}</span>
     </div>
 
@@ -53,9 +56,6 @@
           </div>
 
         </div>
-        <!-- <a (click)="addItem()" [class.disabled]="item.quantidade < 0 || item.quantidade > item.reserva" class="btn-floating btn-small waves-effect waves-light primary-color">
-          <i class="material-icons">add</i>
-        </a> -->
 
       </div>
 

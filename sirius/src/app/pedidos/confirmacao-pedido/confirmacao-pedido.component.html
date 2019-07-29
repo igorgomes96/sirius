@@ -41,10 +41,15 @@
           </div>
         </div>
 
-        <div class="row" *ngIf="pedido.observacoes">
+        <div class="row">
           <div class="col s12">
-            <h6>Observações sobre o Pedido</h6>
-            <p>{{ pedido.observacoes }}</p>
+            <span class="cliente-info">
+              <h6>Informações Adicionais</h6>
+              <p>
+                <span *ngIf="pedido.observacoes">Observações: {{ pedido.observacoes }}</span><br>
+                Pago? {{ pedido.pago ? 'Sim' : 'Não' }}
+              </p>
+            </span>
           </div>
         </div>
 
@@ -61,6 +66,7 @@
                         [attr.disabled]="!is.selecionado ? '' : null">
                       {{ is.unidade.sigla }} de <strong>{{ is.nome }} </strong>
                       <small *ngIf="is.detalhes"> ({{ is.detalhes.slice(0, 30) }})</small>
+                      <small *ngIf="is.triangulo"> (Triângulo)</small>
                     </span>
                   </div>
 
@@ -134,4 +140,5 @@
     </div>
   </div>
 
-  <app-senha-modal message="Digite sua senha para confirmar o pedido: " [open]="openModalSenha" (confirmar)="confirmarPedido($event)"></app-senha-modal>
+  <app-senha-modal message="Digite sua senha para confirmar o pedido: " [open]="openModalSenha"
+    (confirmar)="confirmarPedido($event)"></app-senha-modal>

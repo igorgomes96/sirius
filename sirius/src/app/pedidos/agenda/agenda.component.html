@@ -25,12 +25,26 @@
             </div>
         </div>
 
-        <div id="pedidos">
-            <div class="row">
-                <div *ngFor="let pedido of pedidos" class="col s12">
-                    <app-card-agenda [pedido]="pedido" [mostrarRestaurar]="true" (editPedido)="editPedido($event)"
-                        (pagamento)="atualizaPedido($event)" [oneColumn]="false" (restaurar)="restaurarPedido($event)" 
-                        (deletePedido)="deletePedido($event)" (imprimePedido)="imprimePedido($event)"></app-card-agenda>
+        <div class="row">
+            <div class="col s12">
+                <p>{{ pedidosFesta.length ? 'Pedidos de Festa' : 'Não há pedidos de festa para este dia' }}</p>
+                <div class="row">
+                    <div *ngFor="let pedido of pedidosFesta" class="col s12">
+                        <app-card-agenda [pedido]="pedido" [mostrarRestaurar]="true" (editPedido)="editPedido($event)"
+                            (pagamento)="atualizaPedido($event)" [oneColumn]="false"
+                            (restaurar)="restaurarPedido($event)" (deletePedido)="deletePedido($event)"
+                            (imprimePedido)="imprimePedido($event)"></app-card-agenda>
+                    </div>
+                </div>
+
+                <p>{{ pedidosComerciais.length ? 'Pedidos Comerciais' : 'Não há pedidos comerciais para este dia' }}</p>
+                <div class="row">
+                    <div *ngFor="let pedido of pedidosComerciais" class="col s12">
+                        <app-card-agenda [pedido]="pedido" [mostrarRestaurar]="true" (editPedido)="editPedido($event)"
+                            (pagamento)="atualizaPedido($event)" [oneColumn]="false"
+                            (restaurar)="restaurarPedido($event)" (deletePedido)="deletePedido($event)"
+                            (imprimePedido)="imprimePedido($event)"></app-card-agenda>
+                    </div>
                 </div>
             </div>
         </div>

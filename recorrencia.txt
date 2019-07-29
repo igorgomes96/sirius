@@ -1,0 +1,7 @@
+Ao alterar:
+* Perguntar para usuário: "Este é um pedido recorrente, que se repete nos dias ..., até dia .... Deseja alterar somente esse pedido ou alterar todos os pedidos a partir da [Data do pedido] até ...?"
+	- Obs.: não aplicar para flag "Pago".
+
+Ao excluir:
+* Perguntar para usuário: "Este é um pedido recorrente, que se repete nos dias ..., até dia .... Deseja excluir somente esse pedido ou todos os pedidos a partir da [Data do pedido] até ...?"
+	- Se for o pedido de origem, considerar o próximo pedido como pedido de origem.

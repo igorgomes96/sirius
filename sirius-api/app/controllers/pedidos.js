@@ -129,7 +129,8 @@ function PedidosController(app) {
                 horario: {
                     $gte: inicioDia,
                     $lt: fimDia
-                }
+                },
+                $or: [{ exclusao: { $exists: false } }, { exclusao: null }]
             }
         }, {
             $unwind: {

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { ItemCardapio } from '../../models/item-cardapio';
+import { ItemCardapio, TipoSalgado } from '../../models/item-cardapio';
 
 @Component({
   selector: 'app-card-cardapio',
@@ -50,6 +50,13 @@ export class CardCardapioComponent implements OnInit {
     }
 
     this.item.quantidade += qtda;
+  }
+
+  showTriangulo(item: ItemCardapio) {
+    if (item && item.nome.toLowerCase() === 'esfirra' && item.tipo === TipoSalgado.Comercial) {
+      return true;
+    }
+    return false;
   }
 
   edit() {

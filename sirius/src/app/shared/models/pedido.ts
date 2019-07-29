@@ -1,4 +1,4 @@
-import { ItemCardapio } from './item-cardapio';
+import { ItemCardapio, TipoSalgado } from './item-cardapio';
 import { Cliente, Endereco } from './cliente';
 import { Usuario } from './usuario';
 
@@ -16,6 +16,12 @@ export class Pedido {
     pago: boolean;
     exclusao: Exclusao;
     impressao: Impressao;
+    recorrencia: {
+        repetirAte: Date,
+        dias: Number[],
+        pedidoOrigem: string
+    };
+    tipo: TipoSalgado;
 }
 
 export class Exclusao {

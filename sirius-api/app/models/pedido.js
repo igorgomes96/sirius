@@ -15,7 +15,8 @@ module.exports = function (app) {
                 tipo: String,
                 detalhes: String,
                 semPimenta: Boolean,
-                quantidade: Number
+                quantidade: Number,
+                triangulo: Boolean
             }
         ],
         cliente: {
@@ -61,6 +62,11 @@ module.exports = function (app) {
                 email: String,
             },
             horario: Date
+        },
+        recorrencia: {
+            repetirAte: Date,
+            pedidoOrigem: ObjectId,
+            dias: [Number]
         }
     });
 

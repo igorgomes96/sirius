@@ -15,6 +15,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { datepicker } from 'src/environments/datepicker-options';
 
 declare var $: any;
+declare var M: any;
 
 @Component({
   selector: 'app-pedidos-form',
@@ -65,14 +66,31 @@ export class PedidosFormComponent implements OnInit {
       this.pedido.horario = data;
     };
 
-    $('#data').datepicker(Object.assign(datepicker, {
+    const onSelectRepetirAte = (value: any) => {
+      this.pedido.recorrencia.repetirAte = new Date(value);
+    };
+
+    const onCloseRepetirAte = () => {
+      const instance = this.datePickerInstance('#repetirAte');
+      if (!instance.toString()) {
+        this.pedido.recorrencia.repetirAte = null;
+      }
+    };
+
+    this.createDatePicker('#data', { ...datepicker, ...{
       onSelect: onSelectDate
-    }));
+    }});
+
+    this.createDatePicker('#repetirAte', { ...datepicker, ...{
+      onSelect: onSelectRepetirAte,
+      setDefaultDate: false,
+      showClearBtn: true,
+      onClose: onCloseRepetirAte
+    }});
 
     $('#hora').timepicker(Object.assign(timepicker, {
       onSelect: onSelectHour
     }));
-    // $('#hora').val(this.utilService.getTime(this.utilService.getDateTime(new Date().toString())));
 
     this.loadItensPromisse(null)
       .pipe(
@@ -94,13 +112,33 @@ export class PedidosFormComponent implements OnInit {
         }
         this.diversos = pedido.itens.filter(i => i.tipo === TipoSalgado[TipoSalgado.Diversos]);
         this.updateQuantidades(pedido.itens);
-        // this.data = new Date(pedido.horario).toLocaleDateString('pt-BR');
         const hora = this.utilService.getTime(this.utilService.getDateTime(pedido.horario.toString()));
         $('#hora').val(hora);
+        this.datePickerInstance('#data').destroy();
+        this.createDatePicker('#data', { ...datepicker, ...{
+          defaultDate: new Date(pedido.horario),
+          onSelect: onSelectDate
+        }});
+        if (pedido.recorrencia.repetirAte) {
+          this.datePickerInstance('#repetirAte').destroy();
+          this.createDatePicker('#repetirAte', { ...datepicker, ...{
+            defaultDate: new Date(pedido.recorrencia.repetirAte),
+            onSelect: onSelectRepetirAte,
+            showClearBtn: true
+          }});
+        }
         this.showFormCliente = true;
         this.pedido = pedido;
       });
 
+  }
+
+  datePickerInstance(selector: string) {
+    return M.Datepicker.getInstance(document.querySelector(selector));
+  }
+
+  createDatePicker(selector: string, options: any) {
+    return $(selector).datepicker(options);
   }
 
   get horario() {
@@ -121,6 +159,7 @@ export class PedidosFormComponent implements OnInit {
         if (salgadoFesta) {
           salgadoFesta.quantidade = salgado.quantidade;
           salgadoFesta.semPimenta = salgado.semPimenta;
+          salgadoFesta.triangulo = salgado.triangulo;
           if (salgadoFesta.semPimenta && salgadoFesta.reservaSemPimenta) {
             salgadoFesta.reservaSemPimenta += salgado.quantidade;
           } else if (salgadoFesta.reservaComPimenta) {
@@ -135,6 +174,7 @@ export class PedidosFormComponent implements OnInit {
         if (salgadoComercial) {
           salgadoComercial.quantidade = salgado.quantidade;
           salgadoComercial.semPimenta = salgado.semPimenta;
+          salgadoComercial.triangulo = salgado.triangulo;
           if (salgadoComercial.semPimenta && salgadoComercial.reservaSemPimenta) {
             salgadoComercial.reservaSemPimenta += salgado.quantidade;
           } else if (salgadoComercial.reservaComPimenta) {
@@ -209,11 +249,6 @@ export class PedidosFormComponent implements OnInit {
   }
 
   salvar(senha: string) {
-    // const dataFormatted = this.utilService.stringToDate(this.data, 'dd/MM/yyyy', '/');
-    // if (dataFormatted === 'Erro na conversão!') {
-    //   this.toasts.toast('A data deve estar no formato "dd/mm/aaaa"!');
-    //   return;
-    // }
 
     const qtdaMenorQue0 = this.itensSelecionados.filter((item) => item.quantidade < 0);
     if (qtdaMenorQue0.length > 0) {
@@ -229,6 +264,16 @@ export class PedidosFormComponent implements OnInit {
     const alemReserva = this.itensAlemReserva();
     if (alemReserva && alemReserva.length > 0) {
       this.toasts.toast(`O salgado '${alemReserva[0].nome}' ultrapassou a quantidade em reserva!`);
+      return;
+    }
+
+    if (!this.pedido.cliente || !this.pedido.cliente.nome) {
+      this.toasts.toast(`É necessário informar o nome do cliente!`);
+      return;
+    }
+
+    if (!this.pedido.cliente.fone1 && !this.pedido.cliente.fone2) {
+      this.toasts.toast(`É necessário informar o(s) telefone(s) do cliente!`);
       return;
     }
 

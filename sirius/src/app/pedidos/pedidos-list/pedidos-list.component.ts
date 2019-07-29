@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { PedidosApiService } from './../../shared/api/pedidos-api.service';
 import { Pedido } from 'src/app/shared/models/pedido';
 import { ToastsService } from 'src/app/shared/services/toasts.service';
+import { TipoSalgado } from 'src/app/shared/models/item-cardapio';
 
 declare var $: any;
 
@@ -14,7 +15,6 @@ declare var $: any;
 })
 export class PedidosListComponent implements OnInit {
 
-  teste = '32123123123';
   pedidos: Pedido[] = [];
   data: Date;
   pedidoExcluir: Pedido;
@@ -34,6 +34,14 @@ export class PedidosListComponent implements OnInit {
       .subscribe((pedidos: Pedido[]) => {
         this.pedidos = pedidos;
       });
+  }
+
+  get pedidosFesta(): Pedido[] {
+    return this.pedidos.filter(p => p.tipo === TipoSalgado.Festa);
+  }
+
+  get pedidosComerciais(): Pedido[] {
+    return this.pedidos.filter(p => p.tipo === TipoSalgado.Comercial);
   }
 
   editPedido(pedido: Pedido) {
