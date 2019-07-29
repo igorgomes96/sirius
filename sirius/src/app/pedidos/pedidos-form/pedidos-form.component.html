@@ -184,8 +184,8 @@
 
                         <div class="row">
                             <div class="col s12 input-field">
-                                <textarea id="observacoes" class="materialize-textarea"
-                                    [(ngModel)]="pedido.observacoes" placeholder="Digite aqui os detalhes do pedido..."></textarea>
+                                <textarea id="observacoes" class="materialize-textarea" [(ngModel)]="pedido.observacoes"
+                                    placeholder="Digite aqui os detalhes do pedido..."></textarea>
                                 <label for="observacoes" class="active">Observações</label>
                             </div>
                         </div>
@@ -193,38 +193,17 @@
                         <div class="row" style="margin-bottom: 0">
                             <div class="col s12">
                                 <p style="margin-bottom: 15px; margin-top: 0;">Recorrência</p>
-                                <div class="row">
-                                    <div class="col s12" class="recorrencia">
-                                        <label for="dom">
-                                            <input type="checkbox" id="dom" />
-                                            <span>Dom.</span>
-                                        </label>
-                                        <label for="seg">
-                                            <input type="checkbox" id="seg" />
-                                            <span>Seg.</span>
-                                        </label>
-                                        <label for="ter">
-                                            <input type="checkbox" id="ter" />
-                                            <span>Ter.</span>
-                                        </label>
-                                        <label for="qua">
-                                            <input type="checkbox" id="qua" />
-                                            <span>Qua.</span>
-                                        </label>
-                                        <label for="qui">
-                                            <input type="checkbox" id="qui" />
-                                            <span>Qui.</span>
-                                        </label>
-                                        <label for="sex">
-                                            <input type="checkbox" id="sex" />
-                                            <span>Sex.</span>
-                                        </label>
-                                        <label for="sab">
-                                            <input type="checkbox" id="sab" />
-                                            <span>Sáb.</span>
-                                        </label>
+                                <form [formGroup]="recorrenciaForm">
+                                    <div class="row">
+                                        <div class="col s12" class="recorrencia">
+                                            <label [for]="'dia' + i" formArrayName="dias"
+                                                *ngFor="let dia of recorrenciaForm.get('dias').controls; let i=index;">
+                                                <input type="checkbox" [id]="'dia' + i" [formControlName]="i" />
+                                                <span>{{ dias[i] }}</span>
+                                            </label>
+                                        </div>
                                     </div>
-                                </div>
+                                </form>
 
                                 <div class="row">
                                     <div class="input-field col l4 m6 s12">

@@ -13,6 +13,7 @@ import { ToastsService } from 'src/app/shared/services/toasts.service';
 import { UtilService } from 'src/app/shared/services/util.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { datepicker } from 'src/environments/datepicker-options';
+import { FormGroup, FormBuilder, FormArray, FormControl } from '@angular/forms';
 
 declare var $: any;
 declare var M: any;
@@ -37,19 +38,28 @@ export class PedidosFormComponent implements OnInit {
   // data: string;
   diversos: ItemCardapio[] = [];
   edicao = false;
+  recorrenciaForm: FormGroup;
+
+  dias = ['Dom.', 'Seg.', 'Ter.', 'Qua.', 'Qui.', 'Sex.', 'Sáb.'];
 
   constructor(private cardapioApi: CardapioApiService,
     private router: Router, private api: PedidosApiService,
     private clientesApi: ClientesApiService, private route: ActivatedRoute,
-    private toasts: ToastsService, private utilService: UtilService) { }
+    private toasts: ToastsService, private utilService: UtilService,
+    private fb: FormBuilder) { }
 
   ngOnInit() {
+
+    this.recorrenciaForm = this.fb.group({
+      dias: this.buildDias(),
+    });
+
     this.pedido.cliente = new Cliente();
     this.pedido.enderecoEntrega = new Endereco();
     this.pedido.enderecoEntrega.cidade = 'Araguari';
     this.pedido.enderecoEntrega.uf = 'MG';
     this.pedido.horario = new Date();
-    // this.data = new Date().toLocaleDateString('pt-BR');
+    this.pedido.recorrencia = {repetirAte: null, dias: [], pedidoOrigem: null};
 
     const onSelectHour = (hour: any, minutes: any) => {
       const data = new Date(this.pedido.horario);
@@ -77,16 +87,20 @@ export class PedidosFormComponent implements OnInit {
       }
     };
 
-    this.createDatePicker('#data', { ...datepicker, ...{
-      onSelect: onSelectDate
-    }});
+    this.createDatePicker('#data', {
+      ...datepicker, ...{
+        onSelect: onSelectDate
+      }
+    });
 
-    this.createDatePicker('#repetirAte', { ...datepicker, ...{
-      onSelect: onSelectRepetirAte,
-      setDefaultDate: false,
-      showClearBtn: true,
-      onClose: onCloseRepetirAte
-    }});
+    this.createDatePicker('#repetirAte', {
+      ...datepicker, ...{
+        onSelect: onSelectRepetirAte,
+        setDefaultDate: false,
+        showClearBtn: true,
+        onClose: onCloseRepetirAte
+      }
+    });
 
     $('#hora').timepicker(Object.assign(timepicker, {
       onSelect: onSelectHour
@@ -115,22 +129,31 @@ export class PedidosFormComponent implements OnInit {
         const hora = this.utilService.getTime(this.utilService.getDateTime(pedido.horario.toString()));
         $('#hora').val(hora);
         this.datePickerInstance('#data').destroy();
-        this.createDatePicker('#data', { ...datepicker, ...{
-          defaultDate: new Date(pedido.horario),
-          onSelect: onSelectDate
-        }});
+        this.createDatePicker('#data', {
+          ...datepicker, ...{
+            defaultDate: new Date(pedido.horario),
+            onSelect: onSelectDate
+          }
+        });
         if (pedido.recorrencia.repetirAte) {
           this.datePickerInstance('#repetirAte').destroy();
-          this.createDatePicker('#repetirAte', { ...datepicker, ...{
-            defaultDate: new Date(pedido.recorrencia.repetirAte),
-            onSelect: onSelectRepetirAte,
-            showClearBtn: true
-          }});
+          this.createDatePicker('#repetirAte', {
+            ...datepicker, ...{
+              defaultDate: new Date(pedido.recorrencia.repetirAte),
+              onSelect: onSelectRepetirAte,
+              showClearBtn: true
+            }
+          });
         }
         this.showFormCliente = true;
         this.pedido = pedido;
       });
 
+  }
+
+  buildDias(): FormArray {
+    const controls = this.dias.map(d => new FormControl(false));
+    return this.fb.array(controls);
   }
 
   datePickerInstance(selector: string) {
@@ -223,15 +246,15 @@ export class PedidosFormComponent implements OnInit {
 
   atualizaInformacoesPedido() {
     this.pedido.horario = new Date(this.pedido.horario);
-    // dataFormatted.setHours(this.pedido.horario.getHours());
-    // dataFormatted.setMinutes(this.pedido.horario.getMinutes());
-    // this.pedido.horario = dataFormatted;
-
     this.pedido.itens = this.itensSelecionados;
 
     if (!this.pedido.entregar) {
       this.pedido.enderecoEntrega = null;
     }
+
+    let recorrenciaDias = this.recorrenciaForm.get('dias').value;
+    recorrenciaDias = recorrenciaDias.map((d: any, i: number) => d === true ? i : null).filter((v: any) => v !== null);
+    this.pedido.recorrencia.dias = recorrenciaDias;
 
     if (this.pedido.entregar) {
       this.pedido.cliente.endereco = this.pedido.enderecoEntrega;
