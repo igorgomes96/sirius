@@ -35,7 +35,7 @@ export class PedidosFormComponent implements OnInit {
   itemPersonalizadoModal = new EventEmitter<boolean>();
   atualizarCliente = true;
   openModalSenha = new EventEmitter<boolean>();
-  // data: string;
+  habilitaRecorrencia = true;
   diversos: ItemCardapio[] = [];
   edicao = false;
   recorrenciaForm: FormGroup;
@@ -74,6 +74,25 @@ export class PedidosFormComponent implements OnInit {
       data.setHours(this.pedido.horario.getHours());
       data.setMinutes(this.pedido.horario.getMinutes());
       this.pedido.horario = data;
+
+      if (this.habilitaRecorrencia) {
+        $('#repetirAte').val('');
+        const repetirAteSelecionado = this.datePickerInstance('#repetirAte').date;
+        const setDate = repetirAteSelecionado && new Date(repetirAteSelecionado) > data;
+        this.datePickerInstance('#repetirAte').destroy();
+        const options = {
+          ...datepicker, ...{
+            onSelect: onSelectRepetirAte,
+            setDefaultDate: setDate,
+            defaultDate: setDate ? repetirAteSelecionado : null,
+            showClearBtn: true,
+            onClose: onCloseRepetirAte,
+            minDate: data
+          }
+        };
+        this.createDatePicker('#repetirAte', options);
+      }
+      
     };
 
     const onSelectRepetirAte = (value: any) => {
@@ -98,7 +117,8 @@ export class PedidosFormComponent implements OnInit {
         onSelect: onSelectRepetirAte,
         setDefaultDate: false,
         showClearBtn: true,
-        onClose: onCloseRepetirAte
+        onClose: onCloseRepetirAte,
+        minDate: new Date()
       }
     });
 
@@ -141,10 +161,24 @@ export class PedidosFormComponent implements OnInit {
             ...datepicker, ...{
               defaultDate: new Date(pedido.recorrencia.repetirAte),
               onSelect: onSelectRepetirAte,
+              minDate: new Date(pedido.horario),
               showClearBtn: true
             }
           });
+          this.habilitaRecorrencia = false;
         }
+
+        if (pedido.recorrencia.dias && pedido.recorrencia.dias.length) {
+          const formValueDias = this.dias.map((_: string, index: number) => {
+            if (pedido.recorrencia.dias.indexOf(index) >= 0) {
+              return true;
+            }
+            return false;
+          });
+          this.recorrenciaForm.get('dias').disable();
+          this.recorrenciaForm.get('dias').setValue(formValueDias);
+        }
+
         this.showFormCliente = true;
         this.pedido = pedido;
       });

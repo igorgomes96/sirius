@@ -168,10 +168,40 @@ function PedidosController(app) {
         Pedido.findOne({ _id: id }, callback);
     }
 
-    this.post = function (pedido, { email, nome }, callback) {
-        pedido = geraIdItens(pedido);
-        new Pedido(pedido).save()
+    // Cria os próximos pedidos recorrentes. Retorna uma promisse com o pedido original
+    var criaRecorrencia = function (pedido) {
+        if (!pedido.recorrencia || !pedido.recorrencia.repetirAte ||
+            !pedido.recorrencia.dias || !pedido.recorrencia.dias.length) {
+            return Promise.resolve([pedido]);
+        }
+
+        var promises = [];
+        let data = app.moment(pedido.horario).add(1, 'days').toDate();
+        const repetirAte = app.moment(pedido.recorrencia.repetirAte).toDate();
+
+        while (app.moment(data).startOf('day').toDate() <= repetirAte) {
+            // Verifica se é um dos dias da semana que deve se repetir o pedido
+            if (pedido.recorrencia.dias.indexOf(data.getDay()) >= 0) {
+                const novoPedido = Object.assign({}, pedido);
+                delete novoPedido._id;
+                novoPedido.horario = data;
+                novoPedido.recorrencia.pedidoOrigem = pedido._id;
+                promises.push(salvarPedido(novoPedido, novoPedido.usuario));
+            }
+            data = app.moment(data).add(1, 'days').toDate();
+        }
+        return Promise.all(promises);
+    }
+
+    var salvarPedido = function (pedido, { email, nome }) {
+        return new Pedido(pedido).save()
             .then(function (novoPedido) {
+                if (pedido.recorrencia && !pedido.recorrencia.pedidoOrigem) {
+                    pedido._id = novoPedido._id;
+                    return criaRecorrencia(pedido).then(() => Promise.resolve(novoPedido));
+                }
+                return Promise.resolve(novoPedido);
+            }).then(function (novoPedido) {
                 return new Log({
                     pedidoId: novoPedido._id,
                     logs: [
@@ -189,7 +219,13 @@ function PedidosController(app) {
                 });
             }).then(function ({ log, novoPedido }) {
                 return atualizaReservas(novoPedido, tiposAtualizacao.criacao);
-            }).then(function (novoPedido) {
+            });
+    }
+
+    this.post = function (pedido, usuario, callback) {
+        pedido = geraIdItens(pedido);
+        salvarPedido(pedido, usuario)
+            .then(function (novoPedido) {
                 callback(null, novoPedido);
             }).catch(callback);
 
@@ -214,7 +250,7 @@ function PedidosController(app) {
                     if (result && result.usuario && result.usuario.email !== email) {
                         return Promise.all([
                             atualizaReservas(getDiferencaReserva(result, pedido), tiposAtualizacao.criacao),
-                            Log.findOneAndUpdate({ pedidoId: id }, { $set: { 'logs.0.usuario': { email: email, nome: nome } }})
+                            Log.findOneAndUpdate({ pedidoId: id }, { $set: { 'logs.0.usuario': { email: email, nome: nome } } })
                         ]);
                     } else {
                         return atualizaReservas(getDiferencaReserva(result, pedido), tiposAtualizacao.criacao);
