@@ -74,6 +74,10 @@ export class ConfirmacaoPedidoComponent implements OnInit {
     return this.pedido.itens.map(i => i.valor * i.quantidade).reduce((p, c) => p + c, 0);
   }
 
+  get qtdaSalgados() {
+    return this.pedido.itens.map(i => i.quantidade).reduce((prev, cur) => (+prev) + (+cur), 0);
+  }
+
   cancelarPedido() {
     const cancelar = confirm('Tem certeza que deseja cancelar esse pedido?');
     if (cancelar) {
