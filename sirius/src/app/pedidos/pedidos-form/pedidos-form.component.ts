@@ -1,19 +1,20 @@
 import { Router, ActivatedRoute } from '@angular/router';
-import { CardapioApiService } from './../../shared/api/cardapio-api.service';
+import { CardapioApiService } from '../../core/api/cardapio-api.service';
 import { Component, OnInit, EventEmitter } from '@angular/core';
 import { ItemCardapio, TipoSalgado } from 'src/app/shared/models/item-cardapio';
-import { map, tap, filter, switchMap, catchError } from 'rxjs/operators';
+import { map, tap, filter, switchMap, catchError, finalize } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { Pedido } from 'src/app/shared/models/pedido';
-import { PedidosApiService } from 'src/app/shared/api/pedidos-api.service';
+import { PedidosApiService } from 'src/app/core/api/pedidos-api.service';
 import { Cliente, Endereco } from 'src/app/shared/models/cliente';
-import { ClientesApiService } from 'src/app/shared/api/clientes-api.service';
+import { ClientesApiService } from 'src/app/core/api/clientes-api.service';
 import { timepicker } from 'src/environments/timepicker-options';
-import { ToastsService } from 'src/app/shared/services/toasts.service';
-import { UtilService } from 'src/app/shared/services/util.service';
+import { ToastsService } from 'src/app/core/services/toasts.service';
+import { UtilService } from 'src/app/core/services/util.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { datepicker } from 'src/environments/datepicker-options';
 import { FormGroup, FormBuilder, FormArray, FormControl } from '@angular/forms';
+import { SpinnerService } from 'src/app/core/services/spinner.service';
 
 declare var $: any;
 declare var M: any;
@@ -46,7 +47,7 @@ export class PedidosFormComponent implements OnInit {
     private router: Router, private api: PedidosApiService,
     private clientesApi: ClientesApiService, private route: ActivatedRoute,
     private toasts: ToastsService, private utilService: UtilService,
-    private fb: FormBuilder) { }
+    private fb: FormBuilder, private spinnerService: SpinnerService) { }
 
   ngOnInit() {
 
@@ -59,13 +60,24 @@ export class PedidosFormComponent implements OnInit {
     this.pedido.enderecoEntrega.cidade = 'Araguari';
     this.pedido.enderecoEntrega.uf = 'MG';
     this.pedido.horario = new Date();
-    this.pedido.recorrencia = {repetirAte: null, dias: [], pedidoOrigem: null};
+    this.pedido.recorrencia = { repetirAte: null, dias: [], pedidoOrigem: null };
 
     const onSelectHour = (hour: any, minutes: any) => {
       const data = new Date(this.pedido.horario);
       data.setHours(hour);
       data.setMinutes(minutes);
       this.pedido.horario = data;
+    };
+
+    const onSelectRepetirAte = (value: any) => {
+      this.pedido.recorrencia.repetirAte = new Date(value);
+    };
+
+    const onCloseRepetirAte = () => {
+      const instance = this.datePickerInstance('#repetirAte');
+      if (!instance.toString()) {
+        this.pedido.recorrencia.repetirAte = null;
+      }
     };
 
     const onSelectDate = (value: any) => {
@@ -92,18 +104,7 @@ export class PedidosFormComponent implements OnInit {
         };
         this.createDatePicker('#repetirAte', options);
       }
-      
-    };
 
-    const onSelectRepetirAte = (value: any) => {
-      this.pedido.recorrencia.repetirAte = new Date(value);
-    };
-
-    const onCloseRepetirAte = () => {
-      const instance = this.datePickerInstance('#repetirAte');
-      if (!instance.toString()) {
-        this.pedido.recorrencia.repetirAte = null;
-      }
     };
 
     this.createDatePicker('#data', {
@@ -137,6 +138,7 @@ export class PedidosFormComponent implements OnInit {
         map(d => d['pedido'])
       ).subscribe((pedido: Pedido) => {
         this.edicao = true;
+        this.habilitaRecorrencia = false;
         if (!pedido.entregar) {
           if (pedido.cliente.endereco) {
             pedido.enderecoEntrega = pedido.cliente.endereco;
@@ -165,7 +167,6 @@ export class PedidosFormComponent implements OnInit {
               showClearBtn: true
             }
           });
-          this.habilitaRecorrencia = false;
         }
 
         if (pedido.recorrencia.dias && pedido.recorrencia.dias.length) {
@@ -298,6 +299,14 @@ export class PedidosFormComponent implements OnInit {
   }
 
   fecharPedido() {
+
+    this.atualizaInformacoesPedido();
+    const message = this.validaPedido();
+    if (message) {
+      this.toasts.toast(message);
+      return;
+    }
+
     if (this.edicao) {
       this.openModalSenha.emit(true);
     } else {
@@ -305,36 +314,58 @@ export class PedidosFormComponent implements OnInit {
     }
   }
 
-  salvar(senha: string) {
+  get mensagemAlteracaoRecorrente(): any {
+    if (!this.habilitaRecorrencia) { // É recorrente
+      const data = new Date(this.pedido.recorrencia.repetirAte).toLocaleDateString();
+      return {
+        mensagem: `Esse pedido é recorrente. Deseja alterar também os próximos pedidos até a data ${data}?`,
+        checkbox: 'Sim, alterar os pedidos recorrentes'
+      };
+    }
+  }
 
+  get formDias(): FormArray {
+    return this.recorrenciaForm.get('dias') as FormArray;
+  }
+
+  private validaPedido(): string {
     const qtdaMenorQue0 = this.itensSelecionados.filter((item) => item.quantidade < 0);
     if (qtdaMenorQue0.length > 0) {
-      this.toasts.toast(`O salgado ${qtdaMenorQue0[0].nome} está com quantidade negativa!`);
-      return;
+      return `O salgado ${qtdaMenorQue0[0].nome} está com quantidade negativa!`;
     }
 
     if (!this.horario) {
-      this.toasts.toast(`É necessário informar o horário!`);
-      return;
+      return `É necessário informar o horário!`;
     }
 
     const alemReserva = this.itensAlemReserva();
     if (alemReserva && alemReserva.length > 0) {
-      this.toasts.toast(`O salgado '${alemReserva[0].nome}' ultrapassou a quantidade em reserva!`);
-      return;
+      return `O salgado '${alemReserva[0].nome}' ultrapassou a quantidade em reserva!`;
     }
 
     if (!this.pedido.cliente || !this.pedido.cliente.nome) {
-      this.toasts.toast(`É necessário informar o nome do cliente!`);
-      return;
+      return `É necessário informar o nome do cliente!`;
     }
 
     if (!this.pedido.cliente.fone1 && !this.pedido.cliente.fone2) {
-      this.toasts.toast(`É necessário informar o(s) telefone(s) do cliente!`);
-      return;
+      return `É necessário informar o(s) telefone(s) do cliente!`;
     }
 
-    this.atualizaInformacoesPedido();
+    if (this.pedido.recorrencia && this.pedido.recorrencia.repetirAte
+      && (!this.pedido.recorrencia.dias || !this.pedido.recorrencia.dias.length)) {
+      return `Escolha os dias de recorrência do pedido ou deixe o campo 'Repetir até' em branco!`;
+    }
+
+    if (this.pedido.recorrencia && this.pedido.recorrencia.dias
+      && this.pedido.recorrencia.dias.length && !this.pedido.recorrencia.repetirAte) {
+      return `Preencha o campo 'Repetir até' para definir a recorrência, ou desmarque todos os dias!`;
+    }
+  }
+
+  salvar(confirmacao: any) {
+
+    const senha = confirmacao ? confirmacao.senha : null;
+    const recorrente = confirmacao ? confirmacao.recorrente : null;
 
     // Verifica se cria um novo pedido ou atualiza um pedido existente
     let httpCall: Observable<Pedido | void>;
@@ -344,7 +375,7 @@ export class PedidosFormComponent implements OnInit {
       httpCall = this.clientesApi.post(this.pedido.cliente)
         .pipe(
           tap((novoCliente: Cliente) => this.pedido.cliente._id = novoCliente._id),
-          switchMap(_ => this.pedidoCall(senha))
+          switchMap(_ => this.pedidoCall(senha, recorrente))
         );
     } else if (this.atualizarCliente) {
       httpCall = this.clientesApi.put(this.pedido.cliente._id, this.pedido.cliente)
@@ -355,13 +386,16 @@ export class PedidosFormComponent implements OnInit {
             }
             return of(null);
           }),
-          switchMap(_ => this.pedidoCall(senha))
+          switchMap(_ => this.pedidoCall(senha, recorrente))
         );
     } else {
-      httpCall = this.pedidoCall(senha);
+      httpCall = this.pedidoCall(senha, recorrente);
     }
 
-    httpCall.pipe().subscribe((pedidoCriado: any) => {
+    this.spinnerService.showSpinner(true);
+    httpCall.pipe(
+      finalize(() => this.spinnerService.showSpinner(false))
+    ).subscribe((pedidoCriado: any) => {
       if (this.edicao) {
         this.router.navigate([`/pedidos`]);
       } else {
@@ -371,9 +405,9 @@ export class PedidosFormComponent implements OnInit {
 
   }
 
-  pedidoCall(senha: string = null): Observable<Pedido | void> {
+  pedidoCall(senha: string = null, recorrente = false): Observable<Pedido | void> {
     if (this.edicao) {
-      return this.api.put(this.pedido._id, this.pedido, senha);
+      return this.api.put(this.pedido._id, this.pedido, senha, recorrente);
     } else {
       return this.api.post(this.pedido);
     }

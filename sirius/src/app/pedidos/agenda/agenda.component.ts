@@ -1,12 +1,13 @@
 import { Component, OnInit, EventEmitter } from '@angular/core';
-import { PedidosApiService } from '../../shared/api/pedidos-api.service';
+import { PedidosApiService } from '../../core/api/pedidos-api.service';
 import { Pedido } from '../../shared/models/pedido';
-import { ToastsService } from 'src/app/shared/services/toasts.service';
-import { PedidosService } from 'src/app/shared/services/pedidos.service';
+import { ToastsService } from 'src/app/core/services/toasts.service';
+import { PedidosService } from 'src/app/core/services/pedidos.service';
 import { datepicker } from 'src/environments/datepicker-options';
 import { Router } from '@angular/router';
-import { tap } from 'rxjs/operators';
+import { tap, finalize } from 'rxjs/operators';
 import { TipoSalgado } from 'src/app/shared/models/item-cardapio';
+import { SpinnerService } from 'src/app/core/services/spinner.service';
 
 declare var $: any;
 
@@ -23,7 +24,8 @@ export class AgendaComponent implements OnInit {
   openModalSenha: EventEmitter<boolean>;
 
   constructor(private api: PedidosApiService, private toasts: ToastsService,
-    private pedidosService: PedidosService, private router: Router) { }
+    private pedidosService: PedidosService, private router: Router,
+    private spinnerService: SpinnerService) { }
 
   atualizaPedido(pedido: Pedido) {
     this.api.put(pedido._id, pedido)
@@ -71,12 +73,24 @@ export class AgendaComponent implements OnInit {
     this.openModalSenha.emit(true);
   }
 
-  confirmarExclusao(senha: string) {
-    this.api.delete(this.pedidoExcluir._id, senha)
+  confirmarExclusao({ senha, recorrente }) {
+    this.spinnerService.showSpinner(true);
+    this.api.delete(this.pedidoExcluir._id, senha, recorrente)
+      .pipe(finalize(() => this.spinnerService.showSpinner(false)))
       .subscribe(_ => {
         this.toasts.toast('Pedido excluído com sucesso!');
         this.load();
       });
+  }
+
+  get mensagemAlteracaoRecorrente(): any {
+    if (this.pedidoExcluir && this.pedidoExcluir.recorrencia && this.pedidoExcluir.recorrencia.repetirAte) {
+      const data = new Date(this.pedidoExcluir.recorrencia.repetirAte).toLocaleDateString();
+      return {
+        mensagem: `Esse pedido é recorrente. Deseja excluir também os próximos pedidos até a data ${data}?`,
+        checkbox: 'Sim, excluir os pedidos recorrentes'
+      };
+    }
   }
 
   load() {

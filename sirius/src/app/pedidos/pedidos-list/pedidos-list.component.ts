@@ -1,10 +1,12 @@
 import { Component, OnInit, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { PedidosApiService } from './../../shared/api/pedidos-api.service';
+import { PedidosApiService } from '../../core/api/pedidos-api.service';
 import { Pedido } from 'src/app/shared/models/pedido';
-import { ToastsService } from 'src/app/shared/services/toasts.service';
+import { ToastsService } from 'src/app/core/services/toasts.service';
 import { TipoSalgado } from 'src/app/shared/models/item-cardapio';
+import { SpinnerService } from 'src/app/core/services/spinner.service';
+import { tap, finalize } from 'rxjs/operators';
 
 declare var $: any;
 
@@ -20,7 +22,8 @@ export class PedidosListComponent implements OnInit {
   pedidoExcluir: Pedido;
   openModalSenha: EventEmitter<boolean>;
 
-  constructor(private api: PedidosApiService, private router: Router, private toasts: ToastsService) { }
+  constructor(private api: PedidosApiService, private router: Router, private toasts: ToastsService,
+    private spinnerService: SpinnerService) { }
 
   ngOnInit() {
     this.openModalSenha = new EventEmitter<boolean>();
@@ -44,6 +47,17 @@ export class PedidosListComponent implements OnInit {
     return this.pedidos.filter(p => p.tipo === TipoSalgado.Comercial);
   }
 
+  get mensagemAlteracaoRecorrente(): any {
+    if (this.pedidoExcluir && this.pedidoExcluir.recorrencia && this.pedidoExcluir.recorrencia.repetirAte) {
+      const data = new Date(this.pedidoExcluir.recorrencia.repetirAte).toLocaleDateString();
+      return {
+        mensagem: `Esse pedido é recorrente. Deseja excluir também os próximos pedidos até a data ${data}?`,
+        checkbox: 'Sim, excluir os pedidos recorrentes'
+      };
+    }
+  }
+
+
   editPedido(pedido: Pedido) {
     this.router.navigate(['/pedidos', pedido._id]);
   }
@@ -53,8 +67,10 @@ export class PedidosListComponent implements OnInit {
     this.openModalSenha.emit(true);
   }
 
-  confirmarExclusao(senha: string) {
-    this.api.delete(this.pedidoExcluir._id, senha)
+  confirmarExclusao({ senha, recorrente }) {
+    this.spinnerService.showSpinner(true);
+    this.api.delete(this.pedidoExcluir._id, senha, recorrente)
+      .pipe(finalize(() => this.spinnerService.showSpinner(false)))
       .subscribe(_ => {
         this.toasts.toast('Pedido excluído com sucesso!');
         this.load();

@@ -1,10 +1,10 @@
 import { Component, OnInit, EventEmitter } from '@angular/core';
-import { PedidosApiService } from 'src/app/shared/api/pedidos-api.service';
+import { PedidosApiService } from 'src/app/core/api/pedidos-api.service';
 import { ActivatedRoute } from '@angular/router';
 import { filter, map, tap, switchMap } from 'rxjs/operators';
 import { Log, PedidoLog } from 'src/app/shared/models/log';
 import { Pedido } from 'src/app/shared/models/pedido';
-import { Util } from 'src/app/shared/services/util';
+import { Util } from 'src/app/core/services/util';
 import { Location } from '@angular/common';
 
 @Component({

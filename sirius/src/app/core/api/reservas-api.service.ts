@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { environment } from 'src/environments/environment';
-import { Reserva } from '../models/reserva';
+import { Reserva } from '../../shared/models/reserva';
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 

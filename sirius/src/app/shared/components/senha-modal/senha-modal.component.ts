@@ -1,5 +1,4 @@
 import { Component, OnInit, EventEmitter, Input, AfterViewInit, Output } from '@angular/core';
-import { ToastsService } from '../../services/toasts.service';
 
 declare var $: any;
 declare var M: any;
@@ -13,9 +12,12 @@ export class SenhaModalComponent implements OnInit, AfterViewInit {
 
   @Input() message = 'Essa ação não poderá ser desfeita. Deseja confirmar?';
   @Input() open: EventEmitter<boolean>;
-  @Output() confirmar: EventEmitter<string> = new EventEmitter<string>();
+  @Input() recorrenteMessage = null;
+  @Input() recorrenteMessageCheckbox = null;
+  @Output() confirmar: EventEmitter<{ senha: string, recorrente: boolean }> = new EventEmitter<{ senha: string, recorrente: boolean }>();
 
   senha: string;
+  recorrencia = false;
 
   constructor() { }
 
@@ -38,8 +40,9 @@ export class SenhaModalComponent implements OnInit, AfterViewInit {
     if (!this.senha) {
       return;
     }
-    this.confirmar.emit(this.senha);
+    this.confirmar.emit({ senha: this.senha, recorrente: this.recorrencia });
     this.senha = '';
+    this.recorrencia = false;
     this.instanceModal.close();
   }
 

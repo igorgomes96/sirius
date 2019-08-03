@@ -1,5 +1,5 @@
-import { UsuarioService } from './../services/usuario.service';
-import { LoginApiService } from './../api/login-api.service';
+import { UsuarioService } from '../../core/services/usuario.service';
+import { LoginApiService } from '../../core/api/login-api.service';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router, CanLoad, Route, UrlSegment } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';

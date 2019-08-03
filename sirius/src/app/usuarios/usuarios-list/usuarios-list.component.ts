@@ -2,9 +2,9 @@ import { distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Component, OnInit, EventEmitter } from '@angular/core';
 import { Usuario } from 'src/app/shared/models/usuario';
-import { UsuariosApiService } from 'src/app/shared/api/usuarios-api.service';
+import { UsuariosApiService } from 'src/app/core/api/usuarios-api.service';
 import { Router } from '@angular/router';
-import { ToastsService } from 'src/app/shared/services/toasts.service';
+import { ToastsService } from 'src/app/core/services/toasts.service';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -49,7 +49,7 @@ export class UsuariosListComponent implements OnInit {
     this.router.navigate(['/usuarios', usuario._id]);
   }
 
-  confirmarExclusao(senha: string) {
+  confirmarExclusao({ senha }) {
     if (senha) {
       this.api.delete(this.usuarioExclusao._id, senha)
         .subscribe(_ => {

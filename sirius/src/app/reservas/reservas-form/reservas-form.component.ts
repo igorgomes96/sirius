@@ -1,14 +1,14 @@
-import { CardapioApiService } from './../../shared/api/cardapio-api.service';
+import { CardapioApiService } from '../../core/api/cardapio-api.service';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Reserva } from 'src/app/shared/models/reserva';
-import { ReservasApiService } from 'src/app/shared/api/reservas-api.service';
-import { ToastsService } from 'src/app/shared/services/toasts.service';
+import { ReservasApiService } from 'src/app/core/api/reservas-api.service';
+import { ToastsService } from 'src/app/core/services/toasts.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { filter, map, distinctUntilChanged, debounceTime, tap } from 'rxjs/operators';
 import { ItemCardapio, TipoSalgado } from 'src/app/shared/models/item-cardapio';
 import { datepicker } from 'src/environments/datepicker-options';
-import { ReservasService } from 'src/app/shared/services/reservas.service';
+import { ReservasService } from 'src/app/core/services/reservas.service';
 import { componentNeedsResolution } from '@angular/core/src/metadata/resource_loading';
 
 declare var $: any;

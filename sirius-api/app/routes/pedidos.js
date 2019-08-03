@@ -83,8 +83,8 @@ module.exports = function (app) {
     const usuario = req.session.usuario;
     usuario.senha = req.body.senha ? app.HmacSHA1(req.body.senha.toString()) : null;
     var atualizaRecorrentes = false;
-    if (req.query.hasOwnProperty('recorrentes')) { 
-      atualizaRecorrentes = req.query['recorrentes'];
+    if (req.query.hasOwnProperty('recorrente')) { 
+      atualizaRecorrentes = (req.query['recorrente'] == 'true');
     }
     ctrl.put(req.params.id, pedido, usuario, false, atualizaRecorrentes, function (err, result) {
       if (err) {
@@ -152,7 +152,7 @@ module.exports = function (app) {
 
 
   app.post('/api/pedidos/:id/delete', function (req, res) {
-    var deleteRecorrentes = req.body.deleteRecorrentes;
+    var deleteRecorrentes = (req.body.deleteRecorrentes == 'true');
     ctrl.delete(req.params.id, app.HmacSHA1(req.body.senha.toString()), deleteRecorrentes, function (err, result) {
       if (err) {
         if (err === 'Senha incorreta!') {

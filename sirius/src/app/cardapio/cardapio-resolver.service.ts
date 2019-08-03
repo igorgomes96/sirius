@@ -5,7 +5,7 @@ import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { ItemCardapio } from 'src/app/shared/models/item-cardapio';
-import { CardapioApiService } from './../shared/api/cardapio-api.service';
+import { CardapioApiService } from '../core/api/cardapio-api.service';
 
 @Injectable({
   providedIn: 'root'

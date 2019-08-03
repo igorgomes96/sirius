@@ -1,13 +1,13 @@
 import { Router } from '@angular/router';
-import { ToastsService } from './../../shared/services/toasts.service';
-import { CardapioApiService } from './../../shared/api/cardapio-api.service';
+import { ToastsService } from '../../core/services/toasts.service';
+import { CardapioApiService } from '../../core/api/cardapio-api.service';
 import { TipoSalgado } from './../../shared/models/item-cardapio';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Component, OnInit, AfterViewInit, EventEmitter } from '@angular/core';
 import { ItemCardapio, Unidade } from 'src/app/shared/models/item-cardapio';
 import { distinctUntilChanged, debounceTime, filter, map, tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { CardapioService } from 'src/app/shared/services/cardapio.service';
+import { CardapioService } from 'src/app/core/services/cardapio.service';
 
 declare var $: any;
 
@@ -85,7 +85,7 @@ export class CardapioListComponent implements OnInit, AfterViewInit {
   delete(item: ItemCardapio) {
     this.salgadoExclusao = item;
     this.openModalConfirmacao.emit(true);
-  } 
+  }
 
   edit(item: ItemCardapio) {
     this.router.navigate(['/cardapio', item._id]);

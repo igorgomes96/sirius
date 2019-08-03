@@ -4,8 +4,8 @@ import { Component, OnInit, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { Cliente } from 'src/app/shared/models/cliente';
-import { ClientesApiService } from 'src/app/shared/api/clientes-api.service';
-import { ToastsService } from 'src/app/shared/services/toasts.service';
+import { ClientesApiService } from 'src/app/core/api/clientes-api.service';
+import { ToastsService } from 'src/app/core/services/toasts.service';
 import { Observable } from 'rxjs';
 
 @Component({

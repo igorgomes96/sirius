@@ -5,7 +5,7 @@ import { take, tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
-import { Usuario } from './../models/usuario';
+import { Usuario } from '../../shared/models/usuario';
 
 
 @Injectable({

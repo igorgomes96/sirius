@@ -4,10 +4,10 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 import { filter, map, tap } from 'rxjs/operators';
 
-import { ToastsService } from './../../shared/services/toasts.service';
-import { CardapioApiService } from './../../shared/api/cardapio-api.service';
+import { ToastsService } from '../../core/services/toasts.service';
+import { CardapioApiService } from '../../core/api/cardapio-api.service';
 import { TipoSalgado, ItemCardapio, Unidade } from './../../shared/models/item-cardapio';
-import { UnidadesApiService } from 'src/app/shared/api/unidades-api.service';
+import { UnidadesApiService } from 'src/app/core/api/unidades-api.service';
 
 declare var $: any;
 declare var M: any;

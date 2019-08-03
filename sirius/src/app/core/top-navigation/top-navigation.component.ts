@@ -1,7 +1,7 @@
 import { Usuario } from './../../shared/models/usuario';
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { LoginApiService } from 'src/app/shared/api/login-api.service';
+import { LoginApiService } from 'src/app/core/api/login-api.service';
 
 declare const $: any;
 

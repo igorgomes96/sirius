@@ -197,7 +197,7 @@
                                     <div class="row">
                                         <div class="col s12" class="recorrencia">
                                             <label [for]="'dia' + i" formArrayName="dias"
-                                                *ngFor="let dia of recorrenciaForm.get('dias').controls; let i=index;">
+                                                *ngFor="let dia of formDias.controls; let i=index;">
                                                 <input type="checkbox" [id]="'dia' + i" [formControlName]="i" />
                                                 <span>{{ dias[i] }}</span>
                                             </label>
@@ -300,4 +300,5 @@
 
 <app-item-modal [open]="itemPersonalizadoModal" (saveItem)="addItem($event)"></app-item-modal>
 <app-senha-modal message="Digite sua senha para confirmar a alteração: " [open]="openModalSenha"
-    (confirmar)="salvar($event)"></app-senha-modal>
+    (confirmar)="salvar($event)" [recorrenteMessage]="mensagemAlteracaoRecorrente?.mensagem"
+    [recorrenteMessageCheckbox]="mensagemAlteracaoRecorrente?.checkbox"></app-senha-modal>

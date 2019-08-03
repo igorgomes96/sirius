@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Cliente } from 'src/app/shared/models/cliente';
-import { ClientesApiService } from 'src/app/shared/api/clientes-api.service';
-import { ToastsService } from 'src/app/shared/services/toasts.service';
+import { ClientesApiService } from 'src/app/core/api/clientes-api.service';
+import { ToastsService } from 'src/app/core/services/toasts.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { filter, map } from 'rxjs/operators';
 

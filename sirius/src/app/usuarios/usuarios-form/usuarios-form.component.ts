@@ -1,11 +1,11 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { Usuario, Perfil } from 'src/app/shared/models/usuario';
-import { UsuariosApiService } from 'src/app/shared/api/usuarios-api.service';
+import { UsuariosApiService } from 'src/app/core/api/usuarios-api.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { filter, map } from 'rxjs/operators';
-import { ToastsService } from 'src/app/shared/services/toasts.service';
-import { LoginApiService } from 'src/app/shared/api/login-api.service';
+import { ToastsService } from 'src/app/core/services/toasts.service';
+import { LoginApiService } from 'src/app/core/api/login-api.service';
 
 declare var $: any;
 

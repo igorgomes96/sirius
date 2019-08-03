@@ -1,3 +1,4 @@
+import { SpinnerService } from './core/services/spinner.service';
 import { Router, NavigationEnd } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 
@@ -13,8 +14,9 @@ export class AppComponent implements OnInit {
   title = 'sirius';
   urlSemMenu = ['/login', '/cadastrar-senha'];
   exibeMenu = false;
+  showSpinner = false;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private spinnerService: SpinnerService) {}
 
   ngOnInit() {
     this.router.events.pipe(
@@ -22,6 +24,9 @@ export class AppComponent implements OnInit {
       distinctUntilChanged()
     ).subscribe(_ => {
       this.exibeMenu = !this.urlSemMenu.some(u => this.router.url.startsWith(u));
+    });
+    this.spinnerService.showSpinnerEmitter.subscribe((show: boolean) => {
+      this.showSpinner = show;
     });
   }
 }

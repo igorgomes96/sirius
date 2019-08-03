@@ -1,5 +1,5 @@
-import { ToastsService } from './../services/toasts.service';
-import { LoginApiService } from './../api/login-api.service';
+import { ToastsService } from '../../core/services/toasts.service';
+import { LoginApiService } from '../../core/api/login-api.service';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, CanLoad, Route, UrlSegment, Router } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';

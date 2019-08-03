@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { FormValidators } from 'src/app/shared/form-validators';
-import { LoginApiService } from 'src/app/shared/api/login-api.service';
-import { ToastsService } from 'src/app/shared/services/toasts.service';
+import { LoginApiService } from 'src/app/core/api/login-api.service';
+import { ToastsService } from 'src/app/core/services/toasts.service';
 import { Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
-import { UsuarioService } from 'src/app/shared/services/usuario.service';
+import { UsuarioService } from 'src/app/core/services/usuario.service';
 import { Usuario } from 'src/app/shared/models/usuario';
 
 @Component({

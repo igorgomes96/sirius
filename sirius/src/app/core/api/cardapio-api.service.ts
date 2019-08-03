@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { ItemCardapio } from '../models/item-cardapio';
+import { ItemCardapio } from '../../shared/models/item-cardapio';
 import { environment } from 'src/environments/environment';
 import { take, map } from 'rxjs/operators';
 import { Observable, forkJoin } from 'rxjs';
-import { Reserva } from '../models/reserva';
+import { Reserva } from '../../shared/models/reserva';
 import { ReservasApiService } from './reservas-api.service';
 
 @Injectable({

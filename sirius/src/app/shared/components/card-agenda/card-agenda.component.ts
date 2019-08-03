@@ -2,9 +2,9 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { Pedido } from '../../models/pedido';
-import { UsuarioService } from '../../services/usuario.service';
-import { PedidosApiService } from '../../api/pedidos-api.service';
-import { UtilService } from '../../services/util.service';
+import { UsuarioService } from '../../../core/services/usuario.service';
+import { PedidosApiService } from '../../../core/api/pedidos-api.service';
+import { UtilService } from '../../../core/services/util.service';
 
 declare var $: any;
 

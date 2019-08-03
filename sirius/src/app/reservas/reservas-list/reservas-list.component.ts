@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy, EventEmitter } from '@angular/core';
 import { Reserva } from 'src/app/shared/models/reserva';
-import { ReservasApiService } from 'src/app/shared/api/reservas-api.service';
+import { ReservasApiService } from 'src/app/core/api/reservas-api.service';
 import { Router } from '@angular/router';
-import { ToastsService } from 'src/app/shared/services/toasts.service';
+import { ToastsService } from 'src/app/core/services/toasts.service';
 import { datepicker } from 'src/environments/datepicker-options';
-import { ReservasService } from 'src/app/shared/services/reservas.service';
+import { ReservasService } from 'src/app/core/services/reservas.service';
 
 declare var $: any;
 declare var M: any;

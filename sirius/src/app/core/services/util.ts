@@ -1,4 +1,4 @@
-import { Cliente, Endereco } from '../models/cliente';
+import { Cliente, Endereco } from '../../shared/models/cliente';
 
 export class Util {
     public static enderecoCompleto(endereco: Endereco): string {

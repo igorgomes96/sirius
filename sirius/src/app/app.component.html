@@ -1,6 +1,23 @@
 <div class="wrapper">
+
+    <div id="spinner" *ngIf="showSpinner">
+        <div class="preloader-wrapper big active">
+            <div class="spinner-layer spinner-orange-only">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div>
+                <div class="gap-patch">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <header>
-        <app-top-navigation  *ngIf="exibeMenu"></app-top-navigation>
+        <app-top-navigation *ngIf="exibeMenu"></app-top-navigation>
     </header>
     <!-- <main> -->
     <main>

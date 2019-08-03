@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
 
-import { Pedido } from '../models/pedido';
-import { TelefonePipe } from '../pipes/telefone.pipe';
+import { Pedido } from '../../shared/models/pedido';
+import { TelefonePipe } from './../../shared/pipes/telefone.pipe';
 
 @Injectable({
   providedIn: 'root'

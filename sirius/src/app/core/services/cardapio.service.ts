@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { TipoSalgado } from '../models/item-cardapio';
+import { TipoSalgado } from 'src/app/shared/models/item-cardapio';
 
 @Injectable({
   providedIn: 'root'

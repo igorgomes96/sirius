@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { PedidosService } from 'src/app/shared/services/pedidos.service';
-import { PedidosApiService } from 'src/app/shared/api/pedidos-api.service';
+import { PedidosService } from 'src/app/core/services/pedidos.service';
+import { PedidosApiService } from 'src/app/core/api/pedidos-api.service';
 import { ItemCardapio, TipoSalgado } from 'src/app/shared/models/item-cardapio';
 import { datepicker } from 'src/environments/datepicker-options';
 
@@ -30,6 +30,7 @@ export class PedidosAgrupadosComponent implements OnInit, AfterViewInit {
       defaultDate: this.data,
       onSelect: (novaData: any) => {
         this.data = novaData;
+        this.pedidosService.data = novaData;
         this.load();
       }
     }));

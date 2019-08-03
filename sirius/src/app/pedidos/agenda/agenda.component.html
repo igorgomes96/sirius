@@ -52,4 +52,6 @@
     </div>
 </div>
 
-<app-senha-modal [open]="openModalSenha" (confirmar)="confirmarExclusao($event)"></app-senha-modal>
+<app-senha-modal [open]="openModalSenha" (confirmar)="confirmarExclusao($event)"
+    [recorrenteMessage]="mensagemAlteracaoRecorrente?.mensagem"
+    [recorrenteMessageCheckbox]="mensagemAlteracaoRecorrente?.checkbox"></app-senha-modal>

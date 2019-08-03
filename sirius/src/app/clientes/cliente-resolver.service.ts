@@ -5,7 +5,7 @@ import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { Cliente } from '../shared/models/cliente';
-import { ClientesApiService } from '../shared/api/clientes-api.service';
+import { ClientesApiService } from '../core/api/clientes-api.service';
 
 
 @Injectable({

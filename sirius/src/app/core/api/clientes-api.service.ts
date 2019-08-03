@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { environment } from 'src/environments/environment';
-import { Cliente } from '../models/cliente';
+import { Cliente } from '../../shared/models/cliente';
 import { Observable } from 'rxjs';
 import { take, map } from 'rxjs/operators';
 import { UtilService } from '../services/util.service';

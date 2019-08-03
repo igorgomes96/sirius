@@ -1,5 +1,5 @@
 import { Unidade, ItemCardapio, TipoSalgado } from 'src/app/shared/models/item-cardapio';
-import { UnidadesApiService } from 'src/app/shared/api/unidades-api.service';
+import { UnidadesApiService } from 'src/app/core/api/unidades-api.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Component, OnInit, Input, EventEmitter, Injectable, AfterViewInit, Output } from '@angular/core';
 

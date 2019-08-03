@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Resolve, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 
 import { Reserva } from './../shared/models/reserva';
-import { ReservasApiService } from './../shared/api/reservas-api.service';
+import { ReservasApiService } from '../core/api/reservas-api.service';
 
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';

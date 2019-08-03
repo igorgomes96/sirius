@@ -9,3 +9,24 @@
 button {
     font-weight: 500;
 }
+
+#spinner {
+    background: rgba(0, 0, 0, .25);
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    z-index: 100;
+}
+
+#spinner .preloader-wrapper.active {
+    margin-left: 50vw;
+    margin-top: 50vh;
+}
+
+#spinner .preloader-wrapper.active .circle-clipper .circle  {
+    border-width: 4px;
+}
+
+.spinner-layer.spinner-orange-only {
+    border-color: #de6823;
+}

@@ -1,5 +1,6 @@
 function PedidosController(app) {
 
+    /* #region Variáveis */
     this._app = app;
     var Pedido = app.models.pedido;
     var Reserva = app.models.reserva;
@@ -13,7 +14,9 @@ function PedidosController(app) {
         exclusao: 'Exclusão',
         restauracao: 'Restauração'
     };
+    /* #endregion */
 
+    /* #region Auxiliares */
     var validaSenha = function (senha) {
         return Usuario.find({ senha: senha })
             .then(function (usuario) {
@@ -119,6 +122,41 @@ function PedidosController(app) {
         return diferenca;
     }
 
+    // Retorna array com todos os pedidos recorrentes de mesma origem e data maior ou igual,
+    // ou retorna array somente com o pedido, se não for recorrente 
+    var buscaPedidosRecorrentes = function (id) {
+        return Pedido.findOne({ _id: id })
+            .then(function (pedido) {
+                var pedidoOrigem = getIdPedidoOrigemRecorrencia(pedido);
+                if (pedidoOrigem) {
+                    const data = app.moment(pedido.horario).startOf('day').toDate();
+                    return Pedido.find({
+                        horario: { $gte: data },
+                        $or: [
+                            { 'recorrencia.pedidoOrigem': pedidoOrigem },
+                            { _id: pedidoOrigem }
+                        ]
+                    });
+                } else {
+                    return Promise.resolve([pedido]);
+                }
+            });
+    }
+
+    var getIdPedidoOrigemRecorrencia = function (pedido) {
+        var pedidoOrigem = null;
+        if (pedido.recorrencia && pedido.recorrencia.repetirAte) {
+            if (pedido.recorrencia.pedidoOrigem)
+                pedidoOrigem = pedido.recorrencia.pedidoOrigem;
+            else
+                pedidoOrigem = pedido._id;
+        }
+        return pedidoOrigem
+    }
+
+    /* #endregion */
+
+    /* #region GET */
     this.getAll = function (callback) {
         Pedido.find({}).sort('horario').exec(callback);
     }
@@ -180,10 +218,9 @@ function PedidosController(app) {
     this.get = function (id, callback) {
         Pedido.findOne({ _id: id }, callback);
     }
+    /* #endregion */
 
-
-    // ******************* POST *******************
-
+    /* #region POST */
     this.post = function (pedido, usuario, callback) {
         pedido = geraIdItens(pedido);
         salvarPedido(pedido, usuario)
@@ -246,11 +283,9 @@ function PedidosController(app) {
         }
         return Promise.all(promises);
     }
-    //\ ******************* POST *******************
+    /* #endregion */
 
-
-
-    // ******************* PUT *******************
+    /* #region PUT */ 
     this.put = function (id, pedido, { email, nome, senha }, confirmacao = false, atualizaRecorrentes, callback) {
         pedido = geraIdItens(pedido);
         validaSenha(senha).then(function (usuario) {
@@ -258,11 +293,13 @@ function PedidosController(app) {
             if (atualizaRecorrentes) {
                 return buscaPedidosRecorrentes(id)
                     .then((pedidos) => Promise.all(pedidos.map((p) => {
+                        const novoHorario = new Date(pedido.horario);
+                        const dataHora = new Date(p.horario).setHours(novoHorario.getHours(), novoHorario.getMinutes(), novoHorario.getSeconds());
                         const pedidoASerAtualizado = {
                             ...pedido,
                             ...{
                                 _id: p._id,
-                                horario: p.horario,
+                                horario: dataHora,
                                 recorrencia: p.recorrencia
                             }
                         };
@@ -303,9 +340,9 @@ function PedidosController(app) {
             callback(null, pedido);
         }).catch(callback);
     }
-    //\ ******************* PUT *******************
+    /* #endregion */
 
-    // ******************* DELETE *******************
+    /* #region DELETE */
     this.delete = function (id, senha, deleteRecorrentes, callback) {
         var usuario = null;
         validaSenha(senha).then(function (usuarioBD) {
@@ -316,7 +353,7 @@ function PedidosController(app) {
             if (deleteRecorrentes) {
                 return buscaPedidosRecorrentes(id)
                     .then((pedidos) => Promise.all(pedidos.map(p => deletePedidoLogicamente(p._id, usuario))))
-                    .then((pedidos) => Promise.resolve(pedidos && pedidos.length > 1 ? pedidos[0] : null));
+                    .then((pedidos) => Promise.resolve(pedidos && pedidos.length >= 1 ? pedidos[0] : null));
             } else {
                 return deletePedidoLogicamente(id, usuario);
             }
@@ -325,17 +362,6 @@ function PedidosController(app) {
         }).catch(function (erro) {
             callback(erro);
         });
-    }
-
-    var getIdPedidoOrigemRecorrencia = function (pedido) {
-        var pedidoOrigem = null;
-        if (pedido.recorrencia && pedido.recorrencia.repetirAte) {
-            if (pedido.recorrencia.pedidoOrigem)
-                pedidoOrigem = pedido.recorrencia.pedidoOrigem;
-            else
-                pedidoOrigem = pedido._id;
-        }
-        return pedidoOrigem
     }
 
     var deletePedidoLogicamente = function (id, usuario) {
@@ -368,54 +394,31 @@ function PedidosController(app) {
         });
     }
 
-    // Retorna array com todos os pedidos recorrentes de mesma origem e data maior ou igual,
-    // ou retorna array somente com o pedido, se não for recorrente 
-    var buscaPedidosRecorrentes = function (id) {
-        return Pedido.findOne({ _id: id })
+
+    var deletePedidoFisicamente = function (id) {
+        return Pedido.findOneAndDelete({ _id: id })
             .then(function (pedido) {
-                var pedidoOrigem = getIdPedidoOrigemRecorrencia(pedido);
-                if (pedidoOrigem) {
-                    return Pedido.find({
-                        horario: { $gte: pedido.horario },
-                        $or: [
-                            { 'recorrencia.pedidoOrigem': pedidoOrigem },
-                            { _id: pedidoOrigem }
-                        ]
-                    });
-                } else {
-                    return Promise.resolve([pedido]);
+                if (pedido.exclusao && pedido.exclusao.horario) {
+                    return Promise.resolve(pedido);
                 }
+                return Promise.all([
+                    atualizaReservas(pedido, tiposAtualizacao.exclusao),
+                    Log.findOneAndDelete({ pedidoId: id })
+                ]).then((result) => Promise.resolve(result[0]));
             });
     }
-
 
     this.deleteAdmin = function (id, callback) {
-        var pedido = null;
-        Pedido.findOneAndDelete({ _id: id })
-            .then(function (result) {
-                pedido = result;
-                if (result.exclusao && result.exclusao.horario) {
-                    throw 'Pedido já excluído';
-                }
-
-                return Promise.all([
-                    atualizaReservas(result, tiposAtualizacao.exclusao),
-                    Log.findOneAndDelete({ pedidoId: id })
-                ]);
-            }).then(function (result) {
-                callback(null, result[0]);
-            }).catch(function (err) {
-                if (err === 'Pedido já excluído') {
-                    callback(null, pedido);
-                } else {
-                    callback(err, null);
-                    console.error(`Erro ao deletar pedido: ${JSON.stringify(err)}.`);
-                    return;
-                }
-            });
+        buscaPedidosRecorrentes(id)
+            .then((pedidos) => Promise.all(pedidos.map(p => deletePedidoFisicamente(p._id))))
+            .then((pedidos) => Promise.resolve(pedidos && pedidos.length >= 1 ? pedidos[0] : null))
+            .then((result) => {
+                callback(null, result);
+            }).catch(callback);
     }
-    //\ ******************* DELETE *******************
+    /* #endregion */
 
+    /* #region Demais Endpoints */
     this.restauraPedido = function (id, { email, nome }, callback) {
         Pedido.findOneAndUpdate({ _id: id }, { $set: { exclusao: null } }, { new: false })
             .then(function (pedido) {
@@ -537,6 +540,9 @@ function PedidosController(app) {
         new Impressao({ data: app.moment(new Date()).startOf('day').toDate(), usuario: usuario })
             .save(callback);
     }
+
+    /* #endregion */
+
 }
 
 module.exports = function (app) {

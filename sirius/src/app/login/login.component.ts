@@ -6,10 +6,10 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { catchError, tap } from 'rxjs/operators';
 import { of, Observable, empty } from 'rxjs';
 
-import { UsuarioService } from './../shared/services/usuario.service';
-import { ToastsService } from './../shared/services/toasts.service';
+import { UsuarioService } from '../core/services/usuario.service';
+import { ToastsService } from '../core/services/toasts.service';
 import { Usuario } from './../shared/models/usuario';
-import { LoginApiService } from './../shared/api/login-api.service';
+import { LoginApiService } from '../core/api/login-api.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { FormValidators } from '../shared/form-validators';
 

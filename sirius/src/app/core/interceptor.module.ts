@@ -1,11 +1,11 @@
-import { UsuarioService } from './../shared/services/usuario.service';
+import { UsuarioService } from './services/usuario.service';
 import { Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
 import { Injectable, NgModule } from '@angular/core';
 import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpErrorResponse } from '@angular/common/http';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { Observable, empty, of } from 'rxjs';
-import { ToastsService } from '../shared/services/toasts.service';
+import { ToastsService } from './services/toasts.service';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {

@@ -3,11 +3,11 @@ import { HttpClient } from '@angular/common/http';
 
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
-import { Pedido } from '../models/pedido';
+import { Pedido } from '../../shared/models/pedido';
 import { take, map } from 'rxjs/operators';
-import { ItemCardapio, TipoSalgado } from '../models/item-cardapio';
+import { ItemCardapio, TipoSalgado } from '../../shared/models/item-cardapio';
 import { Util } from '../services/util';
-import { PedidoLog } from '../models/log';
+import { PedidoLog } from '../../shared/models/log';
 
 @Injectable({
   providedIn: 'root'
@@ -23,16 +23,17 @@ export class PedidosApiService {
     if (!pedido.cliente) {
       return pedido;
     }
-    
     let tipo: TipoSalgado;
-    if (!pedido.itens) tipo = TipoSalgado.Festa
+    if (!pedido.itens) {
+      tipo = TipoSalgado.Festa;
+    }
     const festa = pedido.itens.filter(i => i.tipo === TipoSalgado.Festa).length;
     const comercial = pedido.itens.filter(i => i.tipo === TipoSalgado.Comercial).length;
-    if (festa >= comercial) 
+    if (festa >= comercial) {
       tipo = TipoSalgado.Festa;
-    else
+    } else {
       tipo = TipoSalgado.Comercial;
-
+    }
     return {
       ...pedido,
       ...{
@@ -47,33 +48,10 @@ export class PedidosApiService {
         tipo: tipo
       }
     };
-    /*return Object.assign(pedido,
-      {
-        cliente: Object.assign(pedido.cliente, {
-          enderecoStr: Util.enderecoCompleto(pedido.cliente.endereco),
-          enderecoStrSimples: Util.enderecoSimples(pedido.cliente.endereco)
-        }),
-        enderecoStr: Util.enderecoCompleto(pedido.enderecoEntrega),
-        enderecoStrSimples: Util.enderecoSimples(pedido.enderecoEntrega)
-      });*/
   }
 
   mapPedidos(mapFunction: (_: Pedido) => Pedido): (_: Pedido[]) => Pedido[] {
     return (pedidos: Pedido[]) => pedidos.map(mapFunction);
-    /*if (!pedido.cliente) {
-      return pedido;
-    }
-    return Object.assign(pedido,
-      {
-        cliente: Object.assign(pedido.cliente, {
-          enderecoStr: Util.enderecoCompleto(pedido.cliente.endereco),
-          enderecoStrSimples: Util.enderecoSimples(pedido.cliente.endereco)
-        }),
-        enderecoStr: Util.enderecoCompleto(pedido.enderecoEntrega),
-        enderecoStrSimples: Util.enderecoSimples(pedido.enderecoEntrega)
-      });
-    }
-  );*/
   }
 
   getAll(): Observable<Pedido[]> {
@@ -104,8 +82,9 @@ export class PedidosApiService {
       map(this.mapPedido));
   }
 
-  put(id: string, pedido: Pedido, senha: string = null): Observable<void> {
-    return this.httpClient.put<void>(this.url + `/${id}`, { pedido: pedido, senha: senha }).pipe(take(1));
+  put(id: string, pedido: Pedido, senha: string = null, recorrente = false): Observable<void> {
+    return this.httpClient.put<void>(this.url + `/${id}`, { pedido: pedido, senha: senha },
+      { params: { recorrente: recorrente.toString() } }).pipe(take(1));
   }
 
   log(id: string): Observable<PedidoLog> {
@@ -124,8 +103,8 @@ export class PedidosApiService {
       map(this.mapPedido));
   }
 
-  delete(id: string, senha: string): Observable<Pedido> {
-    return this.httpClient.post<Pedido>(this.url + `/${id}/delete`, { senha: senha }).pipe(
+  delete(id: string, senha: string, deleteRecorrentes: boolean = false): Observable<Pedido> {
+    return this.httpClient.post<Pedido>(this.url + `/${id}/delete`, { senha: senha, deleteRecorrentes: deleteRecorrentes.toString() }).pipe(
       take(1),
       map(this.mapPedido));
   }

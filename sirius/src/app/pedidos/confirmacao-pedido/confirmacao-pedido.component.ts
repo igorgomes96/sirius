@@ -1,11 +1,12 @@
 import { Component, OnInit, EventEmitter } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { filter, map, switchMap } from 'rxjs/operators';
+import { filter, map, switchMap, finalize } from 'rxjs/operators';
 import { Pedido } from 'src/app/shared/models/pedido';
-import { UtilService } from 'src/app/shared/services/util.service';
+import { UtilService } from 'src/app/core/services/util.service';
 import { ItemCardapio } from 'src/app/shared/models/item-cardapio';
-import { PedidosApiService } from 'src/app/shared/api/pedidos-api.service';
-import { ToastsService } from 'src/app/shared/services/toasts.service';
+import { PedidosApiService } from 'src/app/core/api/pedidos-api.service';
+import { ToastsService } from 'src/app/core/services/toasts.service';
+import { SpinnerService } from 'src/app/core/services/spinner.service';
 
 declare var $: any;
 declare var M: any;
@@ -25,7 +26,8 @@ export class ConfirmacaoPedidoComponent implements OnInit {
     private api: PedidosApiService,
     private toasts: ToastsService,
     private router: Router,
-    private util: UtilService) { }
+    private util: UtilService,
+    private spinnerService: SpinnerService) { }
 
   ngOnInit() {
     this.openModalSenha = new EventEmitter<boolean>();
@@ -59,8 +61,10 @@ export class ConfirmacaoPedidoComponent implements OnInit {
       });
   }
 
-  confirmarPedido(senha: string) {
+  confirmarPedido({ senha }) {
+    this.spinnerService.showSpinner(true);
     this.api.confirmacaoPedido(this.pedido._id, this.pedido, senha)
+      .pipe(finalize(() => this.spinnerService.showSpinner(false)))
       .subscribe(() => {
         this.toasts.toast('Pedido salvo com sucesso!');
         this.router.navigate(['/pedidos']);
@@ -81,7 +85,9 @@ export class ConfirmacaoPedidoComponent implements OnInit {
   cancelarPedido() {
     const cancelar = confirm('Tem certeza que deseja cancelar esse pedido?');
     if (cancelar) {
+      this.spinnerService.showSpinner(true);
       this.api.deleteAdmin(this.pedido._id)
+        .pipe(finalize(() => this.spinnerService.showSpinner(false)))
         .subscribe(_ => {
           this.router.navigate(['/pedidos']);
         });

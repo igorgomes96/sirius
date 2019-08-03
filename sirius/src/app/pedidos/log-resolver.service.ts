@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { PedidosApiService } from '../shared/api/pedidos-api.service';
+import { PedidosApiService } from '../core/api/pedidos-api.service';
 import { Observable, of } from 'rxjs';
 import { Log } from '../shared/models/log';
 import { catchError } from 'rxjs/operators';
