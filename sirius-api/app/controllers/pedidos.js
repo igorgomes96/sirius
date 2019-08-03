@@ -14,6 +14,19 @@ function PedidosController(app) {
         restauracao: 'Restauração'
     };
 
+    var validaSenha = function (senha) {
+        return Usuario.find({ senha: senha })
+            .then(function (usuario) {
+                if (senha) {
+                    if (usuario && usuario.length > 0) {
+                        return Promise.resolve({ email: usuario[0].email, nome: usuario[0].nome, perfil: usuario[0].perfil });
+                    } else {
+                        return Promise.reject('Senha incorreta! Usuário não localizado.');
+                    }
+                }
+            });
+    }
+
     var atualizaReservas = function (pedido, tipo) {
         const data = app.moment(pedido.horario).startOf('day').toDate();
         const itens = pedido.itens.map(item => {
@@ -168,6 +181,47 @@ function PedidosController(app) {
         Pedido.findOne({ _id: id }, callback);
     }
 
+
+    // ******************* POST *******************
+
+    this.post = function (pedido, usuario, callback) {
+        pedido = geraIdItens(pedido);
+        salvarPedido(pedido, usuario)
+            .then(function (novoPedido) {
+                callback(null, novoPedido);
+            }).catch(callback);
+
+    }
+
+    var salvarPedido = function (pedido, { email, nome }) {
+        return new Pedido(pedido).save()
+            .then(function (novoPedido) {
+                if (pedido.recorrencia && !pedido.recorrencia.pedidoOrigem) {
+                    pedido._id = novoPedido._id;
+                    return criaRecorrencia(pedido).then(() => Promise.resolve(novoPedido));
+                }
+                return Promise.resolve(novoPedido);
+            }).then(function (novoPedido) {
+                return new Log({
+                    pedidoId: novoPedido._id,
+                    logs: [
+                        {
+                            horario: new Date(),
+                            usuario: {
+                                email: email,
+                                nome: nome
+                            },
+                            tipo: tiposAtualizacao.criacao,
+                        },
+                    ]
+                }).save().then(function () {
+                    return Promise.resolve(novoPedido);
+                });
+            }).then(function (novoPedido) {
+                return atualizaReservas(novoPedido, tiposAtualizacao.criacao);
+            });
+    }
+
     // Cria os próximos pedidos recorrentes. Retorna uma promisse com o pedido original
     var criaRecorrencia = function (pedido) {
         if (!pedido.recorrencia || !pedido.recorrencia.repetirAte ||
@@ -192,136 +246,148 @@ function PedidosController(app) {
         }
         return Promise.all(promises);
     }
+    //\ ******************* POST *******************
 
-    var salvarPedido = function (pedido, { email, nome }) {
-        return new Pedido(pedido).save()
-            .then(function (novoPedido) {
-                if (pedido.recorrencia && !pedido.recorrencia.pedidoOrigem) {
-                    pedido._id = novoPedido._id;
-                    return criaRecorrencia(pedido).then(() => Promise.resolve(novoPedido));
-                }
-                return Promise.resolve(novoPedido);
-            }).then(function (novoPedido) {
-                return new Log({
-                    pedidoId: novoPedido._id,
-                    logs: [
-                        {
-                            horario: new Date(),
-                            usuario: {
-                                email: email,
-                                nome: nome
-                            },
-                            tipo: tiposAtualizacao.criacao,
-                        },
-                    ]
-                }).save().then(function (log) {
-                    return Promise.resolve({ log: log, novoPedido: novoPedido });
-                });
-            }).then(function ({ log, novoPedido }) {
-                return atualizaReservas(novoPedido, tiposAtualizacao.criacao);
-            });
-    }
 
-    this.post = function (pedido, usuario, callback) {
+
+    // ******************* PUT *******************
+    this.put = function (id, pedido, { email, nome, senha }, confirmacao = false, atualizaRecorrentes, callback) {
         pedido = geraIdItens(pedido);
-        salvarPedido(pedido, usuario)
-            .then(function (novoPedido) {
-                callback(null, novoPedido);
-            }).catch(callback);
-
-    }
-
-    this.put = function (id, pedido, { email, nome, senha }, confirmacao = false, callback) {
-        pedido = geraIdItens(pedido);
-        Usuario.find({ senha: senha })
-            .then(function (usuario) {
-                if (senha) {
-                    if (usuario && usuario.length > 0) {
-                        email = usuario[0].email;
-                        nome = usuario[0].nome;
-                        if (confirmacao) pedido.usuario = usuario[0];
-                    } else {
-                        throw 'Senha incorreta! Usuário não localizado.';
-                    }
-                }
-                return Pedido.findOneAndUpdate({ _id: id }, pedido, { new: false });
-            }).then(function (result) {
-                if (confirmacao) {  // Se for somente confirmação pedido
-                    if (result && result.usuario && result.usuario.email !== email) {
-                        return Promise.all([
-                            atualizaReservas(getDiferencaReserva(result, pedido), tiposAtualizacao.criacao),
-                            Log.findOneAndUpdate({ pedidoId: id }, { $set: { 'logs.0.usuario': { email: email, nome: nome } } })
-                        ]);
-                    } else {
-                        return atualizaReservas(getDiferencaReserva(result, pedido), tiposAtualizacao.criacao);
-                    }
-                } else {
+        validaSenha(senha).then(function (usuario) {
+            if (confirmacao) pedido.usuario = usuario;
+            if (atualizaRecorrentes) {
+                return buscaPedidosRecorrentes(id)
+                    .then((pedidos) => Promise.all(pedidos.map((p) => {
+                        const pedidoASerAtualizado = {
+                            ...pedido,
+                            ...{
+                                _id: p._id,
+                                horario: p.horario,
+                                recorrencia: p.recorrencia
+                            }
+                        };
+                        return Pedido.findOneAndUpdate({ _id: p._id }, pedidoASerAtualizado, { new: false });
+                    }))).then((pedidos) => Promise.resolve(pedidos && pedidos.length >= 1 ? pedidos[0] : null));
+            }
+            return Pedido.findOneAndUpdate({ _id: id }, pedido, { new: false });
+        }).then(function (result) {
+            if (result === null) throw 'Pedido não localizado!';
+            if (confirmacao) {  // Se for somente confirmação pedido
+                if (result && result.usuario && result.usuario.email !== email) {
                     return Promise.all([
                         atualizaReservas(getDiferencaReserva(result, pedido), tiposAtualizacao.criacao),
-                        Log.findOneAndUpdate({ pedidoId: id }, {
-                            $push: {
-                                logs: {
-                                    horario: new Date(),
-                                    usuario: {
-                                        email: email,
-                                        nome: nome
-                                    },
-                                    tipo: tiposAtualizacao.alteracao,
-                                    pedido: result
-                                }
-                            }
-                        })
+                        Log.findOneAndUpdate({ pedidoId: id }, { $set: { 'logs.0.usuario': { email: email, nome: nome } } })
                     ]);
+                } else {
+                    return atualizaReservas(getDiferencaReserva(result, pedido), tiposAtualizacao.criacao);
                 }
-            }).then(function () {
-                callback(null, pedido);
-            }).catch(callback);
-    }
-
-    this.delete = function (id, senha, callback) {
-        var usuario = null;
-        Usuario.find({ senha: senha })
-            .then(function (result) {
-                if (!result || !result.length) {
-                    throw 'Senha incorreta! Usuário não encontrado!';
-                }
-
-                if (result[0].perfil !== 'Administrador') {
-                    throw 'Usuário sem permissão para excluir!';
-                }
-
-                usuario = result[0];
-                return Pedido.findOneAndUpdate({ _id: id }, {
-                    $set: {
-                        exclusao: {
-                            horario: new Date(),
-                            usuario: {
-                                email: result[0].email,
-                                nome: result[0].nome
-                            }
-                        }
-                    }
-                }, { new: false });
-            }).then(function (pedidoAnterior) {
+            } else {
                 return Promise.all([
-                    Pedido.findOne({ _id: id }), // Retorna o pedido atualizado
+                    atualizaReservas(getDiferencaReserva(result, pedido), tiposAtualizacao.criacao),
                     Log.findOneAndUpdate({ pedidoId: id }, {
                         $push: {
                             logs: {
                                 horario: new Date(),
-                                usuario: usuario,
-                                tipo: tiposAtualizacao.exclusao,
-                                pedido: pedidoAnterior
+                                usuario: {
+                                    email: email,
+                                    nome: nome
+                                },
+                                tipo: tiposAtualizacao.alteracao,
+                                pedido: result
                             }
                         }
                     })
                 ]);
-            }).then(function (result) {
-                return atualizaReservas(result[0], tiposAtualizacao.exclusao);
-            }).then(function (result) {
-                callback(null, result);
-            }).catch(callback);
+            }
+        }).then(function () {
+            callback(null, pedido);
+        }).catch(callback);
     }
+    //\ ******************* PUT *******************
+
+    // ******************* DELETE *******************
+    this.delete = function (id, senha, deleteRecorrentes, callback) {
+        var usuario = null;
+        validaSenha(senha).then(function (usuarioBD) {
+            usuario = usuarioBD;
+            if (usuario.perfil !== 'Administrador') {
+                throw 'Usuário sem permissão para excluir!';
+            }
+            if (deleteRecorrentes) {
+                return buscaPedidosRecorrentes(id)
+                    .then((pedidos) => Promise.all(pedidos.map(p => deletePedidoLogicamente(p._id, usuario))))
+                    .then((pedidos) => Promise.resolve(pedidos && pedidos.length > 1 ? pedidos[0] : null));
+            } else {
+                return deletePedidoLogicamente(id, usuario);
+            }
+        }).then(function (result) {
+            callback(null, result);
+        }).catch(function (erro) {
+            callback(erro);
+        });
+    }
+
+    var getIdPedidoOrigemRecorrencia = function (pedido) {
+        var pedidoOrigem = null;
+        if (pedido.recorrencia && pedido.recorrencia.repetirAte) {
+            if (pedido.recorrencia.pedidoOrigem)
+                pedidoOrigem = pedido.recorrencia.pedidoOrigem;
+            else
+                pedidoOrigem = pedido._id;
+        }
+        return pedidoOrigem
+    }
+
+    var deletePedidoLogicamente = function (id, usuario) {
+        return Pedido.findOneAndUpdate({ _id: id }, {
+            $set: {
+                exclusao: {
+                    horario: new Date(),
+                    usuario: {
+                        email: usuario.email,
+                        nome: usuario.nome
+                    }
+                }
+            }
+        }, { new: false }).then(function (pedidoAnterior) {
+            return Promise.all([
+                Pedido.findOne({ _id: id }), // Retorna o pedido atualizado
+                Log.findOneAndUpdate({ pedidoId: id }, {
+                    $push: {
+                        logs: {
+                            horario: new Date(),
+                            usuario: { email: usuario.email, nome: usuario.nome },
+                            tipo: tiposAtualizacao.exclusao,
+                            pedido: pedidoAnterior
+                        }
+                    }
+                })
+            ]);
+        }).then(function (result) {
+            return atualizaReservas(result[0], tiposAtualizacao.exclusao);
+        });
+    }
+
+    // Retorna array com todos os pedidos recorrentes de mesma origem e data maior ou igual,
+    // ou retorna array somente com o pedido, se não for recorrente 
+    var buscaPedidosRecorrentes = function (id) {
+        return Pedido.findOne({ _id: id })
+            .then(function (pedido) {
+                var pedidoOrigem = getIdPedidoOrigemRecorrencia(pedido);
+                if (pedidoOrigem) {
+                    return Pedido.find({
+                        horario: { $gte: pedido.horario },
+                        $or: [
+                            { 'recorrencia.pedidoOrigem': pedidoOrigem },
+                            { _id: pedidoOrigem }
+                        ]
+                    });
+                } else {
+                    return Promise.resolve([pedido]);
+                }
+            });
+    }
+
 
     this.deleteAdmin = function (id, callback) {
         var pedido = null;
@@ -348,6 +414,7 @@ function PedidosController(app) {
                 }
             });
     }
+    //\ ******************* DELETE *******************
 
     this.restauraPedido = function (id, { email, nome }, callback) {
         Pedido.findOneAndUpdate({ _id: id }, { $set: { exclusao: null } }, { new: false })

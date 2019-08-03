@@ -82,7 +82,11 @@ module.exports = function (app) {
     var pedido = req.body.pedido;
     const usuario = req.session.usuario;
     usuario.senha = req.body.senha ? app.HmacSHA1(req.body.senha.toString()) : null;
-    ctrl.put(req.params.id, pedido, usuario, false, function (err, result) {
+    var atualizaRecorrentes = false;
+    if (req.query.hasOwnProperty('recorrentes')) { 
+      atualizaRecorrentes = req.query['recorrentes'];
+    }
+    ctrl.put(req.params.id, pedido, usuario, false, atualizaRecorrentes, function (err, result) {
       if (err) {
         res.status(500).json(err);
       } else {
@@ -98,7 +102,7 @@ module.exports = function (app) {
     var pedido = req.body.pedido;
     const usuario = req.session.usuario;
     usuario.senha = app.HmacSHA1(req.body.senha.toString());
-    ctrl.put(req.params.id, pedido, usuario, true, function (err, result) {
+    ctrl.put(req.params.id, pedido, usuario, true, true, function (err, result) {
       if (err) {
         res.status(500).json(err);
       } else {
@@ -148,7 +152,8 @@ module.exports = function (app) {
 
 
   app.post('/api/pedidos/:id/delete', function (req, res) {
-    ctrl.delete(req.params.id, app.HmacSHA1(req.body.senha.toString()), function (err, result) {
+    var deleteRecorrentes = req.body.deleteRecorrentes;
+    ctrl.delete(req.params.id, app.HmacSHA1(req.body.senha.toString()), deleteRecorrentes, function (err, result) {
       if (err) {
         if (err === 'Senha incorreta!') {
           res.status(400).json(err);
