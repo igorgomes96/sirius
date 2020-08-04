@@ -75,7 +75,7 @@
           </div>
         </div>
 
-        <table>
+        <table *ngIf="salgados && salgados.length">
           <thead>
             <tr>
               <th width="48%">Salgado</th>
@@ -100,7 +100,7 @@
 
         </table>
 
-        <table style="margin-top: 20px;">
+        <table style="margin-top: 20px;"  *ngIf="diversos && diversos.length">
           <thead>
             <tr>
               <th width="48%">Item Diverso</th>

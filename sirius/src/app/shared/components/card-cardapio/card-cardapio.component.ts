@@ -18,12 +18,16 @@ export class CardCardapioComponent implements OnInit {
   @Output() favoriteItem = new EventEmitter<ItemCardapio>();
   @Output() editItem = new EventEmitter<ItemCardapio>();
 
-  qtdas: number[];
-
   constructor() { }
 
   ngOnInit() {
-    this.qtdas = [10, 25, 30, 50, 75, 100];
+  }
+
+  get qtdas() {
+    if (this.item && this.item.tipo === TipoSalgado.Diversos) {
+      return [1, 2, 5, 10, 25, 50];
+    }
+    return [10, 25, 30, 50, 75, 100];
   }
 
   popular(): string {
@@ -57,6 +61,13 @@ export class CardCardapioComponent implements OnInit {
       return true;
     }
     return false;
+  }
+
+  mostrarOpcaoPimenta(item: ItemCardapio) {
+    if (!item || item.tipo === TipoSalgado.Diversos) {
+      return false;
+    }
+    return true;
   }
 
   edit() {

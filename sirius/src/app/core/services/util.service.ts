@@ -43,17 +43,21 @@ export class UtilService {
     const salgados = pedido.itens.filter(i => i.tipo === TipoSalgado.Comercial || i.tipo === TipoSalgado.Festa);
     const diversos = pedido.itens.filter(i => i.tipo === TipoSalgado.Outros || i.tipo === TipoSalgado.Diversos);
 
-    str += 'Salgados\n';
-    salgados.forEach(item => {
-      str += this.formatarLinhaPedido(item, tamanhoLinha);
-    });
-    str += this.formatarLinhaTotal(salgados, tamanhoLinha, 'Subtotal') + '\n';
+    if (salgados && salgados.length) {
+      str += 'Salgados\n';
+      salgados.forEach(item => {
+        str += this.formatarLinhaPedido(item, tamanhoLinha);
+      });
+      str += this.formatarLinhaTotal(salgados, tamanhoLinha, 'Subtotal') + '\n';
+    }
 
-    str += 'Diversos\n';
-    diversos.forEach(item => {
-      str += this.formatarLinhaPedido(item, tamanhoLinha);
-    });
-    str += this.formatarLinhaTotal(diversos, tamanhoLinha, 'Subtotal');
+    if (diversos && diversos.length) {
+      str += 'Diversos\n';
+      diversos.forEach(item => {
+        str += this.formatarLinhaPedido(item, tamanhoLinha);
+      });
+      str += this.formatarLinhaTotal(diversos, tamanhoLinha, 'Subtotal', false);
+    }
 
     str += this.formatarLinhaTotal(pedido.itens, tamanhoLinha, 'Total', false);
 
@@ -66,6 +70,7 @@ export class UtilService {
       alert('Seu navegador não é compatível com a função de impressão.');
     }
   }
+
 
   formatarLinhaPedido(item: ItemCardapio, tamanhoLinha: number) {
     const detalhes = item.detalhes ? ` (${item.detalhes})` : '';
