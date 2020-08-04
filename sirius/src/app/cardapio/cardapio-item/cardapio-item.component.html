@@ -1,0 +1,9 @@
+<div class="texto">
+  <span class="title">{{ item.nome }}</span>
+  <p><span *ngIf="item.detalhes">{{ item.detalhes }}<br></span>
+    <strong>R$ {{ item.valor | number:'1.2-2' }}</strong>
+  </p>
+</div>
+<a (click)="edit(item)" class="secondary-content"><i class="material-icons">edit</i></a>
+<a (click)="delete(item)" class="secondary-content red-text text-darken-2" style="right: 48px;"><i
+    class="material-icons">delete_forever</i></a>

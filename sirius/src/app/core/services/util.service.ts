@@ -3,6 +3,7 @@ import { DatePipe, DecimalPipe } from '@angular/common';
 
 import { Pedido } from '../../shared/models/pedido';
 import { TelefonePipe } from './../../shared/pipes/telefone.pipe';
+import { ItemCardapio, TipoSalgado } from 'src/app/shared/models/item-cardapio';
 
 @Injectable({
   providedIn: 'root'
@@ -38,25 +39,25 @@ export class UtilService {
     }
     // tslint:disable-next-line: max-line-length
     let str = `Salgados Sirius\nHorário: ${horario}\nCliente: ${pedido.cliente.nome}\n${telefone}\n${endereco}Pago? ${pedido.pago ? 'Sim' : 'Não'}${observacoes}\n\n`;
-    str = this.retira_acentos(str);
 
-    pedido.itens.forEach(item => {
-      const detalhes = item.detalhes ? ` (${item.detalhes})` : '';
-      const semPimenta = item.semPimenta ? ' - Sem Pimenta' : '';
-      const triangulo = item.triangulo ? ' (triângulo)' : '';
-      const nome = `${item.quantidade} un. de ${item.nome}${triangulo}${semPimenta}${detalhes} .`;
-      const valor = ` ${this.convertToReal(item.quantidade * item.valor)}`;
-      let dif = tamanhoLinha - ((nome.length + valor.length) % tamanhoLinha);
-      if (dif % tamanhoLinha === 0) {
-        dif -= tamanhoLinha;
-      }
-      str += `${nome}${'.'.repeat(dif)}${valor}\n`;
+    const salgados = pedido.itens.filter(i => i.tipo === TipoSalgado.Comercial || i.tipo === TipoSalgado.Festa);
+    const diversos = pedido.itens.filter(i => i.tipo === TipoSalgado.Outros || i.tipo === TipoSalgado.Diversos);
+
+    str += 'Salgados\n';
+    salgados.forEach(item => {
+      str += this.formatarLinhaPedido(item, tamanhoLinha);
     });
-    const qtdaTotal = pedido.itens.reduce((prev, cur) => prev + cur.quantidade, 0);
-    const totalStr = `${qtdaTotal} un. Total .`;
-    const total = ` ${this.convertToReal(pedido.itens.reduce((prev, cur) => prev + (cur.quantidade * cur.valor), 0))}`;
-    const difTotal = tamanhoLinha - ((totalStr.length + total.length) % tamanhoLinha);
-    str += this.retira_acentos(`\n${totalStr}${'.'.repeat(difTotal)}${total}\n`);
+    str += this.formatarLinhaTotal(salgados, tamanhoLinha, 'Subtotal') + '\n';
+
+    str += 'Diversos\n';
+    diversos.forEach(item => {
+      str += this.formatarLinhaPedido(item, tamanhoLinha);
+    });
+    str += this.formatarLinhaTotal(diversos, tamanhoLinha, 'Subtotal');
+
+    str += this.formatarLinhaTotal(pedido.itens, tamanhoLinha, 'Total', false);
+
+    str = this.retira_acentos(str);
     console.log(str);
 
     try {
@@ -64,6 +65,32 @@ export class UtilService {
     } catch {
       alert('Seu navegador não é compatível com a função de impressão.');
     }
+  }
+
+  formatarLinhaPedido(item: ItemCardapio, tamanhoLinha: number) {
+    const detalhes = item.detalhes ? ` (${item.detalhes})` : '';
+    const semPimenta = item.semPimenta ? ' - Sem Pimenta' : '';
+    const triangulo = item.triangulo ? ' (triângulo)' : '';
+    const nome = `${item.quantidade} un. de ${item.nome}${triangulo}${semPimenta}${detalhes} .`;
+    const valor = ` ${this.convertToReal(item.quantidade * item.valor)}`;
+    let dif = tamanhoLinha - ((nome.length + valor.length) % tamanhoLinha);
+    if (dif % tamanhoLinha === 0) {
+      dif -= tamanhoLinha;
+    }
+    return `${nome}${'.'.repeat(dif)}${valor}\n`;
+  }
+
+  formatarLinhaTotal(itens: ItemCardapio[], tamanhoLinha: number, descricao: string, exibirQtda = true) {
+    const qtdaTotal = itens.reduce((prev, cur) => prev + cur.quantidade, 0);
+    let totalStr = '';
+    if (exibirQtda) {
+      totalStr = `${qtdaTotal} un. ${descricao} .`;
+    } else {
+      totalStr = `${descricao} .`;
+    }
+    const total = ` ${this.convertToReal(itens.reduce((prev, cur) => prev + (cur.quantidade * cur.valor), 0))}`;
+    const difTotal = tamanhoLinha - ((totalStr.length + total.length) % tamanhoLinha);
+    return `\n${totalStr}${'.'.repeat(difTotal)}${total}\n`;
   }
 
   retira_acentos(str: string) {

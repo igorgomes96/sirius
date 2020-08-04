@@ -5,6 +5,8 @@ import { Pedido } from '../../models/pedido';
 import { UsuarioService } from '../../../core/services/usuario.service';
 import { PedidosApiService } from '../../../core/api/pedidos-api.service';
 import { UtilService } from '../../../core/services/util.service';
+import { retry } from 'rxjs/operators';
+import { TipoSalgado, ItemCardapio } from '../../models/item-cardapio';
 
 declare var $: any;
 
@@ -58,13 +60,27 @@ export class CardAgendaComponent implements OnInit {
   }
 
   get valorTotal() {
-    return this.pedido.itens.map(i => i.valor * (!i.quantidade ? 0 : i.quantidade))
+    return this.subTotal(this.pedido.itens);
+  }
+
+  qtdaItens(itens: ItemCardapio[]) {
+    return itens.map(i => i.quantidade)
       .reduce((p, c) => p + c);
   }
 
-  get qtdaTotal() {
-    return this.pedido.itens.map(i => i.quantidade)
+  subTotal(itens: ItemCardapio[]) {
+    return itens.map(i => i.valor * (!i.quantidade ? 0 : i.quantidade))
       .reduce((p, c) => p + c);
+  }
+
+  get salgados() {
+    return this.pedido && this.pedido.itens && this.pedido.itens
+      .filter(i => i.tipo === TipoSalgado.Comercial || i.tipo === TipoSalgado.Festa);
+  }
+
+  get diversos() {
+    return this.pedido && this.pedido.itens && this.pedido.itens
+      .filter(i => i.tipo === TipoSalgado.Outros || i.tipo === TipoSalgado.Diversos);
   }
 
   imprimir() {

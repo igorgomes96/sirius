@@ -17,8 +17,6 @@ export class ItemModalComponent implements OnInit, AfterViewInit {
   @Output() saveItem = new EventEmitter<ItemCardapio>();
 
   form: FormGroup;
-  TipoSalgado: typeof TipoSalgado = TipoSalgado;
-  // unidades: Unidade[];
   constructor(private formBuilder: FormBuilder) { } // , private unidadesApi: UnidadesApiService) { }
 
   ngOnInit() {
@@ -38,7 +36,6 @@ export class ItemModalComponent implements OnInit, AfterViewInit {
       }
     });
 
-    // this.loadUnidades();
   }
 
   ngAfterViewInit() {
@@ -49,27 +46,13 @@ export class ItemModalComponent implements OnInit, AfterViewInit {
     return M.FormSelect.getInstance($('#unidade')[0]);
   }
 
-  // loadUnidades() {
-  //   const instance = this.selectUnidadeInstance;
-  //   if (instance) {
-  //     instance.destroy();
-  //   }
-  //   this.unidadesApi.getAll()
-  //     .subscribe((unidades: Unidade[]) => {
-  //       this.unidades = unidades;
-  //       setTimeout(() => {
-  //         $('#unidade').formSelect();
-  //       }, 300);
-  //     });
-  // }
-
   get instanceModal() {
     return M.Modal.getInstance($('#modal-item')[0]);
   }
 
   salvar() {
     const item = <ItemCardapio>this.form.getRawValue();
-    item.tipo = TipoSalgado[TipoSalgado.Diversos];
+    item.tipo = TipoSalgado[TipoSalgado.Outros];
     item.unidade = {
       _id: undefined,
       nome: 'Unidade',

@@ -53,12 +53,16 @@ td, th {
     padding: 8px 5px;
 }
 
-tr:last-child td {
+.subtotal td, .total td {
     font-weight: bold;
 }
 
 .card-title {
     font-size: 16px;
     font-weight: 500;
+}
+
+.total td {
+    padding-top: 20px;
 }
 

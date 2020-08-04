@@ -78,22 +78,52 @@
         <table>
           <thead>
             <tr>
-              <th width="48%">Item/Salgado</th>
+              <th width="48%">Salgado</th>
               <th width="20%">Qtda.</th>
               <th width="32%" class="right-align">Valor</th>
             </tr>
           </thead>
 
           <tbody>
-            <tr *ngFor="let item of pedido.itens">
+            <tr *ngFor="let item of salgados">
               <td>{{ item.nome }}<span *ngIf="item.triangulo"> (triângulo)</span><span *ngIf="item.semPimenta"> - Sem Pimenta</span><span *ngIf="item.detalhes">
                   ({{ item.detalhes }})</span></td>
               <td>{{ item.quantidade }}</td>
               <td class="right">R$ {{ item.valor * item.quantidade | number:'1.2' }}</td>
             </tr>
+            <tr class="subtotal">
+              <td>Subtotal</td>
+              <td>{{ qtdaItens(salgados) }}</td>
+              <td class="right">R$ {{ subTotal(salgados) | number:'1.2' }}</td>
+            </tr>
+          </tbody>
+
+        </table>
+
+        <table style="margin-top: 20px;">
+          <thead>
             <tr>
+              <th width="48%">Item Diverso</th>
+              <th width="20%">Qtda.</th>
+              <th width="32%" class="right-align">Valor</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let item of diversos">
+              <td>{{ item.nome }}<span *ngIf="item.triangulo"> (triângulo)</span><span *ngIf="item.semPimenta"> - Sem Pimenta</span><span *ngIf="item.detalhes">
+                  ({{ item.detalhes }})</span></td>
+              <td>{{ item.quantidade }}</td>
+              <td class="right">R$ {{ item.valor * item.quantidade | number:'1.2' }}</td>
+            </tr>
+            <tr class="subtotal">
+              <td>Subtotal</td>
+              <td>{{ qtdaItens(diversos) }}</td>
+              <td class="right">R$ {{ subTotal(diversos) | number:'1.2' }}</td>
+            </tr>
+            <tr class="total">
               <td>Total</td>
-              <td>{{ qtdaTotal }}</td>
+              <td></td>
               <td class="right">R$ {{ valorTotal | number:'1.2' }}</td>
             </tr>
           </tbody>

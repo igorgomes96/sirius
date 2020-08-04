@@ -7,7 +7,8 @@ export interface Unidade {
 export enum TipoSalgado {
     Comercial = 'Comercial',
     Festa = 'Festa',
-    Diversos = 'Diversos'
+    Diversos = 'Diversos',
+    Outros = 'Outros'
 }
 
 export interface ItemCardapio {

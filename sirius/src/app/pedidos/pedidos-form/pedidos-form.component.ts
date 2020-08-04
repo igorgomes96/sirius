@@ -37,6 +37,7 @@ export class PedidosFormComponent implements OnInit {
   atualizarCliente = true;
   openModalSenha = new EventEmitter<boolean>();
   habilitaRecorrencia = true;
+  outros: ItemCardapio[] = [];
   diversos: ItemCardapio[] = [];
   edicao = false;
   recorrenciaForm: FormGroup;
@@ -144,6 +145,7 @@ export class PedidosFormComponent implements OnInit {
         tap((itens: ItemCardapio[]) => {
           this.salgadosFesta = itens.filter(i => i.tipo === TipoSalgado[TipoSalgado.Festa]);
           this.salgadosComerciais = itens.filter(i => i.tipo === TipoSalgado[TipoSalgado.Comercial]);
+          this.diversos = itens.filter(i => i.tipo === TipoSalgado[TipoSalgado.Diversos]);
         }),
         switchMap(_ => this.route.data),
         filter(d => d.hasOwnProperty('pedido')),
@@ -158,7 +160,7 @@ export class PedidosFormComponent implements OnInit {
             pedido.enderecoEntrega = this.pedido.enderecoEntrega;
           }
         }
-        this.diversos = pedido.itens.filter(i => i.tipo === TipoSalgado[TipoSalgado.Diversos]);
+        this.outros = pedido.itens.filter(i => i.tipo === TipoSalgado[TipoSalgado.Outros]);
         this.updateQuantidades(pedido.itens);
         const hora = this.utilService.getTime(this.utilService.getDateTime(pedido.horario.toString()));
         $('#hora').val(hora);
@@ -221,35 +223,36 @@ export class PedidosFormComponent implements OnInit {
     }
   }
 
-  updateQuantidades(salgados: ItemCardapio[]) {
-    salgados.filter(s => s.tipo === TipoSalgado[TipoSalgado.Festa])
+  atualizarQuantidadesItens(itemLista: ItemCardapio, itemAtualizado: ItemCardapio) {
+    if (itemLista) {
+      itemLista.quantidade = itemAtualizado.quantidade;
+      itemLista.semPimenta = itemAtualizado.semPimenta;
+      itemLista.triangulo = itemAtualizado.triangulo;
+      if (itemLista.semPimenta && itemLista.reservaSemPimenta) {
+        itemLista.reservaSemPimenta += itemAtualizado.quantidade;
+      } else if (itemLista.reservaComPimenta) {
+        itemLista.reservaComPimenta += itemAtualizado.quantidade;
+      }
+    }
+  }
+
+  updateQuantidades(itens: ItemCardapio[]) {
+    itens.filter(s => s.tipo === TipoSalgado[TipoSalgado.Festa])
       .forEach(salgado => {
         const salgadoFesta = this.salgadosFesta.find(s => s._id === salgado._id);
-        if (salgadoFesta) {
-          salgadoFesta.quantidade = salgado.quantidade;
-          salgadoFesta.semPimenta = salgado.semPimenta;
-          salgadoFesta.triangulo = salgado.triangulo;
-          if (salgadoFesta.semPimenta && salgadoFesta.reservaSemPimenta) {
-            salgadoFesta.reservaSemPimenta += salgado.quantidade;
-          } else if (salgadoFesta.reservaComPimenta) {
-            salgadoFesta.reservaComPimenta += salgado.quantidade;
-          }
-        }
+        this.atualizarQuantidadesItens(salgadoFesta, salgado);
       });
 
-    salgados.filter(s => s.tipo === TipoSalgado[TipoSalgado.Comercial])
+    itens.filter(s => s.tipo === TipoSalgado[TipoSalgado.Comercial])
       .forEach(salgado => {
         const salgadoComercial = this.salgadosComerciais.find(s => s._id === salgado._id);
-        if (salgadoComercial) {
-          salgadoComercial.quantidade = salgado.quantidade;
-          salgadoComercial.semPimenta = salgado.semPimenta;
-          salgadoComercial.triangulo = salgado.triangulo;
-          if (salgadoComercial.semPimenta && salgadoComercial.reservaSemPimenta) {
-            salgadoComercial.reservaSemPimenta += salgado.quantidade;
-          } else if (salgadoComercial.reservaComPimenta) {
-            salgadoComercial.reservaComPimenta += salgado.quantidade;
-          }
-        }
+        this.atualizarQuantidadesItens(salgadoComercial, salgado);
+      });
+
+    itens.filter(s => s.tipo === TipoSalgado[TipoSalgado.Diversos])
+      .forEach(salgado => {
+        const diverso = this.diversos.find(s => s._id === salgado._id);
+        this.atualizarQuantidadesItens(diverso, salgado);
       });
   }
 
@@ -287,12 +290,14 @@ export class PedidosFormComponent implements OnInit {
   get itensSelecionados(): ItemCardapio[] {
     return this.salgadosComerciais.filter(s => s.quantidade)
       .concat(this.salgadosFesta.filter(s => s.quantidade))
+      .concat(this.outros.filter(s => s.quantidade))
       .concat(this.diversos.filter(s => s.quantidade));
   }
 
   atualizaInformacoesPedido() {
     this.pedido.horario = new Date(this.pedido.horario);
     this.pedido.itens = this.itensSelecionados;
+    console.log(this.pedido.itens);
 
     if (!this.pedido.entregar) {
       this.pedido.enderecoEntrega = null;
@@ -427,7 +432,8 @@ export class PedidosFormComponent implements OnInit {
 
   get habilitaFecharPedido() {
     return this.salgadosFesta.some(s => !!s.quantidade) ||
-      this.salgadosComerciais.some(s => !!s.quantidade);
+      this.salgadosComerciais.some(s => !!s.quantidade) ||
+      this.diversos.some(s => !!s.quantidade);
   }
 
   addItemForaCardapio() {
@@ -486,7 +492,7 @@ export class PedidosFormComponent implements OnInit {
   }
 
   addItem(item: ItemCardapio) {
-    this.diversos.push(item);
+    this.outros.push(item);
   }
 
 }

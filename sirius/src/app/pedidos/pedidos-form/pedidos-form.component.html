@@ -226,8 +226,8 @@
                 <!-- <div> -->
                 <div class="row">
                     <div class="col m9 s12">
-                        <a class="btn primary-color m-r-s m-t-m" (click)="fecharPedido()" *ngIf="habilitaFecharPedido">{{ edicao ? 'Salvar Alterações' : 'Fechar
-                            Pedido' }}</a>
+                        <a class="btn primary-color m-r-s m-t-m" (click)="fecharPedido()" 
+                            *ngIf="habilitaFecharPedido">{{ edicao ? 'Salvar Alterações' : 'Fechar Pedido' }}</a>
                         <a class="btn red darken-2 m-t-m" *ngIf="!edicao" (click)="cancelarPedido()">Cancelar Pedido</a>
                     </div>
                     <div class="col m3 s12">
@@ -236,14 +236,14 @@
                     </div>
                 </div>
 
-                <div class="row" *ngIf="diversos.length">
+                <div class="row" *ngIf="outros.length">
 
                     <div class="col s12">
 
                         <h6>Outros</h6>
 
                         <div class="row">
-                            <div class="col m6 s12" *ngFor="let item of diversos">
+                            <div class="col m6 s12" *ngFor="let item of outros">
                                 <app-card-cardapio [item]="item" [showAddOption]="true">
                                 </app-card-cardapio>
                             </div>
@@ -281,12 +281,24 @@
                         </div>
                     </div>
 
+                    <div class="col s12">
+
+                        <h6>Diversos</h6>
+
+                        <div class="row">
+                            <div class="col m6 s12" *ngFor="let item of diversos">
+                                <app-card-cardapio [item]="item" [showAddOption]="true">
+                                </app-card-cardapio>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
                 <div class="row">
                     <div class="col">
-                        <a class="btn primary-color m-r-s m-t-m" (click)="fecharPedido()" *ngIf="habilitaFecharPedido">{{ edicao ? 'Salvar Alterações' : 'Fechar
-                                    Pedido' }}</a>
+                        <a class="btn primary-color m-r-s m-t-m" (click)="fecharPedido()" 
+                            *ngIf="habilitaFecharPedido">{{ edicao ? 'Salvar Alterações' : 'Fechar Pedido' }}</a>
                         <a class="btn red darken-2 m-t-m" (click)="cancelarPedido()" *ngIf="!edicao">Cancelar Pedido</a>
                     </div>
                 </div>
