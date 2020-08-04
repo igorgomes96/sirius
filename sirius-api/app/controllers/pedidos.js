@@ -32,6 +32,7 @@ function PedidosController(app) {
 
     var atualizaReservas = function (pedido, tipo) {
         const data = app.moment(pedido.horario).startOf('day').toDate();
+        console.log('Atualizando reservas de acordo com o pedido ' + pedido._id + ' para a data ' + data.toString());
         const itens = pedido.itens.map(item => {
             return { item: item, data: data, tipo: tipo }
         });
@@ -47,6 +48,7 @@ function PedidosController(app) {
     }
 
     var atualizaReservaItem = function ({ item, data, tipo }, callback) {
+        console.log(item._id, item.semPimenta, data, tipo);
         Reserva.find({ 'item._id': item._id, data: data, 'item.semPimenta': item.semPimenta }, function (err, result) {
             if (err) {
                 callback(`Erro ao buscar reserva: ${JSON.stringify(err)}`);
@@ -54,10 +56,13 @@ function PedidosController(app) {
             }
 
             if (!result.length) {
+                console.log('Nenhuma reserva encontrada para o item ' + item._id);
                 callback();
                 return;
             }
 
+            console.log('Atualizando reserva ' + result[0]._id);
+            
             var reserva = result[0];
             Reserva.findOneAndUpdate({ _id: reserva._id },
                 { $set: { qtdaVendida: getQtdaVendidaReserva(reserva, item, tipo) } },

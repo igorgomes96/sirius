@@ -40,6 +40,8 @@ export class PedidosFormComponent implements OnInit {
   diversos: ItemCardapio[] = [];
   edicao = false;
   recorrenciaForm: FormGroup;
+  onSelectRepetirAte: any;
+  onSelectDate: any;
 
   dias = ['Dom.', 'Seg.', 'Ter.', 'Qua.', 'Qui.', 'Sex.', 'Sáb.'];
 
@@ -69,7 +71,7 @@ export class PedidosFormComponent implements OnInit {
       this.pedido.horario = data;
     };
 
-    const onSelectRepetirAte = (value: any) => {
+    this.onSelectRepetirAte = (value: any) => {
       this.pedido.recorrencia.repetirAte = new Date(value);
     };
 
@@ -80,8 +82,9 @@ export class PedidosFormComponent implements OnInit {
       }
     };
 
-    const onSelectDate = (value: any) => {
+    this.onSelectDate = (value: any) => {
       const data = new Date(value);
+      this.carregarItensCardapio(data);
       this.pedido.horario = new Date(this.pedido.horario);
       data.setHours(this.pedido.horario.getHours());
       data.setMinutes(this.pedido.horario.getMinutes());
@@ -94,7 +97,7 @@ export class PedidosFormComponent implements OnInit {
         this.datePickerInstance('#repetirAte').destroy();
         const options = {
           ...datepicker, ...{
-            onSelect: onSelectRepetirAte,
+            onSelect: this.onSelectRepetirAte,
             setDefaultDate: setDate,
             defaultDate: setDate ? repetirAteSelecionado : null,
             showClearBtn: true,
@@ -109,13 +112,13 @@ export class PedidosFormComponent implements OnInit {
 
     this.createDatePicker('#data', {
       ...datepicker, ...{
-        onSelect: onSelectDate
+        onSelect: this.onSelectDate
       }
     });
 
     this.createDatePicker('#repetirAte', {
       ...datepicker, ...{
-        onSelect: onSelectRepetirAte,
+        onSelect: this.onSelectRepetirAte,
         setDefaultDate: false,
         showClearBtn: true,
         onClose: onCloseRepetirAte,
@@ -127,8 +130,17 @@ export class PedidosFormComponent implements OnInit {
       onSelect: onSelectHour
     }));
 
-    this.loadItensPromisse(null)
+    this.carregarItensCardapio(new Date());
+
+  }
+
+  carregarItensCardapio(data: Date) {
+    this.loadItensPromisse(data, null)
       .pipe(
+        map(itens => {
+          itens.forEach(i => i.semPimenta = false);
+          return itens;
+        }),
         tap((itens: ItemCardapio[]) => {
           this.salgadosFesta = itens.filter(i => i.tipo === TipoSalgado[TipoSalgado.Festa]);
           this.salgadosComerciais = itens.filter(i => i.tipo === TipoSalgado[TipoSalgado.Comercial]);
@@ -154,7 +166,7 @@ export class PedidosFormComponent implements OnInit {
         this.createDatePicker('#data', {
           ...datepicker, ...{
             defaultDate: new Date(pedido.horario),
-            onSelect: onSelectDate
+            onSelect: this.onSelectDate
           }
         });
         if (pedido.recorrencia.repetirAte) {
@@ -162,7 +174,7 @@ export class PedidosFormComponent implements OnInit {
           this.createDatePicker('#repetirAte', {
             ...datepicker, ...{
               defaultDate: new Date(pedido.recorrencia.repetirAte),
-              onSelect: onSelectRepetirAte,
+              onSelect: this.onSelectRepetirAte,
               minDate: new Date(pedido.horario),
               showClearBtn: true
             }
@@ -183,7 +195,6 @@ export class PedidosFormComponent implements OnInit {
         this.showFormCliente = true;
         this.pedido = pedido;
       });
-
   }
 
   buildDias(): FormArray {
@@ -301,6 +312,7 @@ export class PedidosFormComponent implements OnInit {
   fecharPedido() {
 
     this.atualizaInformacoesPedido();
+
     const message = this.validaPedido();
     if (message) {
       this.toasts.toast(message);
@@ -315,7 +327,7 @@ export class PedidosFormComponent implements OnInit {
   }
 
   get mensagemAlteracaoRecorrente(): any {
-    if (!this.habilitaRecorrencia) { // É recorrente
+    if (!this.habilitaRecorrencia && this.pedido.recorrencia.repetirAte) { // É recorrente
       const data = new Date(this.pedido.recorrencia.repetirAte).toLocaleDateString();
       return {
         mensagem: `Esse pedido é recorrente. Deseja alterar também os próximos pedidos até a data ${data}?`,
@@ -432,12 +444,12 @@ export class PedidosFormComponent implements OnInit {
     });
   }
 
-  loadItensPromisse(nome: string = null): Observable<ItemCardapio[]> {
+  loadItensPromisse(data: Date, nome: string): Observable<ItemCardapio[]> {
     let obs: Observable<ItemCardapio[]>;
     if (nome) {
-      obs = this.cardapioApi.getByNome(nome, new Date());
+      obs = this.cardapioApi.getByNome(nome, data);
     } else {
-      obs = this.cardapioApi.getAll(new Date());
+      obs = this.cardapioApi.getAll(data);
     }
     return obs;
   }

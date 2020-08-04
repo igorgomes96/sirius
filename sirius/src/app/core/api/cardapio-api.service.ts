@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { ItemCardapio } from '../../shared/models/item-cardapio';
 import { environment } from 'src/environments/environment';
-import { take, map } from 'rxjs/operators';
+import { take, map, tap } from 'rxjs/operators';
 import { Observable, forkJoin } from 'rxjs';
 import { Reserva } from '../../shared/models/reserva';
 import { ReservasApiService } from './reservas-api.service';
@@ -36,11 +36,13 @@ export class CardapioApiService {
   }
 
   getAll(dia: Date = null): Observable<ItemCardapio[]> {
+    console.log(dia);
     if (dia) {
       return forkJoin(
         [this.httpClient.get<ItemCardapio[]>(this.url),
         this.reservasApi.getByData(dia)]
       ).pipe(
+        tap(console.log),
         map(data => this.mapItens(data[0], data[1])),
         take(1)
       );

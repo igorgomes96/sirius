@@ -19,9 +19,9 @@ declare var $: any;
 export class CardapioListComponent implements OnInit, AfterViewInit {
 
   formFiltroCardapio: FormGroup;
-  // itens: ItemCardapio[];
   salgadosFesta: ItemCardapio[];
   salgadosComerciais: ItemCardapio[];
+  diversos: ItemCardapio[];
   salgadoExclusao: ItemCardapio;
   openModalConfirmacao: EventEmitter<boolean>;
   TipoSalgado: typeof TipoSalgado = TipoSalgado;
@@ -36,19 +36,12 @@ export class CardapioListComponent implements OnInit, AfterViewInit {
 
     this.formFiltroCardapio = this.formBuilder.group({
       filtro: [''],
-      // tipo: [this.cardapioService.tipoSalgado]
     });
 
     this.formFiltroCardapio.get('filtro').valueChanges
       .pipe(distinctUntilChanged(), debounceTime(300))
       .subscribe(v => this.load(v));
 
-    // this.formFiltroCardapio.get('tipo').valueChanges
-    //   .pipe(distinctUntilChanged(), debounceTime(300), tap(v => this.cardapioService.tipoSalgado = v))
-    //   .subscribe(v => this.load(this.formFiltroCardapio.get('filtro').value, v));
-
-
-    // this.load(null, this.formFiltroCardapio.get('tipo').value);
     this.load();
   }
 
@@ -63,12 +56,11 @@ export class CardapioListComponent implements OnInit, AfterViewInit {
     } else {
       obs = this.api.getAll(new Date());
     }
-    // obs.pipe(map((itens: ItemCardapio[]) => {
-    //   return itens.filter(i => i.tipo === tipo);
-    // }))
+
     obs.subscribe((itens: ItemCardapio[]) => {
       this.salgadosComerciais = itens.filter(i => i.tipo === TipoSalgado[TipoSalgado.Comercial]);
       this.salgadosFesta = itens.filter(i => i.tipo === TipoSalgado[TipoSalgado.Festa]);
+      this.diversos = itens.filter(i => i.tipo === TipoSalgado[TipoSalgado.Diversos]);
     });
   }
 
